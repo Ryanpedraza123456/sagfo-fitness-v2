@@ -882,7 +882,12 @@ const App: React.FC = () => {
     return true;
   });
 
-  const promoProducts = sortedAndSearchedProducts.filter(p => p.isPromotion);
+  const promoProducts = sortedAndSearchedProducts.filter(p =>
+    p.isPromotion &&
+    p.promotionalPrice &&
+    p.promotionalPrice > 0 &&
+    p.promotionalPrice < p.price
+  );
   const cartTotalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const userOrders = user ? orders.filter(order => order.userId === user.id) : [];
 
