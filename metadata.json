@@ -1,0 +1,7 @@
+{
+  "name": "SAGFO Fitness Catalog",
+  "description": "An elegant digital catalog showcasing SAGFO Fitness's high-quality gym machinery and accessories, designed with a clean, modern aesthetic.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
