@@ -245,13 +245,13 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose, o
 
           {/* Vertical Thumbnails (Desktop) */}
           {!isEditing && formData.imageUrls.length > 1 && (
-            <div className="hidden md:flex flex-col gap-4 p-6 w-24 lg:w-32 overflow-y-auto py-12 items-center z-10 no-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <div className="hidden md:flex flex-col gap-3 p-4 w-16 lg:w-20 overflow-y-auto py-12 items-center z-10 no-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <style>{`.no-scrollbar::-webkit-scrollbar { display: none; }`}</style>
               {formData.imageUrls.map((url, index) => (
                 <button
                   key={index}
                   onClick={() => goToImage(index)}
-                  className={`relative group w-16 h-16 lg:w-20 lg:h-20 rounded-2xl overflow-hidden transition-all duration-300 ease-out flex-shrink-0 ${index === currentImageIndex
+                  className={`relative group w-12 h-12 lg:w-14 lg:h-14 rounded-xl overflow-hidden transition-all duration-300 ease-out flex-shrink-0 ${index === currentImageIndex
                     ? 'ring-2 ring-neutral-900 dark:ring-white shadow-lg scale-100 opacity-100'
                     : 'opacity-50 hover:opacity-100 hover:scale-105 grayscale hover:grayscale-0'
                     }`}
@@ -272,7 +272,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose, o
 
           {/* Main Image Stage */}
           <div
-            className={`relative flex-grow h-full bg-white dark:bg-[#0a0a0a] flex items-center justify-center p-6 md:p-12 overflow-hidden ${!isEditing ? 'cursor-zoom-in' : ''}`}
+            className={`relative flex-grow h-full bg-white dark:bg-[#0a0a0a] flex items-center justify-center p-6 md:p-12 overflow-auto ${!isEditing ? 'cursor-zoom-in' : ''}`}
             onMouseMove={(e) => {
               if (isEditing) return;
               const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
@@ -292,8 +292,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose, o
                 }}
                 style={{
                   transformOrigin: 'var(--zoom-origin-x, 50%) var(--zoom-origin-y, 50%)',
+                  maxHeight: '100%',
+                  maxWidth: '100%',
+                  objectFit: 'contain'
                 }}
-                className={`w-full h-full object-scale-down drop-shadow-2xl transition-transform duration-200 ease-out ${isEditing ? 'opacity-50' : 'opacity-100 hover:scale-100'} ${!isEditing ? 'hover:scale-[2]' : ''}`}
+                className={`drop-shadow-2xl transition-transform duration-200 ease-out ${isEditing ? 'opacity-50' : 'opacity-100 hover:scale-100'} ${!isEditing ? 'hover:scale-[2]' : ''}`}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-neutral-400 border-2 border-dashed border-neutral-200 dark:border-neutral-800 rounded-3xl">Añade una imagen</div>

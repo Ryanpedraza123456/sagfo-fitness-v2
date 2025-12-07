@@ -26,6 +26,8 @@ import TransporterDashboard from './components/TransporterDashboard';
 import AdminDashboard from './components/AdminDashboard';
 
 import { supabase } from './lib/supabase';
+import { uploadToBlob, deleteFromBlob } from './lib/vercel-blob';
+
 
 const App: React.FC = () => {
   const [theme, setTheme] = useState<Theme>('auto');
@@ -342,34 +344,21 @@ const App: React.FC = () => {
     if (!isAdmin) return;
 
     try {
-      // 1. Handle Image Uploads
+      // 1. Handle Image Uploads - USANDO VERCEL BLOB
       let finalImageUrls = [...product.imageUrls];
 
       if (newImagesMap && Object.keys(newImagesMap).length > 0) {
-        console.log('Procesando nuevas imágenes...');
-        const uploadPromises = finalImageUrls.map(async (url, index) => {
+        console.log('📤 Procesando nuevas imágenes con Vercel Blob...');
+        const uploadPromises = finalImageUrls.map(async (url) => {
           if (newImagesMap[url]) {
             const file = newImagesMap[url];
-            const fileExt = file.name.split('.').pop();
-            const fileName = `prod-${Date.now()}-${index}.${fileExt}`;
-            const filePath = `${fileName}`;
+            console.log(`📤 Subiendo imagen a Vercel Blob: ${file.name}`);
 
-            console.log(`Subiendo imagen: ${fileName}`);
-            const { error: uploadError } = await supabase.storage
-              .from('gallery')
-              .upload(filePath, file);
+            // Subir a Vercel Blob en lugar de Supabase Storage
+            const blobUrl = await uploadToBlob(file, 'products');
 
-            if (uploadError) {
-              console.error('Error subiendo imagen:', uploadError);
-              throw uploadError;
-            }
-
-            const { data: { publicUrl } } = supabase.storage
-              .from('gallery')
-              .getPublicUrl(filePath);
-
-            console.log(`Imagen subida, URL pública: ${publicUrl}`);
-            return publicUrl;
+            console.log(`✅ Imagen subida a Vercel Blob: ${blobUrl}`);
+            return blobUrl;
           }
           return url;
         });
@@ -647,43 +636,27 @@ const App: React.FC = () => {
     if (!isAdmin) return;
 
     const newId = `gal-${Date.now()}`;
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${newId}.${fileExt}`;
-    const filePath = `${fileName}`;
 
     try {
-      console.log('Subiendo imagen a Supabase Storage...');
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('gallery')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false
-        });
+      console.log('📤 Subiendo imagen de galería a Vercel Blob...');
 
-      if (uploadError) {
-        console.error('Error uploading to storage:', uploadError);
-        throw uploadError;
-      }
+      // Subir a Vercel Blob en lugar de Supabase Storage
+      const blobUrl = await uploadToBlob(file, 'gallery');
 
-      console.log('Imagen subida exitosamente:', uploadData);
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('gallery')
-        .getPublicUrl(filePath);
-
-      console.log('URL pública generada:', publicUrl);
+      console.log('✅ Imagen subida a Vercel Blob:', blobUrl);
 
       const { error: dbError } = await supabase
         .from('gallery')
         .insert({
           id: newId,
-          image_url: publicUrl,
+          image_url: blobUrl,
           caption: caption
         });
 
       if (dbError) {
         console.error('Error saving to database:', dbError);
-        await supabase.storage.from('gallery').remove([filePath]);
+        // Intentar borrar la imagen de Vercel Blob si falla la DB
+        await deleteFromBlob(blobUrl);
         throw dbError;
       }
 
@@ -739,27 +712,10 @@ const App: React.FC = () => {
       }
       console.log('Registro borrado de la base de datos.');
 
-      // 2. Borrar del Storage (si aplica)
-      if (imageToDelete.imageUrl && imageToDelete.imageUrl.includes('supabase')) {
-        try {
-          const urlParts = imageToDelete.imageUrl.split('/');
-          const fileName = decodeURIComponent(urlParts[urlParts.length - 1]);
-          console.log('Intentando borrar archivo del storage:', fileName);
-
-          const { error: storageError } = await supabase.storage
-            .from('gallery')
-            .remove([fileName]);
-
-          if (storageError) {
-            console.warn('Advertencia: No se pudo borrar el archivo del storage (pero el registro se borró):', storageError);
-          } else {
-            console.log('Archivo borrado exitosamente del storage.');
-          }
-        } catch (storageErr) {
-          console.warn('Error al procesar borrado de storage:', storageErr);
-        }
-      } else {
-        console.log('La imagen no parece estar alojada en Supabase Storage, omitiendo borrado de archivo.');
+      // 2. Borrar de Vercel Blob (si es una URL de Blob)
+      if (imageToDelete.imageUrl) {
+        console.log('🗑️ Intentando borrar archivo de Vercel Blob...');
+        await deleteFromBlob(imageToDelete.imageUrl);
       }
 
       // 3. Actualizar estado local
@@ -1001,26 +957,12 @@ const App: React.FC = () => {
       let finalImageUrl = event.imageUrl;
 
       if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `evt-${Date.now()}.${fileExt}`;
-        const filePath = `${fileName}`;
+        console.log(`📤 Subiendo imagen de evento a Vercel Blob: ${imageFile.name}`);
 
-        console.log(`Subiendo imagen de evento: ${fileName}`);
-        const { error: uploadError } = await supabase.storage
-          .from('gallery')
-          .upload(filePath, imageFile);
+        // Subir a Vercel Blob en lugar de Supabase Storage
+        finalImageUrl = await uploadToBlob(imageFile, 'events');
 
-        if (uploadError) {
-          console.error('Error subiendo imagen de evento:', uploadError);
-          throw uploadError;
-        }
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('gallery')
-          .getPublicUrl(filePath);
-
-        console.log(`Imagen de evento subida, URL pública: ${publicUrl}`);
-        finalImageUrl = publicUrl;
+        console.log(`✅ Imagen de evento subida a Vercel Blob: ${finalImageUrl}`);
       }
 
       if (editingEvent) {
@@ -1062,7 +1004,7 @@ const App: React.FC = () => {
       handleCloseEventModal();
     } catch (error) {
       console.error('Error saving event:', error);
-      setNotification({ id: Date.now(), type: 'error', message: 'Error al guardar evento.' });
+      setNotification({ id: Date.now(), type: 'error', message: 'Error al guardar el evento.' });
     }
   };
 
