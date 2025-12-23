@@ -51,7 +51,7 @@ const Header: React.FC<HeaderProps> = ({ cartCount, onCartClick, onLoginClick, o
   return (
     <header className="sticky top-0 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl z-[100] border-b border-white/20 dark:border-white/5 transition-all duration-500">
       <div className="container mx-auto px-6 lg:px-12">
-        <div className="flex items-center justify-between h-24">
+        <div className="flex items-center justify-between h-20">
 
           {/* Brand Identity */}
           <div
@@ -60,14 +60,14 @@ const Header: React.FC<HeaderProps> = ({ cartCount, onCartClick, onLoginClick, o
           >
             <h1 className="text-3xl font-black text-neutral-900 dark:text-white tracking-tighter flex items-center italic">
               <span className="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-3 py-1 rounded-2xl mr-2 transform transition-all group-hover:rotate-[15deg] group-hover:bg-primary-600 group-hover:text-white group-hover:scale-110 not-italic">S</span>
-              AGFOFITNESS
+              AGFO FITNESS
               <span className="font-light text-neutral-400 dark:text-neutral-500 ml-1.5 opacity-40 group-hover:opacity-100 group-hover:text-primary-500 transition-all duration-500 not-italic text-[10px] tracking-[0.3em]">PREMIUM</span>
             </h1>
           </div>
 
           {/* Dynamic Search - Minimalist Art */}
           <div className="hidden md:flex flex-1 justify-center px-12 lg:px-24">
-            {adminView !== 'dashboard' && !isCustomer && (
+            {adminView !== 'dashboard' && (
               <div className="relative w-full max-w-lg group">
                 <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none transition-all group-focus-within:translate-x-1 group-focus-within:text-primary-500">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-neutral-400 dark:text-neutral-300" viewBox="0 0 20 20" fill="currentColor">
@@ -88,7 +88,7 @@ const Header: React.FC<HeaderProps> = ({ cartCount, onCartClick, onLoginClick, o
           {/* Action Hub */}
           <div className="flex items-center space-x-2 md:space-x-6">
             <div className="flex items-center space-x-1 md:space-x-3">
-              {adminView !== 'dashboard' && !isCustomer && (
+              {adminView !== 'dashboard' && (
                 <button
                   onClick={onGymBuilderClick}
                   className="relative text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-white transition-all p-3 hover:bg-neutral-100 dark:hover:bg-white/5 rounded-2xl group flex items-center"

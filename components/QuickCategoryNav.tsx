@@ -73,7 +73,7 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory })
 
                     <ScrollReveal direction="up" delay={0.2}>
                         <h2 className="text-6xl md:text-9xl font-black text-center text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-[0.85] flex flex-col">
-                            <span>SAGA</span>
+                            <span>SAGFO</span>
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">ESPECIALIDADES</span>
                         </h2>
                     </ScrollReveal>

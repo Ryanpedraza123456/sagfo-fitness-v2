@@ -115,12 +115,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             onUpdateOrderStatus(selectedOrder.id, newStatus, statusNote);
 
             // Auto-trigger WhatsApp notification for specific statuses
-            if (newStatus === 'Recibido') {
+            if (newStatus === 'Recibido' && selectedOrder.customerInfo) {
                 handleWhatsAppMessage(
                     selectedOrder.customerInfo.phone,
                     `¡Hola ${selectedOrder.customerInfo.name}! 👋 Confirmamos el recibo de tu pago para el pedido #${selectedOrder.id.slice(-6)}. Tu equipo ya está en proceso de gestión.`
                 );
-            } else if (newStatus === 'En Envío') {
+            } else if (newStatus === 'En Envío' && selectedOrder.customerInfo) {
                 handleWhatsAppMessage(
                     selectedOrder.customerInfo.phone,
                     `¡Hola ${selectedOrder.customerInfo.name}! 👋 Tu pedido #${selectedOrder.id.slice(-6)} ha sido despachado y está en camino. ¡Pronto disfrutarás de tu equipo SAGFO elite!`
@@ -179,10 +179,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         const summary = `
 📦 PEDIDO #${order.id.slice(-6)}
 ━━━━━━━━━━━━━━━━━━━━━━━━
-👤 Cliente: ${order.customerInfo.name}
-📞 Tel: ${order.customerInfo.phone}
-📍 Ubicación: ${order.customerInfo.city}, ${order.customerInfo.department}${order.customerInfo.country ? ` (${order.customerInfo.country})` : ''}
-🏠 Dirección: ${order.customerInfo.address || 'No especificada'}
+👤 Cliente: ${order.customerInfo?.name || 'Cliente SAGFO'}
+📞 Tel: ${order.customerInfo?.phone || 'Sin teléfono'}
+📍 Ubicación: ${order.customerInfo?.city || 'Sin ciudad'}, ${order.customerInfo?.department || 'Sin depto'}${order.customerInfo?.country ? ` (${order.customerInfo.country})` : ''}
+🏠 Dirección: ${order.customerInfo?.address || 'No especificada'}
 
 💰 RESUMEN FINANCIERO
 - Total: $${order.financials?.totalOrderValue?.toLocaleString() || '0'}
@@ -421,7 +421,7 @@ generado por SAGFO Elite v2
                                         </span>
                                     </div>
                                     <p className="text-neutral-500 text-sm">
-                                        {new Date(order.createdAt).toLocaleDateString()} • {order.customerInfo.name}
+                                        {new Date(order.createdAt).toLocaleDateString()} • {order.customerInfo?.name || 'Cliente SAGFO'}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-4">
@@ -430,8 +430,8 @@ generado por SAGFO Elite v2
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleWhatsAppMessage(
-                                                    order.customerInfo.phone,
-                                                    `¡Hola ${order.customerInfo.name}! 👋 Te contacto de SAGFO sobre tu pedido #${order.id.slice(-6)}.`
+                                                    order.customerInfo?.phone || '',
+                                                    `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Te contacto de SAGFO sobre tu pedido #${order.id.slice(-6)}.`
                                                 );
                                             }}
                                             className="p-2 bg-[#25D366]/10 text-[#25D366] rounded-lg hover:bg-[#25D366] hover:text-white transition-all transform hover:scale-110"
@@ -565,9 +565,9 @@ generado por SAGFO Elite v2
                                         <div className="bg-white dark:bg-zinc-900 rounded-xl p-4 border border-neutral-200 dark:border-zinc-800">
                                             <h4 className="font-bold text-neutral-900 dark:text-white mb-4">Cliente</h4>
                                             <div className="space-y-3 text-sm">
-                                                <p><span className="text-neutral-500">Nombre:</span> <span className="text-neutral-900 dark:text-white font-medium">{order.customerInfo.name}</span></p>
-                                                <p><span className="text-neutral-500">Tel:</span> <a href={`tel:${order.customerInfo.phone}`} className="text-blue-600 underline">{order.customerInfo.phone}</a></p>
-                                                <p><span className="text-neutral-500">Ubicación:</span> <span className="text-neutral-900 dark:text-white">{order.customerInfo.city}, {order.customerInfo.department}</span></p>
+                                                <p><span className="text-neutral-500">Nombre:</span> <span className="text-neutral-900 dark:text-white font-medium">{order.customerInfo?.name || 'N/A'}</span></p>
+                                                <p><span className="text-neutral-500">Tel:</span> <a href={`tel:${order.customerInfo?.phone || ''}`} className="text-blue-600 underline">{order.customerInfo?.phone || 'N/A'}</a></p>
+                                                <p><span className="text-neutral-500">Ubicación:</span> <span className="text-neutral-900 dark:text-white">{order.customerInfo?.city || 'N/A'}, {order.customerInfo?.department || 'N/A'}</span></p>
                                             </div>
                                         </div>
 
@@ -582,8 +582,8 @@ generado por SAGFO Elite v2
                                             <div className="space-y-2">
                                                 <button
                                                     onClick={() => handleWhatsAppMessage(
-                                                        order.customerInfo.phone,
-                                                        `¡Hola ${order.customerInfo.name}! 👋 Te contacto de SAGFO sobre tu pedido #${order.id.slice(-6)}. ¿Cómo podemos ayudarte?`
+                                                        order.customerInfo?.phone || '',
+                                                        `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Te contacto de SAGFO sobre tu pedido #${order.id.slice(-6)}. ¿Cómo podemos ayudarte?`
                                                     )}
                                                     className="w-full flex items-center justify-between p-3 bg-white dark:bg-zinc-900 rounded-lg border border-neutral-200 dark:border-zinc-800 hover:border-[#25D366] transition-colors group"
                                                 >
@@ -593,8 +593,8 @@ generado por SAGFO Elite v2
 
                                                 <button
                                                     onClick={() => handleWhatsAppMessage(
-                                                        order.customerInfo.phone,
-                                                        `¡Hola ${order.customerInfo.name}! 👋 Confirmamos el recibo de tu pago para el pedido #${order.id.slice(-6)}. Tu equipo ya está en proceso de gestión.`
+                                                        order.customerInfo?.phone || '',
+                                                        `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Confirmamos el recibo de tu pago para el pedido #${order.id.slice(-6)}. Tu equipo ya está en proceso de gestión.`
                                                     )}
                                                     className="w-full flex items-center justify-between p-3 bg-white dark:bg-zinc-900 rounded-lg border border-neutral-200 dark:border-zinc-800 hover:border-[#25D366] transition-colors group"
                                                 >
@@ -604,8 +604,8 @@ generado por SAGFO Elite v2
 
                                                 <button
                                                     onClick={() => handleWhatsAppMessage(
-                                                        order.customerInfo.phone,
-                                                        `¡Hola ${order.customerInfo.name}! 👋 Tu pedido #${order.id.slice(-6)} ha sido despachado y está en camino. ¡Pronto disfrutarás de tu equipo SAGFO elite!`
+                                                        order.customerInfo?.phone || '',
+                                                        `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Tu pedido #${order.id.slice(-6)} ha sido despachado y está en camino. ¡Pronto disfrutarás de tu equipo SAGFO elite!`
                                                     )}
                                                     className="w-full flex items-center justify-between p-3 bg-white dark:bg-zinc-900 rounded-lg border border-neutral-200 dark:border-zinc-800 hover:border-[#25D366] transition-colors group"
                                                 >
@@ -615,8 +615,8 @@ generado por SAGFO Elite v2
 
                                                 <button
                                                     onClick={() => handleWhatsAppMessage(
-                                                        order.customerInfo.phone,
-                                                        `¡Hola ${order.customerInfo.name}! 👋 Tu pedido #${order.id.slice(-6)} está listo para salir. Por favor envíanos tu ubicación actual por WhatsApp para que la ruta de nuestro capitán sea exacta y el equipo llegue perfecto. 📍`
+                                                        order.customerInfo?.phone || '',
+                                                        `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Tu pedido #${order.id.slice(-6)} está listo para salir. Por favor envíanos tu ubicación actual por WhatsApp para que la ruta de nuestro capitán sea exacta y el equipo llegue perfecto. 📍`
                                                     )}
                                                     className="w-full flex items-center justify-between p-3 bg-white dark:bg-zinc-900 rounded-lg border border-neutral-200 dark:border-zinc-800 hover:border-[#25D366] transition-colors group"
                                                 >
@@ -626,8 +626,8 @@ generado por SAGFO Elite v2
 
                                                 <button
                                                     onClick={() => handleWhatsAppMessage(
-                                                        order.customerInfo.phone,
-                                                        `¡Hola ${order.customerInfo.name}! 👋 ¿Cómo vas con tu nuevo equipo SAGFO? Nos encantaría saber tu opinión y si todo quedó como esperabas. ¡Tu satisfacción es nuestra prioridad elite! 🏅`
+                                                        order.customerInfo?.phone || '',
+                                                        `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 ¿Cómo vas con tu nuevo equipo SAGFO? Nos encantaría saber tu opinión y si todo quedó como esperabas. ¡Tu satisfacción es nuestra prioridad elite! 🏅`
                                                     )}
                                                     className="w-full flex items-center justify-between p-3 bg-white dark:bg-zinc-900 rounded-lg border border-neutral-200 dark:border-zinc-800 hover:border-[#25D366] transition-colors group"
                                                 >
@@ -812,7 +812,7 @@ generado por SAGFO Elite v2
                         <div className="flex justify-between items-start mb-4">
                             <div>
                                 <h3 className="font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-none mb-1">
-                                    {order.customerInfo.name}
+                                    {order.customerInfo?.name || 'Cliente SAGFO'}
                                 </h3>
                                 <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest italic leading-none">
                                     Pedido #{order.id.slice(-6)}
@@ -826,19 +826,19 @@ generado por SAGFO Elite v2
                         <div className="space-y-3 mb-6">
                             <div className="flex items-center justify-between text-xs">
                                 <span className="text-neutral-500">Teléfono:</span>
-                                <span className="font-bold text-neutral-900 dark:text-white">{order.customerInfo.phone}</span>
+                                <span className="font-bold text-neutral-900 dark:text-white">{order.customerInfo?.phone || 'N/A'}</span>
                             </div>
                             <div className="flex items-center justify-between text-xs">
                                 <span className="text-neutral-500">Ubicación:</span>
-                                <span className="text-neutral-900 dark:text-white">{order.customerInfo.city}</span>
+                                <span className="text-neutral-900 dark:text-white">{order.customerInfo?.city || 'N/A'}</span>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-2">
                             <button
                                 onClick={() => handleWhatsAppMessage(
-                                    order.customerInfo.phone,
-                                    `¡Hola ${order.customerInfo.name}! 👋 Te contacto de SAGFO sobre tu pedido #${order.id.slice(-6)}.`
+                                    order.customerInfo?.phone || '',
+                                    `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Te contacto de SAGFO sobre tu pedido #${order.id.slice(-6)}.`
                                 )}
                                 className="flex items-center justify-center gap-2 py-2.5 bg-[#25D366] text-white rounded-xl text-[10px] font-black uppercase italic tracking-tighter hover:scale-105 transition-transform"
                             >

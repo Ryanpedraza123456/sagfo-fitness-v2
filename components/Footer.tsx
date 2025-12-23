@@ -20,7 +20,7 @@ const Footer: React.FC<FooterProps> = ({ sealUrl }) => {
             <div className="flex items-center group cursor-pointer">
               <span className="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 w-12 h-12 flex items-center justify-center rounded-[1.25rem] font-black text-xl mr-4 transform transition-all group-hover:rotate-[15deg] group-hover:bg-primary-600 group-hover:text-white shadow-xl">S</span>
               <h2 className="text-3xl font-black text-neutral-900 dark:text-white tracking-tighter italic uppercase">
-                SAGFOFITNESS
+                SAGFO FITNESS
               </h2>
             </div>
             <p className="text-base leading-relaxed text-neutral-500 dark:text-neutral-400 font-medium italic">
@@ -114,7 +114,7 @@ const Footer: React.FC<FooterProps> = ({ sealUrl }) => {
               <span>Service</span>
             </div>
             <p className="text-[10px] font-bold text-neutral-400 dark:text-neutral-600 uppercase tracking-widest">
-              &copy; {new Date().getFullYear()} SAGFOFITNESS & BULLS EQUIPMENT. R-PB-02 V2.0
+              &copy; {new Date().getFullYear()} SAGFO FITNESS & BULLS EQUIPMENT. R-PB-02 V2.0
             </p>
           </div>
 

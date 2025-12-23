@@ -85,7 +85,7 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete, onStartExit
                     {/* Texto masivo, sin efectos de scan confusos, solo poder puro */}
                     <h1 className={`text-[9vw] leading-[0.8] font-black tracking-tighter text-white transition-transform duration-[1s] ease-out ${progress > 5 ? 'translate-y-0 opacity-100' : 'translate-y-[110%] opacity-0'
                         }`}>
-                        SAGFOFITNESS
+                        SAGFO FITNESS
                     </h1>
 
                     {/* Etiqueta de categoría limpia */}

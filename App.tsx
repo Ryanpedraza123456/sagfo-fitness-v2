@@ -155,11 +155,12 @@ const App: React.FC = () => {
         ...p,
         muscleGroup: p.muscle_group,
         availabilityStatus: p.availability_status,
-        isPromotion: p.is_promotion,
-        promotionalPrice: p.promotional_price,
-        imageUrls: p.image_urls,
-        availableColors: p.available_colors,
-        availableWeights: p.available_weights,
+        price: Number(p.price) || 0,
+        imageUrls: p.image_urls || [],
+        availableColors: p.available_colors || [],
+        availableWeights: p.available_weights || [],
+        isPromotion: !!p.is_promotion,
+        promotionalPrice: p.promotional_price ? Number(p.promotional_price) : undefined,
       }));
       setProducts(mappedProducts);
     }

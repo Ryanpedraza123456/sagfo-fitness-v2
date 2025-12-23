@@ -33,7 +33,7 @@ const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPro
   if (slides.length === 0) return null;
 
   return (
-    <div className="relative bg-[#0a0a0a] text-white h-[750px] md:h-[850px] overflow-hidden group rounded-b-[4rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]">
+    <div className="relative bg-[#0a0a0a] text-white h-[600px] md:h-[750px] overflow-hidden group rounded-b-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]">
       {isAdmin && (
         <button
           onClick={onEdit}
@@ -67,9 +67,9 @@ const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPro
               <ScrollReveal direction="left" distance={100} delay={0.3}>
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="h-[2px] w-12 bg-primary-600"></div>
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary-500 italic">Saga Elite Performance</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary-500 italic">SAGFO Elite Performance</span>
                 </div>
-                <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white uppercase italic leading-[0.95] drop-shadow-2xl">
+                <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white uppercase italic leading-[0.95] drop-shadow-2xl">
                   {slide.titleLine1}
                   <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-600">{slide.titleLine2}</span>

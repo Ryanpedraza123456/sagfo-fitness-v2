@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ============================================
    SAGFO FITNESS - GLOBAL STYLES & ANIMATIONS
    ============================================ */
@@ -22,8 +26,13 @@
 }
 
 /* === SMOOTH SCROLLING === */
-html {
+html,
+body {
     scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* === GLOBAL RESETS === */

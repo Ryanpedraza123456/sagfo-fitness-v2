@@ -43,11 +43,11 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ order, isHistory, onUpdateI
                             </span>
                         </div>
                         <h3 className="text-2xl font-bold text-neutral-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
-                            {order.customerInfo.name}
+                            {order.customerInfo?.name || 'Cliente SAGFO'}
                         </h3>
                         <p className="text-sm text-neutral-500 dark:text-zinc-400 font-medium flex items-center gap-2">
                             <svg className="w-4 h-4 text-neutral-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                            {order.customerInfo.city}, {order.customerInfo.department}
+                            {order.customerInfo?.city || 'N/A'}, {order.customerInfo?.department || 'N/A'}
                         </p>
                     </div>
                     <div className={`w-8 h-8 rounded-full bg-neutral-100 dark:bg-white/5 flex items-center justify-center text-neutral-500 dark:text-zinc-400 transition-all duration-500 ${isExpanded ? 'rotate-180 bg-neutral-200 dark:bg-white/10 text-neutral-900 dark:text-white' : ''}`}>
@@ -76,7 +76,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ order, isHistory, onUpdateI
                             </div>
                             <div className="flex flex-wrap gap-2 pl-0 md:pl-11">
                                 <a
-                                    href={`tel:${order.customerInfo.phone}`}
+                                    href={`tel:${order.customerInfo?.phone || ''}`}
                                     className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20 active:scale-95"
                                     onClick={(e) => e.stopPropagation()}
                                 >
@@ -84,7 +84,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ order, isHistory, onUpdateI
                                     Llamar
                                 </a>
                                 <a
-                                    href={`https://wa.me/${order.customerInfo.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`¡Hola ${order.customerInfo.name}! 👋 Te contacto de SAGFO sobre la entrega de tu equipo.`)}`}
+                                    href={`https://wa.me/${(order.customerInfo?.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(`¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Te contacto de SAGFO sobre la entrega de tu equipo.`)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-2 px-4 py-2.5 bg-[#25D366] text-white rounded-xl text-xs font-bold hover:bg-[#22c35e] transition-all shadow-lg shadow-emerald-900/20 active:scale-95"
@@ -104,7 +104,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ order, isHistory, onUpdateI
                                 <span className="text-xs font-bold text-neutral-500 dark:text-zinc-500 uppercase tracking-wider">Dirección</span>
                             </div>
                             <p className="text-sm text-neutral-600 dark:text-zinc-300 pl-11 leading-relaxed">
-                                {order.customerInfo.address || 'Sin dirección específica'}
+                                {order.customerInfo?.address || 'Sin dirección específica'}
                             </p>
                         </div>
                     </div>
@@ -156,7 +156,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ order, isHistory, onUpdateI
 
                     {/* Actions */}
                     <div className="pt-4 grid grid-cols-1 gap-3">
-                        {order.customerInfo.mapsLink ? (
+                        {order.customerInfo?.mapsLink ? (
                             <a
                                 href={order.customerInfo.mapsLink}
                                 target="_blank"
@@ -169,7 +169,7 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ order, isHistory, onUpdateI
                             </a>
                         ) : (
                             <a
-                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${order.customerInfo.address}, ${order.customerInfo.city}`)}`}
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${order.customerInfo?.address || ''}, ${order.customerInfo?.city || ''}`)}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center justify-center w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl text-sm font-bold shadow-lg shadow-blue-900/20 hover:shadow-blue-600/30 hover:-translate-y-0.5 transition-all duration-300 gap-2 group/btn"

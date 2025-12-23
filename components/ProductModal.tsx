@@ -27,6 +27,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
   allProducts = [],
   onProductClick
 }) => {
+  // Move all hooks to the top
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
   const [selectedWeight, setSelectedWeight] = useState<string | undefined>(undefined);
@@ -76,10 +77,12 @@ const ProductModal: React.FC<ProductModalProps> = ({
       .slice(0, 4);
   }, [product, allProducts]);
 
-  if (!product || (isEditing && !formData)) return null;
-
+  // Handlers (can stay here)
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(val);
+
+  // Early return comes AFTER all hooks
+  if (!product || (isEditing && !formData)) return null;
 
   const hasDiscount = product.isPromotion && product.promotionalPrice && product.promotionalPrice < product.price;
 
@@ -134,17 +137,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const removeFeature = (index: number) => { if (formData) setFormData({ ...formData, features: formData.features.filter((_, i) => i !== index) }); };
   const addSpec = () => { if (newSpecKey.trim() && newSpecValue.trim() && formData) { setFormData({ ...formData, specifications: { ...formData.specifications, [newSpecKey.trim()]: newSpecValue.trim() } }); setNewSpecKey(''); setNewSpecValue(''); } };
   const removeSpec = (key: string) => { if (formData) { const newSpecs = { ...formData.specifications }; delete newSpecs[key]; setFormData({ ...formData, specifications: newSpecs }); } };
-  // Body scroll lock
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
 
   const handleSave = () => { if (formData) onSave(formData, newImagesMap); };
 
@@ -154,7 +146,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         }`}
     >
       {/* NAVEGACIÓN ELITE */}
-      <nav className="sticky top-0 z-[260] bg-white/80 dark:bg-black/80 backdrop-blur-2xl px-6 md:px-20 flex items-center justify-between h-[90px] border-b border-neutral-100 dark:border-white/5">
+      <nav className="sticky top-0 z-[260] bg-white/80 dark:bg-black/80 backdrop-blur-2xl px-6 md:px-20 flex items-center justify-between h-[80px] border-b border-neutral-100 dark:border-white/5">
         <button onClick={onClose} className="flex items-center gap-6 group">
           <div className="w-12 h-12 rounded-2xl bg-primary-600 flex items-center justify-center text-white shadow-2xl group-hover:scale-110 transition-transform">
             <ArrowLeft className="w-6 h-6 stroke-[3]" />
@@ -269,7 +261,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                     <div className="space-y-2">
                       <span className="text-[11px] font-black text-neutral-400 uppercase tracking-widest italic opacity-50">Inversión Final Sugerida</span>
                       <div className="flex items-baseline gap-5">
-                        <span className="text-6xl font-black italic tracking-tighter text-neutral-900 dark:text-white leading-none tracking-[-0.05em]">
+                        <span className="text-4xl md:text-5xl font-black italic tracking-tighter text-neutral-900 dark:text-white leading-none tracking-[-0.05em]">
                           {formatCurrency(hasDiscount ? product.promotionalPrice! : product.price)}
                         </span>
                         {hasDiscount && <span className="text-2xl font-bold text-neutral-400 line-through italic opacity-40">{formatCurrency(product.price)}</span>}
@@ -302,7 +294,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <div className="pt-6">
                     <button
                       onClick={() => onAddToCart(product, selectedColor, selectedWeight)}
-                      className={`w-full py-8 rounded-[2.5rem] font-black text-2xl uppercase italic tracking-[0.5em] transition-all duration-700 shadow-4xl active:scale-95 group/btn overflow-hidden relative border border-transparent ${isProductInCart ? 'bg-emerald-500 text-white border-emerald-400' : 'bg-neutral-950 dark:bg-white text-white dark:text-neutral-900'}`}
+                      className={`w-full py-6 rounded-[2rem] font-black text-xl uppercase italic tracking-[0.4em] transition-all duration-700 shadow-4xl active:scale-95 group/btn overflow-hidden relative border border-transparent ${isProductInCart ? 'bg-emerald-500 text-white border-emerald-400' : 'bg-neutral-950 dark:bg-white text-white dark:text-neutral-900'}`}
                     >
                       <div className="relative z-10 flex items-center justify-center gap-4">
                         {isProductInCart ? <Check size={28} strokeWidth={4} /> : null}
