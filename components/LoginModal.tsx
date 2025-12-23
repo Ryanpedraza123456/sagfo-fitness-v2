@@ -212,10 +212,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                                                     setDepartment('');
                                                     setCity('');
                                                 }}
-                                                className="w-full px-6 py-4 rounded-2xl bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/10 focus:border-primary-500 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-neutral-900 dark:text-white font-medium uppercase italic text-sm"
+                                                className="w-full px-6 py-4 rounded-2xl bg-neutral-50 dark:bg-zinc-800 border border-neutral-200 dark:border-white/10 focus:border-primary-500 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-neutral-900 dark:text-white font-medium uppercase italic text-sm"
                                             >
-                                                <option value="Colombia">Colombia</option>
-                                                <option value="Venezuela">Venezuela</option>
+                                                <option value="Colombia" className="dark:bg-zinc-900">Colombia</option>
+                                                <option value="Venezuela" className="dark:bg-zinc-900">Venezuela</option>
                                             </select>
                                         </div>
 
@@ -229,11 +229,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                                                         setCity('');
                                                     }}
                                                     required
-                                                    className="w-full px-6 py-4 rounded-2xl bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/10 focus:border-primary-500 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-neutral-900 dark:text-white font-medium uppercase italic text-sm"
+                                                    className="w-full px-6 py-4 rounded-2xl bg-neutral-50 dark:bg-zinc-800 border border-neutral-200 dark:border-white/10 focus:border-primary-500 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-neutral-900 dark:text-white font-medium uppercase italic text-sm"
                                                 >
-                                                    <option value="">...</option>
+                                                    <option value="" className="dark:bg-zinc-900">...</option>
                                                     {availableDepartments.map(dept => (
-                                                        <option key={dept.name} value={dept.name}>{dept.name}</option>
+                                                        <option key={dept.name} value={dept.name} className="dark:bg-zinc-900">{dept.name}</option>
                                                     ))}
                                                 </select>
                                             </div>
@@ -244,11 +244,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                                                     onChange={(e) => setCity(e.target.value)}
                                                     required
                                                     disabled={!department}
-                                                    className="w-full px-6 py-4 rounded-2xl bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/10 focus:border-primary-500 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-neutral-900 dark:text-white font-medium uppercase italic text-sm disabled:opacity-30"
+                                                    className="w-full px-6 py-4 rounded-2xl bg-neutral-50 dark:bg-zinc-800 border border-neutral-200 dark:border-white/10 focus:border-primary-500 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-neutral-900 dark:text-white font-medium uppercase italic text-sm disabled:opacity-30"
                                                 >
-                                                    <option value="">...</option>
+                                                    <option value="" className="dark:bg-zinc-900">...</option>
                                                     {availableCities.map(c => (
-                                                        <option key={c} value={c}>{c}</option>
+                                                        <option key={c} value={c} className="dark:bg-zinc-900">{c}</option>
                                                     ))}
                                                 </select>
                                             </div>
