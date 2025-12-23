@@ -3,6 +3,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { colombianDepartments } from '../data/colombia';
+import { venezuelanStates } from '../data/venezuela';
+import { useMemo } from 'react';
 
 interface LoginModalProps {
     isOpen: boolean;
@@ -20,6 +23,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
     const [department, setDepartment] = useState('');
+    const [country, setCountry] = useState('Colombia');
     const [error, setError] = useState('');
 
     // Reset fields when modal is closed or view is switched
@@ -33,6 +37,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 setAddress('');
                 setCity('');
                 setDepartment('');
+                setCountry('Colombia');
                 setError('');
                 setView('login');
             }, 300); // Wait for closing animation
@@ -59,7 +64,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 setError('La contraseña debe tener al menos 6 caracteres.');
                 return;
             }
-            await register(name, email, password, 'customer', phone, address, city, department);
+            await register(name, email, password, 'customer', phone, address, city, department, country);
             onClose();
         } catch (err: any) {
             setError(err.message || 'Error al registrarse.');
@@ -74,9 +79,19 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         setAddress('');
         setCity('');
         setDepartment('');
+        setCountry('Colombia');
         setError('');
         setView(newView);
     }
+
+    const availableDepartments = useMemo(() => {
+        return country === 'Venezuela' ? venezuelanStates : colombianDepartments;
+    }, [country]);
+
+    const availableCities = useMemo(() => {
+        const dept = availableDepartments.find(d => d.name === department);
+        return dept ? dept.cities : [];
+    }, [department, availableDepartments]);
 
     if (!isOpen) return null;
 
@@ -187,23 +202,57 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <input
-                                            type="text"
-                                            placeholder="Departamento"
-                                            required
-                                            className="w-full px-6 py-4 rounded-2xl bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/10 focus:border-primary-500 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-neutral-900 dark:text-white font-medium"
-                                            value={department}
-                                            onChange={(e) => setDepartment(e.target.value)}
-                                        />
-                                        <input
-                                            type="text"
-                                            placeholder="Ciudad"
-                                            required
-                                            className="w-full px-6 py-4 rounded-2xl bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/10 focus:border-primary-500 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-neutral-900 dark:text-white font-medium"
-                                            value={city}
-                                            onChange={(e) => setCity(e.target.value)}
-                                        />
+                                    <div className="space-y-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest pl-1">País</label>
+                                            <select
+                                                value={country}
+                                                onChange={(e) => {
+                                                    setCountry(e.target.value);
+                                                    setDepartment('');
+                                                    setCity('');
+                                                }}
+                                                className="w-full px-6 py-4 rounded-2xl bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/10 focus:border-primary-500 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-neutral-900 dark:text-white font-medium uppercase italic text-sm"
+                                            >
+                                                <option value="Colombia">Colombia</option>
+                                                <option value="Venezuela">Venezuela</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest pl-1">{country === 'Venezuela' ? 'Estado' : 'Depto'}</label>
+                                                <select
+                                                    value={department}
+                                                    onChange={(e) => {
+                                                        setDepartment(e.target.value);
+                                                        setCity('');
+                                                    }}
+                                                    required
+                                                    className="w-full px-6 py-4 rounded-2xl bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/10 focus:border-primary-500 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-neutral-900 dark:text-white font-medium uppercase italic text-sm"
+                                                >
+                                                    <option value="">...</option>
+                                                    {availableDepartments.map(dept => (
+                                                        <option key={dept.name} value={dept.name}>{dept.name}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest pl-1">Ciudad</label>
+                                                <select
+                                                    value={city}
+                                                    onChange={(e) => setCity(e.target.value)}
+                                                    required
+                                                    disabled={!department}
+                                                    className="w-full px-6 py-4 rounded-2xl bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/10 focus:border-primary-500 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all text-neutral-900 dark:text-white font-medium uppercase italic text-sm disabled:opacity-30"
+                                                >
+                                                    <option value="">...</option>
+                                                    {availableCities.map(c => (
+                                                        <option key={c} value={c}>{c}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                     <input
                                         type="text"

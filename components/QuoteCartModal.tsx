@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { CartItem, PaymentMethod, BankAccount } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { colombianDepartments } from '../data/colombia';
+import { venezuelanStates } from '../data/venezuela';
 
 
 declare global {
@@ -18,7 +19,7 @@ interface QuoteCartModalProps {
     onRemoveItem: (productId: string) => void;
     onUpdateQuantity: (productId: string, newQuantity: number) => void;
     onSubmit: (
-        userInfo: { name: string; email: string; phone: string; message: string; city: string; department: string; mapsLink?: string; address?: string },
+        userInfo: { name: string; email: string; phone: string; message: string; city: string; department: string; country: string; mapsLink?: string; address?: string },
         paymentMethod: PaymentMethod,
         financials: { totalOrderValue: number; amountPaid: number; amountPending: number },
         productionDetails?: { structureColor: string; upholsteryColor: string },
@@ -33,7 +34,7 @@ const formatCurrency = (value: number) => new Intl.NumberFormat('es-CO', { style
 
 const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartItems, onRemoveItem, onUpdateQuantity, onSubmit, onLoginClick, onUpdateItemCustomization, bankAccounts }) => {
     const { user } = useAuth();
-    const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '', city: '', department: '', mapsLink: '', address: '' });
+    const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '', city: '', department: '', country: 'Colombia', mapsLink: '', address: '' });
 
     const [paymentProof, setPaymentProof] = useState<File | null>(null);
     const [isLocating, setIsLocating] = useState(false);
@@ -45,10 +46,14 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
     const markerRef = useRef<any>(null);
     const [isMapVisible, setIsMapVisible] = useState(false);
 
+    const availableDepartments = useMemo(() => {
+        return formData.country === 'Venezuela' ? venezuelanStates : colombianDepartments;
+    }, [formData.country]);
+
     const availableCities = useMemo(() => {
-        const dept = colombianDepartments.find(d => d.name === formData.department);
+        const dept = availableDepartments.find(d => d.name === formData.department);
         return dept ? dept.cities : [];
-    }, [formData.department]);
+    }, [formData.department, availableDepartments]);
 
     useEffect(() => {
         if (user && isOpen) {
@@ -58,6 +63,7 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
                 phone: user.phone || '',
                 city: user.city || '',
                 department: user.department || '',
+                country: user.country || 'Colombia',
                 address: user.address || '',
                 message: '',
                 mapsLink: user.locationUrl || ''
@@ -68,7 +74,7 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
                 setIsMapVisible(true);
             }
         } else if (!user) {
-            setFormData({ name: '', email: '', phone: '', message: '', city: '', department: '', mapsLink: '', address: '' });
+            setFormData({ name: '', email: '', phone: '', message: '', city: '', department: '', country: 'Colombia', mapsLink: '', address: '' });
             setIsMapVisible(false);
         }
     }, [user, isOpen]);
@@ -201,6 +207,10 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setFormData(prev => ({ ...prev, country: e.target.value, department: '', city: '' }));
     };
 
     const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -411,33 +421,50 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
                                     {/* Logistics */}
                                     <div className="space-y-4">
                                         <h3 className="text-[10px] font-black text-neutral-400 uppercase tracking-widest italic border-l-2 border-primary-500 pl-3">Destino de Entrega</h3>
-                                        <div className="grid grid-cols-2 gap-3">
+                                        <div className="space-y-3">
                                             <div className="space-y-1">
-                                                <label className="text-[8px] font-black text-neutral-400 uppercase pl-1">Depto</label>
+                                                <label className="text-[8px] font-black text-neutral-400 uppercase pl-1">País</label>
                                                 <select
-                                                    name="department"
-                                                    value={formData.department}
-                                                    onChange={handleDepartmentChange}
+                                                    name="country"
+                                                    value={formData.country}
+                                                    onChange={handleCountryChange}
                                                     required
                                                     className="w-full p-2.5 bg-white dark:bg-white/5 border border-neutral-100 dark:border-white/10 rounded-xl text-xs font-black uppercase italic"
                                                 >
-                                                    <option value="">...</option>
-                                                    {colombianDepartments.map(dept => <option key={dept.name} value={dept.name}>{dept.name}</option>)}
+                                                    <option value="Colombia">Colombia</option>
+                                                    <option value="Venezuela">Venezuela</option>
                                                 </select>
                                             </div>
-                                            <div className="space-y-1">
-                                                <label className="text-[8px] font-black text-neutral-400 uppercase pl-1">Ciudad</label>
-                                                <select
-                                                    name="city"
-                                                    value={formData.city}
-                                                    onChange={handleInputChange}
-                                                    required
-                                                    disabled={!formData.department}
-                                                    className="w-full p-2.5 bg-white dark:bg-white/5 border border-neutral-100 dark:border-white/10 rounded-xl text-xs font-black uppercase italic disabled:opacity-30"
-                                                >
-                                                    <option value="">...</option>
-                                                    {availableCities.map(city => <option key={city} value={city}>{city}</option>)}
-                                                </select>
+
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <div className="space-y-1">
+                                                    <label className="text-[8px] font-black text-neutral-400 uppercase pl-1">{formData.country === 'Venezuela' ? 'Estado' : 'Depto'}</label>
+                                                    <select
+                                                        name="department"
+                                                        value={formData.department}
+                                                        onChange={handleDepartmentChange}
+                                                        required
+                                                        disabled={!formData.country}
+                                                        className="w-full p-2.5 bg-white dark:bg-white/5 border border-neutral-100 dark:border-white/10 rounded-xl text-xs font-black uppercase italic disabled:opacity-30"
+                                                    >
+                                                        <option value="">...</option>
+                                                        {availableDepartments.map(dept => <option key={dept.name} value={dept.name}>{dept.name}</option>)}
+                                                    </select>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[8px] font-black text-neutral-400 uppercase pl-1">Ciudad</label>
+                                                    <select
+                                                        name="city"
+                                                        value={formData.city}
+                                                        onChange={handleInputChange}
+                                                        required
+                                                        disabled={!formData.department}
+                                                        className="w-full p-2.5 bg-white dark:bg-white/5 border border-neutral-100 dark:border-white/10 rounded-xl text-xs font-black uppercase italic disabled:opacity-30"
+                                                    >
+                                                        <option value="">...</option>
+                                                        {availableCities.map(city => <option key={city} value={city}>{city}</option>)}
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
 

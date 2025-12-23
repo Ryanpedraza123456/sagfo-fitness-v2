@@ -499,7 +499,7 @@ const App: React.FC = () => {
   // Las funciones del carrito ahora vienen del hook useCart
 
   const handleSubmitOrder = async (
-    customerInfo: { name: string; email: string; phone: string; message: string; city: string; department: string; mapsLink?: string; address?: string },
+    customerInfo: { name: string; email: string; phone: string; message: string; city: string; department: string; country: string; mapsLink?: string; address?: string },
     paymentMethod: PaymentMethod,
     financials: { totalOrderValue: number; amountPaid: number; amountPending: number },
     productionDetails?: { structureColor: string; upholsteryColor: string },

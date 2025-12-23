@@ -71,6 +71,7 @@ export interface Order {
     phone: string;
     city: string;
     department: string;
+    country: string;
     message?: string;
     mapsLink?: string;
     address?: string;
@@ -97,6 +98,7 @@ export interface Profile {
   address?: string;
   city?: string;
   department?: string;
+  country?: string;
   locationUrl?: string;
   password?: string;
 }

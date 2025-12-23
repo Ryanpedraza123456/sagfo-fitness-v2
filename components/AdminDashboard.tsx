@@ -575,7 +575,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                 </div>
                                                 <div>
                                                     <p className="text-neutral-500 dark:text-zinc-400 text-xs uppercase tracking-wider mb-1">Ubicación</p>
-                                                    <p className="text-neutral-900 dark:text-white">{order.customerInfo.city}, {order.customerInfo.department}</p>
+                                                    <p className="text-neutral-900 dark:text-white">{order.customerInfo.city}, {order.customerInfo.department}{order.customerInfo.country ? ` (${order.customerInfo.country})` : ''}</p>
                                                 </div>
                                                 {order.customerInfo.address && (
                                                     <div>
@@ -696,6 +696,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Usuario</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Rol</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Email</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">País</th>
                             <th className="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
@@ -724,6 +725,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
                                         {profile.email}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                                        {profile.country || 'Colombia'}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <button onClick={() => onOpenUserModal(profile)} className="text-blue-600 hover:text-blue-900 mr-4">Editar</button>
