@@ -93,6 +93,18 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         return dept ? dept.cities : [];
     }, [department, availableDepartments]);
 
+    // Body scroll lock
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     return (
@@ -102,7 +114,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         >
             <div className="fixed inset-0 bg-black/60 backdrop-blur-xl transition-all duration-500" />
             <div
-                className={`relative bg-white/90 dark:bg-zinc-900/90 backdrop-blur-2xl rounded-[2.5rem] w-full max-w-md max-h-[90vh] overflow-y-auto transform transition-all duration-700 cubic-bezier(0.34, 1.56, 0.64, 1) shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/20 dark:border-white/5 animate-scaleIn ${isOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-90 opacity-0 translate-y-12'}`}
+                className={`relative bg-white/90 dark:bg-zinc-900/90 backdrop-blur-2xl rounded-[2.5rem] w-full max-w-md max-h-[90vh] overflow-y-auto no-scrollbar transform transition-all duration-700 cubic-bezier(0.34, 1.56, 0.64, 1) shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/20 dark:border-white/5 animate-scaleIn ${isOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-90 opacity-0 translate-y-12'}`}
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Close Button UI */}

@@ -17,7 +17,10 @@ import {
     DollarSign,
     Clock,
     Upload,
-    Truck
+    Truck,
+    MessageSquare,
+    Copy,
+    Check
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -83,13 +86,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     onDeleteProduct,
     onUploadSeal
 }) => {
-    const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'users' | 'events' | 'gallery' | 'settings'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders' | 'users' | 'events' | 'gallery' | 'settings' | 'whatsapp'>('overview');
     const [searchTerm, setSearchTerm] = useState('');
     const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
     const [statusModalOpen, setStatusModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [newStatus, setNewStatus] = useState<OrderStatus | null>(null);
     const [statusNote, setStatusNote] = useState('');
+    const [copiedOrderId, setCopiedOrderId] = useState<string | null>(null);
 
     // Stats
     const totalRevenue = orders.reduce((acc, order) => acc + (order.financials?.amountPaid || 0), 0);
@@ -109,6 +113,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     const confirmStatusChange = () => {
         if (selectedOrder && newStatus) {
             onUpdateOrderStatus(selectedOrder.id, newStatus, statusNote);
+
+            // Auto-trigger WhatsApp notification for specific statuses
+            if (newStatus === 'Recibido') {
+                handleWhatsAppMessage(
+                    selectedOrder.customerInfo.phone,
+                    `¡Hola ${selectedOrder.customerInfo.name}! 👋 Confirmamos el recibo de tu pago para el pedido #${selectedOrder.id.slice(-6)}. Tu equipo ya está en proceso de gestión.`
+                );
+            } else if (newStatus === 'En Envío') {
+                handleWhatsAppMessage(
+                    selectedOrder.customerInfo.phone,
+                    `¡Hola ${selectedOrder.customerInfo.name}! 👋 Tu pedido #${selectedOrder.id.slice(-6)} ha sido despachado y está en camino. ¡Pronto disfrutarás de tu equipo SAGFO elite!`
+                );
+            }
+
             setStatusModalOpen(false);
             setSelectedOrder(null);
             setNewStatus(null);
@@ -149,6 +167,46 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         if (isShipped) return 'Ya despachado';
         if (!canDispatch && isMadeToOrder) return 'Disponible cuando el pedido esté en "Despachado"';
         return 'Despachar al transportador';
+    };
+
+    const handleWhatsAppMessage = (phone: string, message: string) => {
+        const cleanPhone = phone.replace(/\D/g, '');
+        const encodedMessage = encodeURIComponent(message);
+        window.open(`https://wa.me/${cleanPhone}?text=${encodedMessage}`, '_blank');
+    };
+
+    const copyOrderSummary = (order: Order) => {
+        const summary = `
+📦 PEDIDO #${order.id.slice(-6)}
+━━━━━━━━━━━━━━━━━━━━━━━━
+👤 Cliente: ${order.customerInfo.name}
+📞 Tel: ${order.customerInfo.phone}
+📍 Ubicación: ${order.customerInfo.city}, ${order.customerInfo.department}${order.customerInfo.country ? ` (${order.customerInfo.country})` : ''}
+🏠 Dirección: ${order.customerInfo.address || 'No especificada'}
+
+💰 RESUMEN FINANCIERO
+- Total: $${order.financials?.totalOrderValue?.toLocaleString() || '0'}
+- Pagado: $${order.financials?.amountPaid?.toLocaleString() || '0'}
+- Pendiente: $${order.financials?.amountPending?.toLocaleString() || '0'}
+- Método: ${order.paymentMethod === 'production' ? 'Producción (50/50)' : order.paymentMethod === 'standard' ? 'Pago Total' : 'Mixto'}
+
+🛒 PRODUCTOS
+${order.items.map(item => {
+            let details = `- ${item.quantity}x ${item.equipment.name}`;
+            if (item.structureColor) details += `\n  • Estructura: ${item.structureColor}`;
+            if (item.upholsteryColor) details += `\n  • Tapicería: ${item.upholsteryColor}`;
+            if (item.selectedWeight) details += `\n  • Peso: ${item.selectedWeight}`;
+            return details;
+        }).join('\n')}
+
+📝 ESTADO: ${order.status.toUpperCase()}
+━━━━━━━━━━━━━━━━━━━━━━━━
+generado por SAGFO Elite v2
+        `.trim();
+
+        navigator.clipboard.writeText(summary);
+        setCopiedOrderId(order.id);
+        setTimeout(() => setCopiedOrderId(null), 2000);
     };
 
     const renderOverview = () => (
@@ -199,17 +257,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <h3 className="text-xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Flujo de Ingresos</h3>
                             <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest italic">Últimos 7 pedidos procesados</p>
                         </div>
-                        <div className="flex gap-2">
-                            <div className="flex items-center gap-1.5">
-                                <div className="w-2 h-2 rounded-full bg-primary-600" />
-                                <span className="text-[10px] font-bold text-neutral-400 uppercase italic">Ventas</span>
-                            </div>
-                        </div>
                     </div>
 
-                    {/* Simulated SVG Chart */}
                     <div className="h-48 w-full relative flex items-end gap-2 group/chart">
-                        {orders.slice(0, 7).reverse().map((o, i) => {
+                        {orders.slice(0, 7).reverse().map((o) => {
                             const val = o.financials?.totalOrderValue || 0;
                             const max = Math.max(...orders.slice(0, 7).map(x => x.financials?.totalOrderValue || 1));
                             const height = (val / max) * 100;
@@ -260,6 +311,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
         </div>
     );
+
     const renderProducts = () => (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -306,7 +358,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <div className="bg-white dark:bg-zinc-900 rounded-xl border border-neutral-200 dark:border-zinc-800 overflow-hidden group h-full">
                                     <div className="aspect-video relative overflow-hidden">
                                         <img
-                                            src={product.imageUrls[0]}
+                                            src={(product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : 'https://placehold.co/400x300?text=SAGFO'}
                                             alt={product.name}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                         />
@@ -314,14 +366,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             <button
                                                 onClick={() => onEditProduct(product)}
                                                 className="p-3 bg-white/95 dark:bg-zinc-800/95 text-neutral-700 dark:text-white rounded-full hover:bg-blue-500 hover:text-white transition-colors shadow-lg backdrop-blur-sm"
-                                                aria-label={`Editar ${product.name}`}
                                             >
                                                 <Edit className="w-5 h-5" />
                                             </button>
                                             <button
                                                 onClick={() => onDeleteProduct(product.id)}
                                                 className="p-3 bg-white/95 dark:bg-zinc-800/95 text-neutral-700 dark:text-white rounded-full hover:bg-red-500 hover:text-white transition-colors shadow-lg backdrop-blur-sm"
-                                                aria-label={`Eliminar ${product.name}`}
                                             >
                                                 <Trash2 className="w-5 h-5" />
                                             </button>
@@ -353,7 +403,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="space-y-4">
                 {orders.map(order => (
                     <div key={order.id} className="bg-white dark:bg-zinc-900 rounded-xl border border-neutral-200 dark:border-zinc-800 overflow-hidden">
-                        {/* Header - Always Visible */}
                         <div
                             role="button"
                             tabIndex={0}
@@ -375,10 +424,33 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         {new Date(order.createdAt).toLocaleDateString()} • {order.customerInfo.name}
                                     </p>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm text-neutral-500">
-                                        {expandedOrderId === order.id ? 'Ocultar detalles' : 'Ver detalles'}
-                                    </span>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleWhatsAppMessage(
+                                                    order.customerInfo.phone,
+                                                    `¡Hola ${order.customerInfo.name}! 👋 Te contacto de SAGFO sobre tu pedido #${order.id.slice(-6)}.`
+                                                );
+                                            }}
+                                            className="p-2 bg-[#25D366]/10 text-[#25D366] rounded-lg hover:bg-[#25D366] hover:text-white transition-all transform hover:scale-110"
+                                        >
+                                            <MessageSquare className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                copyOrderSummary(order);
+                                            }}
+                                            className={`p-2 rounded-lg transition-all ${copiedOrderId === order.id
+                                                ? 'bg-green-100 text-green-600 dark:bg-green-900/30'
+                                                : 'bg-neutral-100 dark:bg-zinc-800 text-neutral-500 hover:bg-neutral-200 dark:hover:bg-zinc-700'
+                                                }`}
+                                        >
+                                            {copiedOrderId === order.id ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                                        </button>
+                                    </div>
                                     <svg
                                         className={`w-5 h-5 text-neutral-400 transition-transform ${expandedOrderId === order.id ? 'rotate-180' : ''}`}
                                         fill="none"
@@ -391,23 +463,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </div>
                         </div>
 
-                        {/* Expanded Details */}
                         {expandedOrderId === order.id && (
                             <div className="border-t border-neutral-100 dark:border-zinc-800 p-6 bg-neutral-50 dark:bg-zinc-900/50">
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                    {/* Left Column - Items & Status */}
                                     <div className="lg:col-span-2 space-y-6">
-                                        {/* Status Selector */}
                                         <div className="bg-white dark:bg-zinc-900 rounded-xl p-4 border border-neutral-200 dark:border-zinc-800">
-                                            <label htmlFor={`order-status-${order.id}`} className="block text-xs font-bold text-neutral-500 dark:text-zinc-400 uppercase tracking-wider mb-3">
-                                                Cambiar Estado
-                                            </label>
+                                            <label className="block text-xs font-bold text-neutral-500 dark:text-zinc-400 uppercase tracking-wider mb-3">Cambiar Estado</label>
                                             <select
-                                                id={`order-status-${order.id}`}
                                                 value={order.status}
                                                 onChange={(e) => handleStatusChange(order, e.target.value as OrderStatus)}
-                                                className="w-full px-4 py-3 rounded-lg border border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-neutral-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 outline-none"
-                                                onClick={(e) => e.stopPropagation()}
+                                                className="w-full px-4 py-3 rounded-lg border border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-neutral-900 dark:text-white"
                                             >
                                                 <option value="Pendiente de Aprobación">Pendiente de Aprobación</option>
                                                 <option value="Recibido">Recibido</option>
@@ -418,43 +483,29 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             </select>
                                         </div>
 
-                                        {/* Transporter Assignment */}
                                         {transporters.length > 0 && (
                                             <div className="bg-white dark:bg-zinc-900 rounded-xl p-4 border border-neutral-200 dark:border-zinc-800">
-                                                <label htmlFor={`transporter-${order.id}`} className="block text-xs font-bold text-neutral-500 dark:text-zinc-400 uppercase tracking-wider mb-3">
-                                                    Asignar Transportador
-                                                </label>
+                                                <label className="block text-xs font-bold text-neutral-500 dark:text-zinc-400 uppercase tracking-wider mb-3">Asignar Transportador</label>
                                                 <select
-                                                    id={`transporter-${order.id}`}
                                                     value={order.assignedTransporterId || ''}
-                                                    onChange={(e) => {
-                                                        e.stopPropagation();
-                                                        onAssignTransporter(order.id, e.target.value);
-                                                    }}
-                                                    className="w-full px-4 py-3 rounded-lg border border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-neutral-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 outline-none"
-                                                    onClick={(e) => e.stopPropagation()}
+                                                    onChange={(e) => onAssignTransporter(order.id, e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-lg border border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-neutral-900 dark:text-white"
                                                 >
                                                     <option value="">Sin asignar</option>
                                                     {transporters.map(t => (
                                                         <option key={t.id} value={t.id}>{t.name}</option>
                                                     ))}
                                                 </select>
-                                                {order.assignedTransporterId && (
-                                                    <p className="mt-2 text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                                                        <Truck className="w-4 h-4" />
-                                                        Transportador asignado
-                                                    </p>
-                                                )}
                                             </div>
                                         )}
 
-                                        {/* Items List */}
                                         <div className="bg-white dark:bg-zinc-900 rounded-xl p-4 border border-neutral-200 dark:border-zinc-800">
                                             <h4 className="font-bold mb-4 text-neutral-900 dark:text-white">Items del Pedido</h4>
                                             <div className="space-y-3">
                                                 {order.items.map((item, idx) => {
-                                                    const isInStock = item.equipment.availabilityStatus === 'in-stock';
-                                                    const isMadeToOrder = item.equipment.availabilityStatus === 'made-to-order';
+                                                    const product = item?.equipment;
+                                                    const isInStock = product?.availabilityStatus === 'in-stock';
+                                                    const isMadeToOrder = product?.availabilityStatus === 'made-to-order';
                                                     const orderIsDispatched = order.status === 'Despachado' || order.status === 'En Envío' || order.status === 'Entregado';
                                                     const canDispatch = item.deliveryStatus === 'pending' && (isInStock || (isMadeToOrder && orderIsDispatched));
                                                     const isShipped = item.deliveryStatus === 'shipped';
@@ -466,7 +517,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                         : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400';
 
                                                     const itemTypeLabel = isInStock ? 'Stock' : 'Producción';
-                                                    const dispatchButtonText = isShipped ? '✓ Despachado' : 'Despachar';
 
                                                     return (
                                                         <div key={`${order.id}-item-${idx}`} className="flex items-center justify-between p-3 bg-neutral-50 dark:bg-zinc-800/50 rounded-lg">
@@ -476,10 +526,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                                 </span>
                                                                 <div className="flex-1 min-w-0">
                                                                     <div className="flex items-center gap-2 flex-wrap">
-                                                                        <span className="text-neutral-900 dark:text-white font-medium">{item.equipment.name}</span>
-                                                                        <span className={`text-xs px-2 py-0.5 rounded-full ${itemTypeBadgeClass}`}>
-                                                                            {itemTypeLabel}
-                                                                        </span>
+                                                                        <span className="text-neutral-900 dark:text-white font-medium">{product?.name || 'Producto Desconocido'}</span>
+                                                                        {product && (
+                                                                            <span className={`text-xs px-2 py-0.5 rounded-full ${itemTypeBadgeClass}`}>
+                                                                                {itemTypeLabel}
+                                                                            </span>
+                                                                        )}
                                                                     </div>
                                                                     {item.deliveryStatus && (
                                                                         <span className={`text-xs px-2 py-0.5 rounded-full inline-block mt-1 ${getDeliveryStatusBadgeClass(item.deliveryStatus)}`}>
@@ -493,105 +545,100 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                                     )}
                                                                 </div>
                                                             </div>
-
-                                                            <div className="flex items-center gap-3 flex-shrink-0">
-                                                                <span className="text-neutral-900 dark:text-white font-bold">
-                                                                    ${(item.price_at_purchase * item.quantity).toLocaleString()}
-                                                                </span>
-
-                                                                {!isDelivered && (
-                                                                    <button
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            if (canDispatch) {
-                                                                                onUpdateItemStatus(order.id, idx, 'shipped');
-                                                                            }
-                                                                        }}
-                                                                        disabled={!canDispatch}
-                                                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${getDispatchButtonClass(canDispatch, isShipped)}`}
-                                                                        title={getDispatchButtonTitle(isShipped, canDispatch, isMadeToOrder)}
-                                                                    >
-                                                                        {dispatchButtonText}
-                                                                    </button>
-                                                                )}
-                                                            </div>
+                                                            {!isDelivered && (
+                                                                <button
+                                                                    onClick={() => canDispatch && onUpdateItemStatus(order.id, idx, 'shipped')}
+                                                                    disabled={!canDispatch}
+                                                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${getDispatchButtonClass(canDispatch, isShipped)}`}
+                                                                >
+                                                                    {isShipped ? '✓ Despachado' : 'Despachar'}
+                                                                </button>
+                                                            )}
                                                         </div>
                                                     );
                                                 })}
                                             </div>
                                         </div>
-
-                                        {/* Status History */}
-                                        {order.statusHistory && order.statusHistory.length > 0 && (
-                                            <div className="bg-white dark:bg-zinc-900 rounded-xl p-4 border border-neutral-200 dark:border-zinc-800">
-                                                <h4 className="font-bold mb-4 text-neutral-900 dark:text-white">Historial de Estados</h4>
-                                                <div className="space-y-3">
-                                                    {order.statusHistory.map((history, idx) => (
-                                                        <div key={`${order.id}-history-${idx}`} className="flex gap-3 pb-3 border-b border-neutral-100 dark:border-zinc-800 last:border-0">
-                                                            <div className="flex-shrink-0 w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
-                                                            <div className="flex-grow">
-                                                                <div className="flex items-center justify-between mb-1">
-                                                                    <span className="font-medium text-neutral-900 dark:text-white text-sm">{history.status}</span>
-                                                                    <span className="text-xs text-neutral-500">
-                                                                        {new Date(history.date).toLocaleString()}
-                                                                    </span>
-                                                                </div>
-                                                                {history.note && (
-                                                                    <p className="text-sm text-neutral-600 dark:text-neutral-400 bg-neutral-50 dark:bg-zinc-800/50 p-2 rounded">
-                                                                        {history.note}
-                                                                    </p>
-                                                                )}
-                                                                {history.updatedBy && (
-                                                                    <p className="text-xs text-neutral-500 mt-1">Por: {history.updatedBy}</p>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
                                     </div>
 
-                                    {/* Right Column - Customer Info */}
                                     <div className="space-y-6">
                                         <div className="bg-white dark:bg-zinc-900 rounded-xl p-4 border border-neutral-200 dark:border-zinc-800">
-                                            <h4 className="font-bold mb-4 text-neutral-900 dark:text-white">Información del Cliente</h4>
+                                            <h4 className="font-bold text-neutral-900 dark:text-white mb-4">Cliente</h4>
                                             <div className="space-y-3 text-sm">
-                                                <div>
-                                                    <p className="text-neutral-500 dark:text-zinc-400 text-xs uppercase tracking-wider mb-1">Nombre</p>
-                                                    <p className="text-neutral-900 dark:text-white font-medium">{order.customerInfo.name}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-neutral-500 dark:text-zinc-400 text-xs uppercase tracking-wider mb-1">Teléfono</p>
-                                                    <a href={`tel:${order.customerInfo.phone}`} className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
-                                                        {order.customerInfo.phone}
-                                                    </a>
-                                                </div>
-                                                <div>
-                                                    <p className="text-neutral-500 dark:text-zinc-400 text-xs uppercase tracking-wider mb-1">Email</p>
-                                                    <a href={`mailto:${order.customerInfo.email}`} className="text-blue-600 dark:text-blue-400 hover:underline font-medium break-all">
-                                                        {order.customerInfo.email}
-                                                    </a>
-                                                </div>
-                                                <div>
-                                                    <p className="text-neutral-500 dark:text-zinc-400 text-xs uppercase tracking-wider mb-1">Ubicación</p>
-                                                    <p className="text-neutral-900 dark:text-white">{order.customerInfo.city}, {order.customerInfo.department}{order.customerInfo.country ? ` (${order.customerInfo.country})` : ''}</p>
-                                                </div>
-                                                {order.customerInfo.address && (
-                                                    <div>
-                                                        <p className="text-neutral-500 dark:text-zinc-400 text-xs uppercase tracking-wider mb-1">Dirección</p>
-                                                        <p className="text-neutral-900 dark:text-white">{order.customerInfo.address}</p>
-                                                    </div>
-                                                )}
-                                                {order.customerInfo.message && (
-                                                    <div>
-                                                        <p className="text-neutral-500 dark:text-zinc-400 text-xs uppercase tracking-wider mb-1">Mensaje</p>
-                                                        <p className="text-neutral-600 dark:text-neutral-400 text-sm bg-neutral-50 dark:bg-zinc-800/50 p-2 rounded">
-                                                            {order.customerInfo.message}
-                                                        </p>
-                                                    </div>
-                                                )}
+                                                <p><span className="text-neutral-500">Nombre:</span> <span className="text-neutral-900 dark:text-white font-medium">{order.customerInfo.name}</span></p>
+                                                <p><span className="text-neutral-500">Tel:</span> <a href={`tel:${order.customerInfo.phone}`} className="text-blue-600 underline">{order.customerInfo.phone}</a></p>
+                                                <p><span className="text-neutral-500">Ubicación:</span> <span className="text-neutral-900 dark:text-white">{order.customerInfo.city}, {order.customerInfo.department}</span></p>
                                             </div>
+                                        </div>
+
+                                        <div className="bg-[#25D366]/5 dark:bg-[#25D366]/10 rounded-xl p-4 border border-[#25D366]/20">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <div className="w-8 h-8 rounded-lg bg-[#25D366] flex items-center justify-center">
+                                                    <MessageSquare className="w-5 h-5 text-white" />
+                                                </div>
+                                                <h4 className="font-bold text-neutral-900 dark:text-white">Herramientas WhatsApp</h4>
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <button
+                                                    onClick={() => handleWhatsAppMessage(
+                                                        order.customerInfo.phone,
+                                                        `¡Hola ${order.customerInfo.name}! 👋 Te contacto de SAGFO sobre tu pedido #${order.id.slice(-6)}. ¿Cómo podemos ayudarte?`
+                                                    )}
+                                                    className="w-full flex items-center justify-between p-3 bg-white dark:bg-zinc-900 rounded-lg border border-neutral-200 dark:border-zinc-800 hover:border-[#25D366] transition-colors group"
+                                                >
+                                                    <span className="text-sm font-medium text-neutral-700 dark:text-zinc-300">Contacto General</span>
+                                                    <MessageSquare className="w-4 h-4 text-[#25D366] group-hover:scale-110 transition-transform" />
+                                                </button>
+
+                                                <button
+                                                    onClick={() => handleWhatsAppMessage(
+                                                        order.customerInfo.phone,
+                                                        `¡Hola ${order.customerInfo.name}! 👋 Confirmamos el recibo de tu pago para el pedido #${order.id.slice(-6)}. Tu equipo ya está en proceso de gestión.`
+                                                    )}
+                                                    className="w-full flex items-center justify-between p-3 bg-white dark:bg-zinc-900 rounded-lg border border-neutral-200 dark:border-zinc-800 hover:border-[#25D366] transition-colors group"
+                                                >
+                                                    <span className="text-sm font-medium text-neutral-700 dark:text-zinc-300">Confirmar Pago</span>
+                                                    <DollarSign className="w-4 h-4 text-[#25D366] group-hover:scale-110 transition-transform" />
+                                                </button>
+
+                                                <button
+                                                    onClick={() => handleWhatsAppMessage(
+                                                        order.customerInfo.phone,
+                                                        `¡Hola ${order.customerInfo.name}! 👋 Tu pedido #${order.id.slice(-6)} ha sido despachado y está en camino. ¡Pronto disfrutarás de tu equipo SAGFO elite!`
+                                                    )}
+                                                    className="w-full flex items-center justify-between p-3 bg-white dark:bg-zinc-900 rounded-lg border border-neutral-200 dark:border-zinc-800 hover:border-[#25D366] transition-colors group"
+                                                >
+                                                    <span className="text-sm font-medium text-neutral-700 dark:text-zinc-300">Notificar Despacho</span>
+                                                    <Truck className="w-4 h-4 text-[#25D366] group-hover:scale-110 transition-transform" />
+                                                </button>
+
+                                                <button
+                                                    onClick={() => handleWhatsAppMessage(
+                                                        order.customerInfo.phone,
+                                                        `¡Hola ${order.customerInfo.name}! 👋 Tu pedido #${order.id.slice(-6)} está listo para salir. Por favor envíanos tu ubicación actual por WhatsApp para que la ruta de nuestro capitán sea exacta y el equipo llegue perfecto. 📍`
+                                                    )}
+                                                    className="w-full flex items-center justify-between p-3 bg-white dark:bg-zinc-900 rounded-lg border border-neutral-200 dark:border-zinc-800 hover:border-[#25D366] transition-colors group"
+                                                >
+                                                    <span className="text-sm font-medium text-neutral-700 dark:text-zinc-300">Solicitar Ubicación GPS</span>
+                                                    <Search className="w-4 h-4 text-[#25D366] group-hover:scale-110 transition-transform" />
+                                                </button>
+
+                                                <button
+                                                    onClick={() => handleWhatsAppMessage(
+                                                        order.customerInfo.phone,
+                                                        `¡Hola ${order.customerInfo.name}! 👋 ¿Cómo vas con tu nuevo equipo SAGFO? Nos encantaría saber tu opinión y si todo quedó como esperabas. ¡Tu satisfacción es nuestra prioridad elite! 🏅`
+                                                    )}
+                                                    className="w-full flex items-center justify-between p-3 bg-white dark:bg-zinc-900 rounded-lg border border-neutral-200 dark:border-zinc-800 hover:border-[#25D366] transition-colors group"
+                                                >
+                                                    <span className="text-sm font-medium text-neutral-700 dark:text-zinc-300">Seguimiento Post-Venta</span>
+                                                    <Check className="w-4 h-4 text-[#25D366] group-hover:scale-110 transition-transform" />
+                                                </button>
+                                            </div>
+
+                                            <p className="mt-3 text-[10px] text-neutral-500 font-black uppercase tracking-widest italic text-center opacity-50">
+                                                Elite Communication Center
+                                            </p>
                                         </div>
 
                                         {/* Financial Summary */}
@@ -628,47 +675,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 ))}
             </div>
 
-            {/* Status Change Modal */}
             {statusModalOpen && selectedOrder && newStatus && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setStatusModalOpen(false)}>
-                    <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 max-w-md w-full border border-neutral-200 dark:border-zinc-800 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-4">
-                            Cambiar Estado a "{newStatus}"
-                        </h3>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
-                            Pedido #{selectedOrder.id.slice(-6)} - {selectedOrder.customerInfo.name}
-                        </p>
-
-                        <div className="mb-6">
-                            <label htmlFor="status-note" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                Mensaje para el cliente (opcional)
-                            </label>
-                            <textarea
-                                id="status-note"
-                                value={statusNote}
-                                onChange={(e) => setStatusNote(e.target.value)}
-                                placeholder="Ej: Tu pedido está en camino. Llegará mañana entre 9am y 12pm."
-                                rows={4}
-                                className="w-full px-4 py-3 rounded-lg border border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-zinc-600 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
-                            />
-                            <p className="mt-2 text-xs text-neutral-500 dark:text-zinc-400">
-                                Este mensaje se guardará en el historial y el cliente podrá verlo en "Mis Pedidos"
-                            </p>
-                        </div>
-
+                    <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="text-xl font-bold mb-4">Actualizar Estado</h3>
+                        <textarea
+                            value={statusNote}
+                            onChange={(e) => setStatusNote(e.target.value)}
+                            placeholder="Nota para el cliente..."
+                            rows={4}
+                            className="w-full px-4 py-3 rounded-lg border border-neutral-200 dark:border-zinc-800 bg-transparent mb-4"
+                        />
                         <div className="flex gap-3">
-                            <button
-                                onClick={() => setStatusModalOpen(false)}
-                                className="flex-1 px-4 py-3 rounded-lg border border-neutral-200 dark:border-zinc-800 text-neutral-700 dark:text-neutral-300 font-medium hover:bg-neutral-50 dark:hover:bg-zinc-800 transition-colors"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={confirmStatusChange}
-                                className="flex-1 px-4 py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
-                            >
-                                Confirmar Cambio
-                            </button>
+                            <button onClick={() => setStatusModalOpen(false)} className="flex-1 py-3 border rounded-lg">Cancelar</button>
+                            <button onClick={confirmStatusChange} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-lg">Confirmar</button>
                         </div>
                     </div>
                 </div>
@@ -680,23 +700,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Usuarios</h2>
-                <button
-                    onClick={() => onOpenUserModal(null)}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                    <Plus className="w-4 h-4" />
-                    Nuevo Usuario
-                </button>
+                <button onClick={() => onOpenUserModal(null)} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg"><Plus className="w-4 h-4" /> Nuevo</button>
             </div>
-
             <div className="bg-white dark:bg-zinc-900 rounded-xl border border-neutral-200 dark:border-zinc-800 overflow-hidden">
                 <table className="w-full">
                     <thead className="bg-neutral-50 dark:bg-zinc-800/50">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Usuario</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Rol</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Email</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">País</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Teléfono</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">País/Ciudad</th>
                             <th className="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
@@ -715,6 +728,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             </div>
                                             <div className="ml-4">
                                                 <div className="text-sm font-medium text-neutral-900 dark:text-white">{profile.name}</div>
+                                                <div className="text-xs text-neutral-500">{profile.email}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -723,15 +737,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             {profile.role}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
-                                        {profile.email}
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500 dark:text-zinc-400">
+                                        {profile.phone || '---'}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
-                                        {profile.country || 'Colombia'}
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500 dark:text-zinc-400">
+                                        {profile.country || 'COL'} - {profile.city || 'S.I'}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button onClick={() => onOpenUserModal(profile)} className="text-blue-600 hover:text-blue-900 mr-4">Editar</button>
-                                        <button onClick={() => onDeleteProfile(profile.id)} className="text-red-600 hover:text-red-900">Eliminar</button>
+                                        <button onClick={() => onOpenUserModal(profile)} className="text-blue-600 hover:text-blue-900 mr-4">
+                                            <Edit className="w-4 h-4" />
+                                        </button>
+                                        <button onClick={() => onDeleteProfile(profile.id)} className="text-red-600 hover:text-red-900">
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
                                     </td>
                                 </tr>
                             );
@@ -744,43 +762,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
     const renderEvents = () => (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Eventos</h2>
-                <button
-                    onClick={() => onOpenEventModal()}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                    <Plus className="w-4 h-4" />
-                    Nuevo Evento
-                </button>
-            </div>
+            <h2 className="text-2xl font-bold">Eventos</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {events.map((event, index) => (
-                    <ScrollReveal key={event.id} delay={index * 0.1}>
-                        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-neutral-200 dark:border-zinc-800 overflow-hidden">
-                            <img src={event.imageUrl} alt={event.title} className="w-full h-48 object-cover" />
-                            <div className="p-4">
-                                <h3 className="font-bold text-lg mb-2 text-neutral-900 dark:text-white">{event.title}</h3>
-                                <p className="text-sm text-neutral-500 mb-4">{new Date(event.date).toLocaleDateString()}</p>
-                                <div className="flex justify-end gap-2">
-                                    <button
-                                        onClick={() => onOpenEventModal(event)}
-                                        className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg"
-                                        aria-label={`Editar evento ${event.title}`}
-                                    >
-                                        <Edit className="w-4 h-4" />
-                                    </button>
-                                    <button
-                                        onClick={() => onDeleteEvent(event.id)}
-                                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
-                                        aria-label={`Eliminar evento ${event.title}`}
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                </div>
+                {events.map(event => (
+                    <div key={event.id} className="bg-white dark:bg-zinc-900 rounded-xl overflow-hidden border">
+                        <img src={event.imageUrl} alt={event.title} className="w-full h-48 object-cover" />
+                        <div className="p-4">
+                            <h3 className="font-bold">{event.title}</h3>
+                            <div className="flex justify-end mt-4">
+                                <button onClick={() => onOpenEventModal(event)} className="p-2 text-blue-600"><Edit className="w-4 h-4" /></button>
+                                <button onClick={() => onDeleteEvent(event.id)} className="p-2 text-red-600"><Trash2 className="w-4 h-4" /></button>
                             </div>
                         </div>
-                    </ScrollReveal>
+                    </div>
                 ))}
             </div>
         </div>
@@ -788,125 +782,106 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
     const renderGallery = () => (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Galería</h2>
-                <label className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer">
-                    <Upload className="w-4 h-4" />
-                    Subir Imagen
-                    <input
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) onAddGalleryImage(file, 'Nueva imagen');
-                        }}
-                    />
-                </label>
+            <h2 className="text-2xl font-bold">Galería</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {galleryImages.map(image => (
+                    <div key={image.id} className="relative aspect-square rounded-xl overflow-hidden group">
+                        <img src={image.imageUrl} alt={image.caption} className="w-full h-full object-cover" />
+                        <button onClick={() => onDeleteGalleryImage(image.id)} className="absolute inset-0 m-auto w-10 h-10 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Trash2 className="w-5 h-5 mx-auto" />
+                        </button>
+                    </div>
+                ))}
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {galleryImages.map((image, i) => (
-                    <ScrollReveal key={image.id} delay={i * 0.05} className="h-full">
-                        <div className="relative group aspect-square rounded-xl overflow-hidden h-full">
-                            <img src={image.imageUrl} alt={image.caption} className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <button
-                                    onClick={() => onDeleteGalleryImage(image.id)}
-                                    className="p-2 bg-white/10 text-white rounded-full hover:bg-red-600 transition-colors"
-                                    aria-label={`Eliminar imagen ${image.caption}`}
-                                >
-                                    <Trash2 className="w-5 h-5" />
-                                </button>
+        </div>
+    );
+
+    const renderWhatsApp = () => (
+        <div className="space-y-6">
+            <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Centro de WhatsApp</h2>
+                <div className="flex items-center gap-2 px-4 py-2 bg-[#25D366]/10 text-[#25D366] rounded-lg border border-[#25D366]/20">
+                    <MessageSquare className="w-5 h-5" />
+                    <span className="text-sm font-bold uppercase italic tracking-tighter">Panel de Comunicación</span>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {orders.slice(0, 12).map((order) => (
+                    <div key={`wa-${order.id}`} className="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-neutral-200 dark:border-zinc-800 shadow-sm hover:border-[#25D366] transition-all group">
+                        <div className="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 className="font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-none mb-1">
+                                    {order.customerInfo.name}
+                                </h3>
+                                <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest italic leading-none">
+                                    Pedido #{order.id.slice(-6)}
+                                </p>
+                            </div>
+                            <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase italic tracking-widest ${getStatusColor(order.status)}`}>
+                                {order.status}
+                            </span>
+                        </div>
+
+                        <div className="space-y-3 mb-6">
+                            <div className="flex items-center justify-between text-xs">
+                                <span className="text-neutral-500">Teléfono:</span>
+                                <span className="font-bold text-neutral-900 dark:text-white">{order.customerInfo.phone}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs">
+                                <span className="text-neutral-500">Ubicación:</span>
+                                <span className="text-neutral-900 dark:text-white">{order.customerInfo.city}</span>
                             </div>
                         </div>
-                    </ScrollReveal>
+
+                        <div className="grid grid-cols-2 gap-2">
+                            <button
+                                onClick={() => handleWhatsAppMessage(
+                                    order.customerInfo.phone,
+                                    `¡Hola ${order.customerInfo.name}! 👋 Te contacto de SAGFO sobre tu pedido #${order.id.slice(-6)}.`
+                                )}
+                                className="flex items-center justify-center gap-2 py-2.5 bg-[#25D366] text-white rounded-xl text-[10px] font-black uppercase italic tracking-tighter hover:scale-105 transition-transform"
+                            >
+                                <MessageSquare className="w-4 h-4" />
+                                Charlar
+                            </button>
+                            <button
+                                onClick={() => copyOrderSummary(order)}
+                                className="flex items-center justify-center gap-2 py-2.5 bg-neutral-100 dark:bg-zinc-800 text-neutral-600 dark:text-zinc-400 rounded-xl text-[10px] font-black uppercase italic tracking-tighter hover:bg-neutral-200 dark:hover:bg-zinc-700 transition-colors"
+                            >
+                                {copiedOrderId === order.id ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                {copiedOrderId === order.id ? 'Copiado' : 'Resumen'}
+                            </button>
+                        </div>
+                    </div>
                 ))}
+            </div>
+
+            <div className="bg-neutral-100 dark:bg-zinc-800/50 p-8 rounded-3xl border border-dashed border-neutral-300 dark:border-zinc-700 mt-12 flex flex-col items-center text-center">
+                <div className="w-16 h-16 rounded-full bg-[#25D366]/20 flex items-center justify-center mb-4">
+                    <MessageSquare className="w-8 h-8 text-[#25D366]" />
+                </div>
+                <h3 className="text-lg font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter mb-2">Elite Communication Center</h3>
+                <p className="text-sm text-neutral-500 max-w-md">Todos los mensajes utilizan plantillas personalizadas para mantener el estándar de excelencia SAGFO.</p>
             </div>
         </div>
     );
 
     const renderSettings = () => (
         <div className="space-y-6 max-w-2xl">
-            <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Configuración</h2>
-
-            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-neutral-200 dark:border-zinc-800 p-6 space-y-6">
+            <h2 className="text-2xl font-bold">Ajustes</h2>
+            <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl border space-y-4">
                 <div>
-                    <h3 className="font-semibold mb-4 text-neutral-900 dark:text-white">Contacto</h3>
-                    <div className="space-y-4">
-                        <div>
-                            <label htmlFor="whatsapp-number" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                                Número de WhatsApp
-                            </label>
-                            <div className="flex gap-2">
-                                <input
-                                    id="whatsapp-number"
-                                    type="text"
-                                    value={whatsAppNumber}
-                                    onChange={(e) => onUpdateWhatsAppNumber(e.target.value)}
-                                    className="flex-1 px-3 py-2 rounded-lg border border-neutral-200 dark:border-zinc-800 bg-transparent text-neutral-900 dark:text-white"
-                                />
-                                <button className="px-4 py-2 bg-neutral-900 dark:bg-white text-white dark:text-black rounded-lg hover:opacity-90 transition-opacity">
-                                    Guardar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <label className="block text-sm font-medium mb-1">WhatsApp de Ventas</label>
+                    <input
+                        type="text"
+                        value={whatsAppNumber}
+                        onChange={(e) => onUpdateWhatsAppNumber(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg border bg-transparent"
+                    />
                 </div>
-
-                <div className="border-t border-neutral-100 dark:border-zinc-800 pt-6">
-                    <h3 className="font-semibold mb-4 text-neutral-900 dark:text-white">Apariencia</h3>
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="font-medium text-neutral-900 dark:text-white">Editar Banners Principales</p>
-                            <p className="text-sm text-neutral-500">Gestiona las imágenes del carrusel inicial</p>
-                        </div>
-                        <button
-                            onClick={onEditHero}
-                            className="px-4 py-2 border border-neutral-200 dark:border-zinc-700 text-neutral-900 dark:text-white rounded-lg hover:bg-neutral-50 dark:hover:bg-zinc-800 transition-colors"
-                        >
-                            Editar Banners
-                        </button>
-                    </div>
-                </div>
-
-                <div className="border-t border-neutral-100 dark:border-zinc-800 pt-6">
-                    <h3 className="font-semibold mb-4 text-neutral-900 dark:text-white">Sello de Calidad (Footer)</h3>
-                    <div className="flex items-start gap-6">
-                        <div className="w-32 h-32 bg-neutral-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center overflow-hidden border border-neutral-200 dark:border-zinc-700">
-                            {sealUrl ? (
-                                <img src={sealUrl} alt="Sello de calidad" className="w-full h-full object-contain p-2" />
-                            ) : (
-                                <span className="text-xs text-neutral-400 text-center px-2">Sin sello</span>
-                            )}
-                        </div>
-                        <div className="flex-1">
-                            <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
-                                Sube una imagen para mostrar como sello de calidad o certificación en el pie de página del sitio.
-                                Se recomienda una imagen PNG con fondo transparente.
-                            </p>
-                            <label className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer">
-                                <Upload className="w-4 h-4" />
-                                <span>Subir Sello</span>
-                                <input
-                                    type="file"
-                                    className="hidden"
-                                    accept="image/*"
-                                    onChange={(e) => {
-                                        const file = e.target.files?.[0];
-                                        if (file) onUploadSeal(file);
-                                    }}
-                                />
-                            </label>
-                            {sealUrl && (
-                                <button
-                                    onClick={() => onUpdateSeal('')}
-                                    className="ml-3 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                >
-                                    Eliminar
-                                </button>
-                            )}
-                        </div>
-                    </div>
+                <div className="pt-4 border-t">
+                    <button onClick={onEditHero} className="px-4 py-2 border rounded-lg">Editar Banners</button>
                 </div>
             </div>
         </div>
@@ -914,12 +889,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
     return (
         <div className="min-h-screen bg-neutral-50 dark:bg-black flex">
-            {/* Sidebar */}
-            <aside className="w-64 border-r border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 fixed h-full overflow-y-auto">
+            <aside className="w-64 border-r border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 fixed h-full">
                 <div className="p-6">
                     <h1 className="text-xl font-bold text-neutral-900 dark:text-white flex items-center gap-2">
-                        <LayoutDashboard className="w-6 h-6 text-blue-600" />
-                        Admin Panel
+                        <LayoutDashboard className="w-6 h-6 text-blue-600" /> Admin
                     </h1>
                 </div>
                 <nav className="px-3 space-y-1">
@@ -929,11 +902,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <NavItem icon={<Users />} label="Usuarios" active={activeTab === 'users'} onClick={() => setActiveTab('users')} />
                     <NavItem icon={<Calendar />} label="Eventos" active={activeTab === 'events'} onClick={() => setActiveTab('events')} />
                     <NavItem icon={<ImageIcon />} label="Galería" active={activeTab === 'gallery'} onClick={() => setActiveTab('gallery')} />
-                    <NavItem icon={<Settings />} label="Configuración" active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
+                    <NavItem icon={<MessageSquare />} label="WhatsApp" active={activeTab === 'whatsapp'} onClick={() => setActiveTab('whatsapp')} />
+                    <NavItem icon={<Settings />} label="Ajustes" active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
                 </nav>
             </aside>
-
-            {/* Main Content */}
             <main className="flex-1 ml-64 p-8">
                 {activeTab === 'overview' && renderOverview()}
                 {activeTab === 'products' && renderProducts()}
@@ -941,6 +913,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 {activeTab === 'users' && renderUsers()}
                 {activeTab === 'events' && renderEvents()}
                 {activeTab === 'gallery' && renderGallery()}
+                {activeTab === 'whatsapp' && renderWhatsApp()}
                 {activeTab === 'settings' && renderSettings()}
             </main>
         </div>
@@ -974,20 +947,22 @@ const StatCard = ({ title, value, icon, color, trend }: { title: string, value: 
     };
 
     return (
-        <div className="group bg-white dark:bg-zinc-900/50 p-6 rounded-2xl border border-neutral-200 dark:border-white/5 hover:border-primary-500/30 transition-all duration-300 shadow-sm hover:shadow-xl">
-            <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-xl bg-gradient-to-br ${colorClasses[color] || 'bg-neutral-100 dark:bg-white/5'}`}>
-                    {icon}
+        <div className="group bg-white dark:bg-zinc-900/50 p-6 rounded-3xl border border-neutral-200 dark:border-white/5 hover:border-primary-500/30 transition-all duration-500 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.4)] relative overflow-hidden">
+            <div className={`absolute top-0 right-0 w-32 h-32 -mr-8 -mt-8 rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-700 ${color === 'emerald' ? 'bg-emerald-500' : color === 'amber' ? 'bg-amber-500' : color === 'blue' ? 'bg-blue-500' : 'bg-violet-500'}`} />
+
+            <div className="flex items-center justify-between mb-6 relative z-10">
+                <div className={`p-4 rounded-2xl bg-gradient-to-br shadow-inner ${colorClasses[color] || 'bg-neutral-100 dark:bg-white/5'}`}>
+                    {React.cloneElement(icon as React.ReactElement, { className: 'w-6 h-6' })}
                 </div>
                 {trend && (
-                    <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 opacity-50 italic group-hover:opacity-100 transition-opacity">
+                    <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md italic ${trend.includes('+') ? 'text-emerald-500 bg-emerald-500/5' : 'text-neutral-400 bg-neutral-400/5'}`}>
                         {trend}
                     </span>
                 )}
             </div>
-            <div>
-                <h3 className="text-neutral-500 dark:text-neutral-400 text-xs font-black uppercase tracking-widest mb-1 italic opacity-70">{title}</h3>
-                <p className="text-3xl font-black text-neutral-900 dark:text-white tracking-tighter italic">{value}</p>
+            <div className="relative z-10">
+                <h3 className="text-neutral-500 dark:text-neutral-400 text-xs font-black uppercase tracking-widest mb-1 italic opacity-70 group-hover:opacity-100 transition-opacity">{title}</h3>
+                <p className="text-3xl font-black text-neutral-900 dark:text-white tracking-tighter italic group-hover:scale-105 transition-transform origin-left duration-500">{value}</p>
             </div>
         </div>
     );

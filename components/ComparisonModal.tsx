@@ -58,7 +58,11 @@ const ComparisonModal: React.FC<ComparisonModalProps> = ({ isOpen, onClose, item
                   <th key={item.id} className="p-10 w-1/4 border-l border-neutral-100 dark:border-white/5">
                     <div className="flex flex-col items-center text-center space-y-4">
                       <div className="w-40 h-40 bg-white dark:bg-zinc-800 rounded-[2rem] p-4 border border-neutral-100 dark:border-white/5 shadow-xl transition-transform hover:scale-105 duration-500">
-                        <img src={item.imageUrls[0]} alt={item.name} className="w-full h-full object-contain drop-shadow-xl" />
+                        <img
+                          src={(item.imageUrls && item.imageUrls.length > 0) ? item.imageUrls[0] : 'https://placehold.co/200x200?text=SAGFO'}
+                          alt={item.name}
+                          className="w-full h-full object-contain drop-shadow-xl"
+                        />
                       </div>
                       <h3 className="font-black text-lg text-neutral-900 dark:text-white uppercase italic tracking-tight">{item.name}</h3>
                     </div>

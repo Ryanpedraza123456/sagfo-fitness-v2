@@ -35,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, onToggleCom
       <div className="relative w-full aspect-square bg-neutral-50 dark:bg-black/20 overflow-hidden flex items-center justify-center p-8 group-hover:bg-white dark:group-hover:bg-black transition-colors duration-700">
 
         <img
-          src={product.imageUrls[0]}
+          src={(product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : 'https://placehold.co/400x300?text=SAGFO'}
           alt={product.name}
           className={`w-full h-full object-contain transition-all duration-1000 group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setImageLoaded(true)}

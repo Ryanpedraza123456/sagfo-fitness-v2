@@ -218,7 +218,6 @@ const App: React.FC = () => {
         }))
       }));
       setOrders(mappedOrders);
-      setOrders(mappedOrders);
     }
 
     const { data: configData } = await supabase.from('site_config').select('*').single();
@@ -743,50 +742,92 @@ const App: React.FC = () => {
 
   const handleUpdateOrderStatus = async (orderId: string, status: OrderStatus, note?: string) => {
     if (!isAdmin && !isTransporter) return;
-    setOrders(orders.map(o => {
-      if (o.id === orderId) {
-        const newHistoryItem: OrderStatusHistory = {
-          status,
-          note,
-          date: new Date().toISOString(),
-          updatedBy: user?.name
-        };
-        return {
-          ...o,
-          status,
-          statusHistory: [newHistoryItem, ...(o.statusHistory || [])]
-        };
-      }
-      return o;
-    }));
 
-    if (note) {
-      setNotification({ id: Date.now(), type: 'success', message: 'Estado actualizado y mensaje enviado.' });
-    } else {
-      setNotification({ id: Date.now(), type: 'success', message: 'Estado del pedido actualizado.' });
+    try {
+      const targetOrder = orders.find(o => o.id === orderId);
+      if (!targetOrder) return;
+
+      const newHistoryItem: OrderStatusHistory = {
+        status,
+        note,
+        date: new Date().toISOString(),
+        updatedBy: user?.name
+      };
+
+      const newHistory = [newHistoryItem, ...(targetOrder.statusHistory || [])];
+
+      const { error } = await supabase
+        .from('orders')
+        .update({
+          status: status,
+          status_history: newHistory
+        })
+        .eq('id', orderId);
+
+      if (error) throw error;
+
+      setOrders(orders.map(o => {
+        if (o.id === orderId) {
+          return {
+            ...o,
+            status,
+            statusHistory: newHistory
+          };
+        }
+        return o;
+      }));
+
+      if (note) {
+        setNotification({ id: Date.now(), type: 'success', message: 'Estado actualizado y mensaje enviado.' });
+      } else {
+        setNotification({ id: Date.now(), type: 'success', message: 'Estado del pedido actualizado.' });
+      }
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      setNotification({ id: Date.now(), type: 'error', message: 'Error al actualizar estado en la base de datos.' });
     }
   };
 
-  const handleUpdateItemStatus = (orderId: string, itemIndex: number, status: DeliveryStatus) => {
+  const handleUpdateItemStatus = async (orderId: string, itemIndex: number, status: DeliveryStatus) => {
     if (!isAdmin && !isTransporter) return;
-    setOrders(prevOrders => prevOrders.map(order => {
-      if (order.id === orderId) {
-        const newItems = [...order.items];
-        const currentItem = newItems[itemIndex];
-        newItems[itemIndex] = {
-          ...currentItem,
-          deliveryStatus: status
-        };
-        return { ...order, items: newItems };
-      }
-      return order;
-    }));
 
-    let message = 'Estado del item actualizado.';
-    if (status === 'shipped') message = 'Item despachado al transportador.';
-    if (status === 'delivered') message = 'Item entregado exitosamente.';
+    try {
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return;
 
-    setNotification({ id: Date.now(), type: 'success', message });
+      const item = order.items[itemIndex];
+
+      const { error } = await supabase
+        .from('order_items')
+        .update({
+          delivery_status: status
+        })
+        .eq('order_id', orderId)
+        .eq('equipment_id', item.equipment.id);
+
+      if (error) throw error;
+
+      setOrders(prevOrders => prevOrders.map(o => {
+        if (o.id === orderId) {
+          const newItems = [...o.items];
+          newItems[itemIndex] = {
+            ...newItems[itemIndex],
+            deliveryStatus: status
+          };
+          return { ...o, items: newItems };
+        }
+        return o;
+      }));
+
+      let message = 'Estado del item actualizado.';
+      if (status === 'shipped') message = 'Item despachado al transportador.';
+      if (status === 'delivered') message = 'Item entregado exitosamente.';
+
+      setNotification({ id: Date.now(), type: 'success', message });
+    } catch (error) {
+      console.error('Error updating item status:', error);
+      setNotification({ id: Date.now(), type: 'error', message: 'Error al actualizar estado del item.' });
+    }
   };
 
 
@@ -805,10 +846,25 @@ const App: React.FC = () => {
     }, 100);
   };
 
-  const handleAssignTransporter = (orderId: string, transporterId: string) => {
+  const handleAssignTransporter = async (orderId: string, transporterId: string) => {
     if (!isAdmin) return;
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, assignedTransporterId: transporterId } : o));
-    setNotification({ id: Date.now(), type: 'success', message: 'Transportador asignado correctamente.' });
+
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({
+          assigned_transporter_id: transporterId
+        })
+        .eq('id', orderId);
+
+      if (error) throw error;
+
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, assignedTransporterId: transporterId } : o));
+      setNotification({ id: Date.now(), type: 'success', message: 'Transportador asignado correctamente.' });
+    } catch (error) {
+      console.error('Error assigning transporter:', error);
+      setNotification({ id: Date.now(), type: 'error', message: 'Error al asignar transportador en la base de datos.' });
+    }
   };
 
   const handleToggleCompare = (product: EquipmentItem) => {

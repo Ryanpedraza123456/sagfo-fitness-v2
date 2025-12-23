@@ -37,13 +37,19 @@ export const useCart = () => {
                         : item
                 );
             }
-            return [...prevItems, { equipment: product, quantity: 1, selectedColor: color, selectedWeight: weight }];
+            return [...prevItems, {
+                equipment: product,
+                quantity: 1,
+                selectedColor: color,
+                selectedWeight: weight,
+                structureColor: color // Initialize with selected color
+            }];
         });
     };
 
-    const handleUpdateCartItemCustomization = (productId: string, field: 'structureColor' | 'upholsteryColor', value: string) => {
+    const handleUpdateCartItemCustomization = (productId: string, field: 'structureColor' | 'upholsteryColor', value: string, color?: string, weight?: string) => {
         setCartItems(prev => prev.map(item =>
-            (item.equipment.id === productId && !item.selectedColor)
+            (item.equipment.id === productId && item.selectedColor === color && item.selectedWeight === weight)
                 ? { ...item, [field]: value }
                 : item
         ));

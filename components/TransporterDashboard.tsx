@@ -68,15 +68,32 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ order, isHistory, onUpdateI
                     {/* Contact Info Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="bg-neutral-50 dark:bg-black/20 rounded-2xl p-4 border border-neutral-100 dark:border-white/5 hover:border-neutral-200 dark:hover:border-white/10 transition-colors">
-                            <div className="flex items-center gap-3 mb-2">
+                            <div className="flex items-center gap-3 mb-3">
                                 <div className="w-8 h-8 rounded-full bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center">
                                     <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                                 </div>
-                                <span className="text-xs font-bold text-neutral-500 dark:text-zinc-500 uppercase tracking-wider">Contacto</span>
+                                <span className="text-xs font-bold text-neutral-500 dark:text-zinc-500 uppercase tracking-wider">Contacto Directo</span>
                             </div>
-                            <a href={`tel:${order.customerInfo.phone}`} className="text-lg font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors block pl-11" onClick={(e) => e.stopPropagation()}>
-                                {order.customerInfo.phone}
-                            </a>
+                            <div className="flex flex-wrap gap-2 pl-0 md:pl-11">
+                                <a
+                                    href={`tel:${order.customerInfo.phone}`}
+                                    className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20 active:scale-95"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                                    Llamar
+                                </a>
+                                <a
+                                    href={`https://wa.me/${order.customerInfo.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`¡Hola ${order.customerInfo.name}! 👋 Te contacto de SAGFO sobre la entrega de tu equipo.`)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 px-4 py-2.5 bg-[#25D366] text-white rounded-xl text-xs font-bold hover:bg-[#22c35e] transition-all shadow-lg shadow-emerald-900/20 active:scale-95"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.239 8.413 3.488 2.247 2.248 3.484 5.236 3.484 8.414 0 6.556-5.338 11.891-11.893 11.891-2.006-.001-3.968-.511-5.7-1.483L0 24zm6.753-4.008l.311.185c1.479.881 2.943 1.344 4.54 1.345 5.51 0 10-4.49 10.002-10 0-2.67-1.04-5.18-2.93-7.072-1.891-1.891-4.401-2.932-7.072-2.932-5.51 0-10 4.49-10.002 10 0 1.83.49 3.612 1.417 5.16l.204.343-1.003 3.666 3.733-.979zm10.166-4.62c-.282-.14-.367-.184-1.241-.62-.112-.057-.204-.085-.282.029-.113.169-.437.551-.536.662-.1.112-.2.126-.482.014-.282-.14-1.19-.439-2.266-1.4-.838-.748-1.402-1.671-1.566-1.953-.163-.282-.017-.435.123-.574.126-.126.282-.324.423-.486l.211-.271c.07-.123.035-.233-.018-.338l-.296-.708c-.126-.301-.254-.258-.338-.258-.1-.003-.204-.007-.311-.007-.311 0-.818.117-1.241.58-.423.465-1.614 1.579-1.614 3.847 0 2.268 1.649 4.461 1.875 4.771.226.31 3.241 4.95 7.85 6.938 1.1.473 1.957.755 2.626.967 1.102.35 2.105.3 2.895.182.881-.131 2.706-1.107 3.088-2.124.382-1.017.382-1.891.268-2.074-.114-.183-.41-.295-.691-.436z" /></svg>
+                                    WhatsApp
+                                </a>
+                            </div>
                         </div>
 
                         <div className="bg-neutral-50 dark:bg-black/20 rounded-2xl p-4 border border-neutral-100 dark:border-white/5 hover:border-neutral-200 dark:hover:border-white/10 transition-colors">

@@ -26,7 +26,7 @@ interface QuoteCartModalProps {
         paymentProofFile?: File
     ) => void;
     onLoginClick: () => void;
-    onUpdateItemCustomization: (productId: string, field: 'structureColor' | 'upholsteryColor', value: string) => void;
+    onUpdateItemCustomization: (productId: string, field: 'structureColor' | 'upholsteryColor', value: string, color?: string, weight?: string) => void;
     bankAccounts: BankAccount[];
 }
 
@@ -297,6 +297,18 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
         }
     };
 
+    // Body scroll lock
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     return (
@@ -341,7 +353,11 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
                                     <div key={item.equipment.id + (item.selectedColor || '') + (item.selectedWeight || '')} className="bg-white dark:bg-zinc-800/50 p-4 rounded-2xl border border-neutral-100 dark:border-white/5 shadow-sm group">
                                         <div className="flex gap-4">
                                             <div className="w-16 h-16 bg-neutral-100 dark:bg-black/20 rounded-xl overflow-hidden p-2 flex-shrink-0">
-                                                <img src={item.equipment.imageUrls[0]} alt={item.equipment.name} className="w-full h-full object-contain" />
+                                                <img
+                                                    src={(item.equipment.imageUrls && item.equipment.imageUrls.length > 0) ? item.equipment.imageUrls[0] : 'https://placehold.co/100x100?text=SAGFO'}
+                                                    alt={item.equipment.name}
+                                                    className="w-full h-full object-contain"
+                                                />
                                             </div>
                                             <div className="flex-grow min-w-0">
                                                 <div className="flex justify-between items-start">
@@ -370,14 +386,14 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
                                                 <input
                                                     type="text"
                                                     value={item.structureColor || ''}
-                                                    onChange={(e) => onUpdateItemCustomization(item.equipment.id, 'structureColor', e.target.value)}
+                                                    onChange={(e) => onUpdateItemCustomization(item.equipment.id, 'structureColor', e.target.value, item.selectedColor, item.selectedWeight)}
                                                     placeholder="Estructura"
-                                                    className="bg-neutral-50 dark:bg-black/20 p-2 rounded-lg text-[9px] font-bold outline-none border border-transparent focus:border-primary-500/30"
+                                                    className="bg-neutral-50 dark:bg-black/20 p-2 rounded-lg text-[9px] font-bold outline-none border border-transparent focus:border-primary-500/30 text-neutral-900 dark:text-white"
                                                 />
                                                 <input
                                                     type="text"
                                                     value={item.upholsteryColor || ''}
-                                                    onChange={(e) => onUpdateItemCustomization(item.equipment.id, 'upholsteryColor', e.target.value)}
+                                                    onChange={(e) => onUpdateItemCustomization(item.equipment.id, 'upholsteryColor', e.target.value, item.selectedColor, item.selectedWeight)}
                                                     placeholder="Tapicería"
                                                     className="bg-neutral-50 dark:bg-black/20 p-2 rounded-lg text-[9px] font-bold outline-none border border-transparent focus:border-primary-500/30 text-neutral-900 dark:text-white"
                                                 />

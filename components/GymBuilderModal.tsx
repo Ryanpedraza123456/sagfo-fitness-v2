@@ -231,7 +231,11 @@ const GymBuilderModal: React.FC<GymBuilderModalProps> = ({ isOpen, onClose, allP
                                     currentPackageItems.map(item => (
                                         <div key={item.equipment.id} className="group flex items-center gap-4 bg-neutral-100 dark:bg-white/5 p-3 rounded-2xl border border-transparent hover:border-primary-500/10 transition-all">
                                             <div className="w-12 h-12 bg-white dark:bg-black/20 rounded-xl overflow-hidden p-2 flex-shrink-0">
-                                                <img src={item.equipment.imageUrls[0]} alt={item.equipment.name} className="w-full h-full object-contain" />
+                                                <img
+                                                    src={(item.equipment.imageUrls && item.equipment.imageUrls.length > 0) ? item.equipment.imageUrls[0] : 'https://placehold.co/100x100?text=SAGFO'}
+                                                    alt={item.equipment.name}
+                                                    className="w-full h-full object-contain"
+                                                />
                                             </div>
                                             <div className="flex-grow min-w-0">
                                                 <h4 className="text-[10px] font-black text-neutral-900 dark:text-white uppercase italic truncate">{item.equipment.name}</h4>

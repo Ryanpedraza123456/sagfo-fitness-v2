@@ -134,6 +134,18 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const removeFeature = (index: number) => { if (formData) setFormData({ ...formData, features: formData.features.filter((_, i) => i !== index) }); };
   const addSpec = () => { if (newSpecKey.trim() && newSpecValue.trim() && formData) { setFormData({ ...formData, specifications: { ...formData.specifications, [newSpecKey.trim()]: newSpecValue.trim() } }); setNewSpecKey(''); setNewSpecValue(''); } };
   const removeSpec = (key: string) => { if (formData) { const newSpecs = { ...formData.specifications }; delete newSpecs[key]; setFormData({ ...formData, specifications: newSpecs }); } };
+  // Body scroll lock
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   const handleSave = () => { if (formData) onSave(formData, newImagesMap); };
 
   return (

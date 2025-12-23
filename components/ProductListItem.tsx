@@ -13,7 +13,11 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onAdd, isAdd
     return (
         <div className="bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm rounded-[1.5rem] p-4 flex items-center gap-4 border border-neutral-100 dark:border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
             <div className="w-16 h-16 bg-neutral-100 dark:bg-black/20 rounded-xl overflow-hidden p-2 flex-shrink-0">
-                <img src={product.imageUrls[0]} alt={product.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                <img
+                    src={(product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : 'https://placehold.co/100x100?text=SAGFO'}
+                    alt={product.name}
+                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                />
             </div>
             <div className="flex-grow min-w-0">
                 <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-1 italic opacity-60">{product.category}</p>

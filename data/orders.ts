@@ -18,23 +18,24 @@ export const mockOrders: Order[] = (customerEquipment1 && customerEquipment2 && 
     paymentMethod: 'mixed',
     createdAt: new Date('2025-11-26T10:00:00').toISOString(),
     customerInfo: {
-        name: 'Carlos Cliente',
-        email: 'customer@sagfo.com',
-        phone: '3101234567',
-        city: 'Palmira',
-        department: 'Valle del Cauca',
-        address: 'Avenida Siempre Viva 742'
+      name: 'Carlos Cliente',
+      email: 'customer@sagfo.com',
+      phone: '3101234567',
+      city: 'Palmira',
+      department: 'Valle del Cauca',
+      address: 'Avenida Siempre Viva 742',
+      country: 'Colombia'
     },
     items: [
-        { equipment: customerEquipment5, quantity: 1, price_at_purchase: 9300000, deliveryStatus: 'pending' }, 
-        { equipment: customerEquipment1, quantity: 1, price_at_purchase: 6900000, deliveryStatus: 'pending' },
-        { equipment: customerEquipment3, quantity: 1, price_at_purchase: 5200000, deliveryStatus: 'pending' }, 
-        { equipment: customerEquipment4, quantity: 4, price_at_purchase: 150000, deliveryStatus: 'pending' }  
+      { equipment: customerEquipment5, quantity: 1, price_at_purchase: 9300000, deliveryStatus: 'pending' },
+      { equipment: customerEquipment1, quantity: 1, price_at_purchase: 6900000, deliveryStatus: 'pending' },
+      { equipment: customerEquipment3, quantity: 1, price_at_purchase: 5200000, deliveryStatus: 'pending' },
+      { equipment: customerEquipment4, quantity: 4, price_at_purchase: 150000, deliveryStatus: 'pending' }
     ],
     financials: {
-        totalOrderValue: 22000000,
-        amountPaid: 11000000,
-        amountPending: 11000000
+      totalOrderValue: 22000000,
+      amountPaid: 11000000,
+      amountPending: 11000000
     },
     assignedTransporterId: 'user-transporter-1'
   },
@@ -45,12 +46,13 @@ export const mockOrders: Order[] = (customerEquipment1 && customerEquipment2 && 
     paymentMethod: 'mixed',
     createdAt: new Date('2024-07-17T17:47:00').toISOString(),
     customerInfo: {
-        name: 'Pedro Aznar',
-        email: 'pedrosazrov@gmail.com',
-        phone: '3111234567',
-        city: 'Cali',
-        department: 'Valle del Cauca',
-        address: 'Calle 5 # 45-20, Barrio San Fernando'
+      name: 'Pedro Aznar',
+      email: 'pedrosazrov@gmail.com',
+      phone: '3111234567',
+      city: 'Cali',
+      department: 'Valle del Cauca',
+      address: 'Calle 5 # 45-20, Barrio San Fernando',
+      country: 'Colombia'
     },
     items: [
       { equipment: customerEquipment3, quantity: 1, price_at_purchase: customerEquipment3.price, deliveryStatus: 'pending' }, // Prensa (Made to Order)
@@ -58,9 +60,9 @@ export const mockOrders: Order[] = (customerEquipment1 && customerEquipment2 && 
       { equipment: customerEquipment2, quantity: 1, price_at_purchase: customerEquipment2.price, deliveryStatus: 'shipped' }, // Mancuernas (In Stock - Shipped)
     ],
     financials: {
-        totalOrderValue: 9500000,
-        amountPaid: 9500000,
-        amountPending: 0
+      totalOrderValue: 9500000,
+      amountPaid: 9500000,
+      amountPending: 0
     },
     assignedTransporterId: 'user-transporter-1'
   }

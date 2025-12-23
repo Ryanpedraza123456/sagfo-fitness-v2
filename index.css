@@ -288,6 +288,16 @@ html {
     transition: all var(--transition-bounce);
 }
 
+/* No Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
 /* Hover Effects */
 .hover-lift {
     transition: transform var(--transition-base), box-shadow var(--transition-base);
