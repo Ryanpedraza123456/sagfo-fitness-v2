@@ -29,6 +29,7 @@ import EditUserModal from './components/EditUserModal';
 import EventDetailModal from './components/EventDetailModal';
 import TransporterDashboard from './components/TransporterDashboard';
 import AdminDashboard from './components/AdminDashboard';
+import CustomCursor from './components/CustomCursor';
 
 import { supabase } from './lib/supabase';
 
@@ -1394,6 +1395,7 @@ const App: React.FC = () => {
           onClose={() => setViewingEvent(null)}
           event={viewingEvent}
         />
+        <CustomCursor />
       </div>
     </>
   );
