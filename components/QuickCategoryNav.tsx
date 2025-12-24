@@ -1,148 +1,90 @@
 
 import React from 'react';
-import { Dumbbell, Activity, Disc, Combine, Package, Trophy, Zap, Shield, Target, Compass, ChevronRight } from 'lucide-react';
+import { Dumbbell, Activity, Disc, Combine, Package, Trophy, ChevronRight } from 'lucide-react';
 import { MuscleFilter } from '../types';
-import ScrollReveal from './ScrollReveal';
+import { motion } from 'framer-motion';
 
 interface QuickCategoryNavProps {
     onSelectCategory: (category: MuscleFilter) => void;
 }
 
 const quickCats: { label: string; value: MuscleFilter; icon: any; color: string; desc: string }[] = [
-    {
-        label: 'Mancuernas',
-        value: 'Mancuernas',
-        icon: Dumbbell,
-        color: 'from-orange-500 to-red-600',
-        desc: 'Carga Pro'
-    },
-    {
-        label: 'Cardio',
-        value: 'Cardio',
-        icon: Activity,
-        color: 'from-blue-500 to-indigo-600',
-        desc: 'Alto Flujo'
-    },
-    {
-        label: 'Discos',
-        value: 'Discos',
-        icon: Disc,
-        color: 'from-zinc-500 to-zinc-900',
-        desc: 'Sólido Elite'
-    },
-    {
-        label: 'Barras',
-        value: 'Barras',
-        icon: Combine,
-        color: 'from-emerald-500 to-teal-600',
-        desc: 'Acero Puro'
-    },
-    {
-        label: 'Bancos',
-        value: 'Bancos',
-        icon: Trophy,
-        color: 'from-amber-400 to-orange-600',
-        desc: 'Estabilidad'
-    },
-    {
-        label: 'Funcional',
-        value: 'Funcional',
-        icon: Package,
-        color: 'from-purple-500 to-pink-600',
-        desc: 'Versatilidad'
-    },
+    { label: 'Mancuernas', value: 'Mancuernas', icon: Dumbbell, color: '#0ea5e9', desc: 'Carga de Precisión' },
+    { label: 'Cardio', value: 'Cardio', icon: Activity, color: '#6366f1', desc: 'Resistencia Élite' },
+    { label: 'Discos', value: 'Discos', icon: Disc, color: '#71717a', desc: 'Peso Olímpico' },
+    { label: 'Barras', value: 'Barras', icon: Combine, color: '#10b981', desc: 'Acero de Grado' },
+    { label: 'Bancos', value: 'Bancos', icon: Trophy, color: '#f59e0b', desc: 'Estabilidad Pro' },
+    { label: 'Funcional', value: 'Funcional', icon: Package, color: '#ec4899', desc: 'Agilidad Total' },
 ];
 
 const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory }) => {
     return (
-        <section className="relative py-48 md:py-64 overflow-hidden bg-white dark:bg-[#050505]">
-            {/* Background Orbs */}
-            <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary-600/5 blur-[120px] rounded-full pointer-events-none animate-pulse" />
-            <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-primary-900/5 blur-[120px] rounded-full pointer-events-none animate-pulse delay-1000" />
+        <section className="relative py-32 md:py-48 bg-white dark:bg-[#050505] overflow-hidden">
+            {/* Ambient Background Elements */}
+            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-            <div className="container mx-auto px-6 lg:px-24 relative z-10">
-                <div className="flex flex-col items-center mb-40 text-center">
-                    <ScrollReveal direction="up">
-                        <span className="inline-block text-primary-500 font-black uppercase tracking-[0.5em] text-xs mb-8 italic">
-                            Explora Nuestra Colección
-                        </span>
-                    </ScrollReveal>
-
-                    <ScrollReveal direction="up" delay={0.2}>
-                        <h2 className="text-6xl md:text-9xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-[0.8] mb-12">
-                            DISEÑADO PARA EL <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-600">DOMINIO</span>
-                        </h2>
-                    </ScrollReveal>
-
-                    <ScrollReveal direction="up" delay={0.3}>
-                        <p className="text-neutral-500 font-medium text-lg max-w-2xl tracking-tight opacity-80 leading-relaxed">
-                            Equipos diseñados con precisión para resistir los rigores del entrenamiento de élite.
-                            Eleva tu gimnasio con la maestría de SAGFO.
-                        </p>
-                    </ScrollReveal>
+            <div className="container mx-auto px-6 lg:px-12">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+                    <div className="max-w-2xl">
+                        <motion.span
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            className="inline-block text-primary-500 font-bold uppercase tracking-[0.4em] text-[10px] mb-4"
+                        >
+                            Catálogo de Especialistas
+                        </motion.span>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                            className="text-5xl md:text-7xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter leading-none"
+                        >
+                            DISEÑO QUE <br />
+                            <span className="text-neutral-400">PULSA PODER</span>
+                        </motion.h2>
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {quickCats.map((cat, index) => (
-                        <ScrollReveal key={cat.label} direction="up" delay={index * 0.1}>
-                            <button
-                                onClick={() => onSelectCategory(cat.value)}
-                                className="group relative flex flex-col items-start p-14 rounded-[3rem] bg-neutral-50/50 dark:bg-white/[0.02] border border-neutral-100 dark:border-white/5 transition-all duration-700 hover:shadow-premium hover:-translate-y-4 hover:bg-white dark:hover:bg-neutral-900 w-full text-left overflow-hidden h-full"
-                            >
-                                {/* Visual Accent */}
-                                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${cat.color} opacity-0 blur-3xl group-hover:opacity-10 transition-opacity duration-1000`} />
+                        <motion.button
+                            key={cat.label}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: index * 0.1, duration: 0.5 }}
+                            onClick={() => onSelectCategory(cat.value)}
+                            className="group relative h-[380px] rounded-[2.5rem] bg-neutral-100 dark:bg-white/[0.03] border border-neutral-200/50 dark:border-white/[0.05] overflow-hidden transition-all duration-700 hover:shadow-2xl"
+                        >
+                            {/* Icon Background Decoration */}
+                            <div className="absolute -top-12 -right-12 w-48 h-48 bg-black/5 dark:bg-white/5 rounded-full blur-3xl group-hover:bg-primary-500/10 transition-colors duration-700" />
 
-                                {/* Icon Ecosystem */}
-                                <div className="relative w-24 h-24 rounded-[2rem] bg-white dark:bg-black flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all duration-700 mb-12 border border-neutral-100 dark:border-white/5">
-                                    <cat.icon
-                                        size={40}
-                                        strokeWidth={1.5}
-                                        className="text-neutral-900 dark:text-white group-hover:text-primary-500 transition-colors"
-                                    />
-                                    {/* Floating Notification-style Dot */}
-                                    <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 shadow-[0_0_15px_rgba(14,165,233,0.5)]`} />
+                            <div className="relative h-full p-10 flex flex-col justify-between">
+                                <div className="w-16 h-16 rounded-[1.5rem] bg-white dark:bg-zinc-900 flex items-center justify-center shadow-xl border border-neutral-100 dark:border-white/5 transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-12">
+                                    <cat.icon size={28} className="text-neutral-900 dark:text-white" />
                                 </div>
 
-                                <div className="space-y-3">
-                                    <h3 className="text-4xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-none group-hover:text-primary-500 transition-colors">
-                                        {cat.label}
-                                    </h3>
-                                    <p className="text-xs font-black text-primary-500 uppercase tracking-[0.4em] italic opacity-60">
+                                <div className="space-y-4">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-500 italic opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
                                         {cat.desc}
                                     </p>
-                                </div>
+                                    <h3 className="text-4xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter leading-none">
+                                        {cat.label}
+                                    </h3>
 
-                                {/* Interactive Signal */}
-                                <div className="mt-12 opacity-0 group-hover:opacity-100 transition-all duration-700 flex items-center gap-4">
-                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Ver Catálogo</span>
-                                    <div className="w-10 h-10 rounded-full bg-primary-600 text-white flex items-center justify-center shadow-lg group-hover:translate-x-2 transition-transform duration-500">
-                                        <ChevronRight size={20} strokeWidth={3} />
+                                    <div className="flex items-center gap-3 pt-6 group-hover:gap-5 transition-all duration-500">
+                                        <div className="w-10 h-[2px] bg-primary-500 group-hover:w-16 transition-all duration-500" />
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 group-hover:text-primary-500">Ver Colección</span>
+                                        <ChevronRight size={14} className="text-neutral-300 group-hover:text-primary-500 opacity-0 group-hover:opacity-100 transition-all" />
                                     </div>
                                 </div>
-                            </button>
-                        </ScrollReveal>
-                    ))}
-                </div>
-
-                {/* Brand Core Values */}
-                <div className="mt-64 grid grid-cols-1 md:grid-cols-3 gap-16 border-t border-neutral-100 dark:border-white/10 pt-24">
-                    {[
-                        { icon: Shield, title: "Garantía Elite", desc: "Soporte de por vida para tu tranquilidad absoluta." },
-                        { icon: Zap, title: "Logística Veloz", desc: "Red de entrega de última generación en todos los territorios." },
-                        { icon: Target, title: "Precisión Pro", desc: "Ingeniería mecánica con tolerancia cero al error." }
-                    ].map((item, i) => (
-                        <div key={i} className="flex flex-col items-center md:items-start text-center md:text-left group">
-                            <div className="w-16 h-16 rounded-[1.5rem] bg-neutral-100 dark:bg-white/5 flex items-center justify-center text-neutral-500 group-hover:text-primary-500 transition-all duration-700 group-hover:shadow-2xl mb-8 group-hover:rotate-12">
-                                <item.icon size={28} strokeWidth={2} />
                             </div>
-                            <h4 className="text-sm font-black uppercase tracking-[0.4em] italic text-neutral-900 dark:text-white mb-4">
-                                {item.title}
-                            </h4>
-                            <p className="text-xs text-neutral-500 font-medium tracking-tight">
-                                {item.desc}
-                            </p>
-                        </div>
+
+                            {/* Hover Overlay */}
+                            <div className="absolute inset-0 bg-primary-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                        </motion.button>
                     ))}
                 </div>
             </div>

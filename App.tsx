@@ -33,6 +33,8 @@ import CustomCursor from './components/CustomCursor';
 
 import { supabase } from './lib/supabase';
 
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronRight } from 'lucide-react';
 import { uploadToBlob, deleteFromBlob } from './lib/vercel-blob';
 
 
@@ -1092,88 +1094,89 @@ const App: React.FC = () => {
           onGymBuilderClick={() => setIsGymBuilderOpen(true)}
         />
 
-        <main className="flex-grow pt-[80px] md:pt-[100px]">
-          {view === 'catalog' && (
-            <div className="animate-fadeIn">
-              <Hero
-                onCartClick={() => {
-                  if (!user) {
-                    setLoginModalInitialView('register');
-                    setPendingCartOpen(true);
-                    setIsLoginModalOpen(true);
-                  } else {
-                    setIsCartOpen(true);
-                  }
-                }}
-                slides={heroSlides}
-                isAdmin={isAdmin}
-                onEdit={() => setIsEditHeroModalOpen(true)}
-                onPromosClick={() => setView('promos')}
-                isLoggedIn={!!user}
-              />
-              {/* Purchase Models Info Window */}
-              <div className="w-full px-4 mt-16 mb-16 max-w-7xl mx-auto">
-                <div className="relative overflow-hidden rounded-[2rem] bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 p-6 md:p-10 shadow-2xl">
-                  {/* Background Effects */}
-                  <div className="absolute top-0 right-0 w-96 h-96 bg-primary-600/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+        <main className="relative z-10 pt-[80px] md:pt-[100px]">
+          <AnimatePresence mode="wait">
+            {view === 'catalog' && (
+              <motion.div
+                key="catalog"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <Hero
+                  onCartClick={() => {
+                    if (!user) {
+                      setLoginModalInitialView('register');
+                      setPendingCartOpen(true);
+                      setIsLoginModalOpen(true);
+                    } else {
+                      setIsCartOpen(true);
+                    }
+                  }}
+                  slides={heroSlides}
+                  isAdmin={isAdmin}
+                  onEdit={() => setIsEditHeroModalOpen(true)}
+                  onPromosClick={() => setView('promos')}
+                  isLoggedIn={!!user}
+                />
 
-                  <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
-                    <div className="text-center lg:text-left space-y-3 max-w-xl">
-                      <h3 className="text-2xl md:text-3xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">
-                        Modelos de <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-600">Inversión</span>
-                      </h3>
-                      <p className="text-neutral-500 dark:text-neutral-400 text-sm md:text-base font-medium leading-relaxed">
-                        En SAGFO te ofrecemos flexibilidad para adquirir tu equipamiento. Elige la modalidad que se adapte a tu flujo de caja.
-                      </p>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-                      {/* Card 1: Disponible */}
-                      <div className="flex-1 min-w-[240px] bg-white dark:bg-white/[0.03] border border-neutral-200 dark:border-white/5 rounded-2xl p-5 backdrop-blur-sm hover:shadow-lg dark:hover:bg-white/[0.06] hover:border-primary-500/20 dark:hover:border-white/20 transition-all duration-300 group cursor-default">
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] group-hover:scale-125 transition-transform"></div>
-                          <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em]">Disponible</span>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-neutral-900 dark:text-white text-lg font-bold">Entrega Inmediata</p>
-                          <p className="text-neutral-400 dark:text-neutral-500 text-[10px] font-bold uppercase tracking-wider">Pago 100% Contra Entrega / Envío</p>
-                        </div>
+                {/* Purchase Models Info Window - CLARITY & LUXURY */}
+                <div className="w-full px-4 md:px-12 mt-20 mb-20 max-w-[1440px] mx-auto">
+                  <div className="relative overflow-hidden rounded-[3rem] premium-glass p-10 md:p-16 border border-white/5 shadow-3xl">
+                    <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-24">
+                      <div className="text-center lg:text-left space-y-4 max-w-xl">
+                        <span className="text-primary-500 font-bold uppercase tracking-[0.4em] text-[10px] mb-2 inline-block">Flexibilidad Corporativa</span>
+                        <h3 className="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter leading-none italic">
+                          Modelos de <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-white">Inversión</span>
+                        </h3>
+                        <p className="text-neutral-500 font-medium leading-relaxed opacity-70">
+                          En SAGFO te ofrecemos flexibilidad para adquirir tu equipamiento. Elige la modalidad que se adapte a tu flujo de caja.
+                        </p>
                       </div>
 
-                      {/* Card 2: Sobre Pedido */}
-                      <div className="flex-1 min-w-[240px] bg-white dark:bg-white/[0.03] border border-neutral-200 dark:border-white/5 rounded-2xl p-5 backdrop-blur-sm hover:shadow-lg dark:hover:bg-white/[0.06] hover:border-primary-500/20 dark:hover:border-white/20 transition-all duration-300 group cursor-default">
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)] group-hover:scale-125 transition-transform"></div>
-                          <span className="text-xs font-black text-amber-600 dark:text-amber-400 uppercase tracking-[0.2em]">Sobre Pedido</span>
+                      <div className="flex flex-col sm:flex-row gap-6 w-full lg:w-auto">
+                        {/* Option 1: Entrega Inmediata */}
+                        <div className="flex-1 min-w-[300px] bg-white dark:bg-white/[0.02] rounded-[2rem] p-8 border border-neutral-100 dark:border-white/5 transition-all duration-500 hover:scale-[1.02] group">
+                          <div className="flex items-center gap-4 mb-6">
+                            <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Disponible</span>
+                          </div>
+                          <p className="text-neutral-900 dark:text-white text-2xl font-black italic uppercase tracking-tighter mb-2">Entrega Inmediata</p>
+                          <p className="text-neutral-500 dark:text-neutral-400 text-[10px] font-bold uppercase tracking-[0.15em]">Pago 100% Contra Entrega / Envío</p>
                         </div>
-                        <div className="space-y-1">
-                          <p className="text-neutral-900 dark:text-white text-lg font-bold">Reserva con 50%</p>
-                          <p className="text-neutral-400 dark:text-neutral-500 text-[10px] font-bold uppercase tracking-wider">50% Restante al Finalizar Fabricación</p>
+
+                        {/* Option 2: Sobre Pedido */}
+                        <div className="flex-1 min-w-[300px] bg-white dark:bg-white/[0.02] rounded-[2rem] p-8 border border-neutral-100 dark:border-white/5 transition-all duration-500 hover:scale-[1.02] group">
+                          <div className="flex items-center gap-4 mb-6">
+                            <div className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">Sobre Pedido</span>
+                          </div>
+                          <p className="text-neutral-900 dark:text-white text-2xl font-black italic uppercase tracking-tighter mb-2">Reserva con 50%</p>
+                          <p className="text-neutral-500 dark:text-neutral-400 text-[10px] font-bold uppercase tracking-[0.15em]">50% Restante al Finalizar Fabricación</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <QuickCategoryNav onSelectCategory={handleSelectQuickCategory} />
-              <div id="catalog" className="w-full px-1 md:px-4 py-8">
-                <div className="w-full bg-white dark:bg-[#111] rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl shadow-neutral-200/50 dark:shadow-[0_30px_60px_rgba(0,0,0,0.35)] overflow-hidden p-4 sm:p-8 md:p-12 border border-neutral-200 dark:border-white/5 relative">
-                  <ProductListHeader
-                    sortOrder={sortOrder}
-                    onSortChange={(e) => setSortOrder(e.target.value as SortOrder)}
-                    categoryFilter={categoryFilter}
-                    onCategoryFilterChange={handleCategoryChange}
-                    searchTerm={searchTerm}
-                    onSearchChange={(e) => setSearchTerm(e.target.value)}
-                    muscleFilter={muscleFilter}
-                    onMuscleFilterChange={(muscle) => setMuscleFilter(muscle)}
-                  />
+                <QuickCategoryNav onSelectCategory={handleSelectQuickCategory} />
 
-                  {categoryFilter === 'Maquinaria' && (
-                    <>
-                      {machinery.length > 0 ? (
+                <div id="catalog" className="w-full px-1 md:px-4 py-8">
+                  <div className="w-full bg-white dark:bg-[#111] rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl overflow-hidden p-4 sm:p-8 md:p-12 border border-neutral-200 dark:border-white/5">
+                    <ProductListHeader
+                      sortOrder={sortOrder}
+                      onSortChange={(e) => setSortOrder(e.target.value as SortOrder)}
+                      categoryFilter={categoryFilter}
+                      onCategoryFilterChange={handleCategoryChange}
+                      searchTerm={searchTerm}
+                      onSearchChange={(e) => setSearchTerm(e.target.value)}
+                      muscleFilter={muscleFilter}
+                      onMuscleFilterChange={(muscle) => setMuscleFilter(muscle)}
+                    />
+
+                    {categoryFilter === 'Maquinaria' && (
+                      machinery.length > 0 ? (
                         <ProductGrid
                           products={machinery}
                           onProductClick={handleProductClick}
@@ -1183,17 +1186,15 @@ const App: React.FC = () => {
                           onEditProduct={handleEditProduct}
                         />
                       ) : (
-                        <div className="text-center py-20 bg-neutral-100 dark:bg-zinc-800 rounded-3xl mt-6">
+                        <div className="text-center py-20 bg-neutral-100 dark:bg-zinc-800/50 rounded-3xl mt-6">
                           <h2 className="text-2xl font-bold text-neutral-400">No hay maquinaria disponible.</h2>
                           <p className="mt-2 text-neutral-500">Vuelve pronto para ver nuestros productos.</p>
                         </div>
-                      )}
-                    </>
-                  )}
+                      )
+                    )}
 
-                  {categoryFilter === 'Accesorios' && (
-                    <>
-                      {accessories.length > 0 ? (
+                    {categoryFilter === 'Accesorios' && (
+                      accessories.length > 0 ? (
                         <ProductGrid
                           products={accessories}
                           onProductClick={handleProductClick}
@@ -1203,115 +1204,124 @@ const App: React.FC = () => {
                           onEditProduct={handleEditProduct}
                         />
                       ) : (
-                        <div className="text-center py-20 bg-neutral-100 dark:bg-zinc-800 rounded-3xl mt-6">
+                        <div className="text-center py-20 bg-neutral-100 dark:bg-zinc-800/50 rounded-3xl mt-6">
                           <h2 className="text-2xl font-bold text-neutral-400">No hay accesorios disponibles.</h2>
                           <p className="mt-2 text-neutral-500">Vuelve pronto para ver nuestros productos.</p>
                         </div>
-                      )}
-                    </>
-                  )}
+                      )
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              <TestimonialsSection />
+                <TestimonialsSection />
+                <EventsSection
+                  events={events}
+                  onEventClick={handleViewEvent}
+                  isAdmin={isAdmin}
+                  onEditEvent={handleOpenEventModal}
+                  onDeleteEvent={handleDeleteEvent}
+                />
+                <GallerySection images={galleryImages} isAdmin={isAdmin} />
+              </motion.div>
+            )}
 
-              <EventsSection
-                events={events}
-                onEventClick={handleViewEvent}
-                isAdmin={isAdmin}
-                onEditEvent={handleOpenEventModal}
-                onDeleteEvent={handleDeleteEvent}
-              />
-              <GallerySection images={galleryImages} isAdmin={isAdmin} />
-            </div>
-          )}
-
-          {view === 'promos' && (
-            <div className="animate-fadeIn w-full px-1 md:px-4 py-8">
-              <div className="max-w-7xl mx-auto">
-                <div className="mb-8">
+            {view === 'promos' && (
+              <motion.div
+                key="promos"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="w-full px-6 py-12 max-w-7xl mx-auto"
+              >
+                <div className="mb-12">
                   <button
                     onClick={() => navigateToView('catalog')}
-                    className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+                    className="flex items-center gap-4 text-neutral-500 hover:text-white transition-colors uppercase font-black tracking-widest text-[10px]"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-                    </svg>
-                    Volver al Catálogo
+                    <ChevronRight size={14} className="rotate-180" />
+                    Regresar al Dashboard
                   </button>
                 </div>
-                <h1 className="text-4xl font-bold text-neutral-900 dark:text-white mb-2">Promociones Especiales</h1>
-                <p className="text-neutral-600 dark:text-neutral-400 mb-8">Aprovecha nuestras ofertas exclusivas</p>
+                <h1 className="text-6xl font-black text-white uppercase tracking-tighter mb-4">Oportunidades <span className="text-primary-500">Elite</span></h1>
+                <p className="text-neutral-500 font-medium mb-12">Adquiere excelencia con condiciones preferenciales.</p>
 
-                {promoProducts.length > 0 ? (
-                  <ProductGrid
-                    products={promoProducts}
-                    onProductClick={handleProductClick}
-                    onToggleCompare={handleToggleCompare}
-                    comparisonList={comparisonList}
-                    isAdmin={isAdmin}
-                    onEditProduct={handleEditProduct}
-                  />
-                ) : (
-                  <div className="text-center py-20 bg-neutral-100 dark:bg-zinc-800 rounded-3xl">
-                    <h2 className="text-2xl font-bold text-neutral-400">No hay promociones activas por el momento.</h2>
-                    <p className="mt-2 text-neutral-500">¡Vuelve pronto para ver nuestras ofertas!</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+                <ProductGrid
+                  products={promoProducts}
+                  onProductClick={handleProductClick}
+                  onToggleCompare={handleToggleCompare}
+                  comparisonList={comparisonList}
+                  isAdmin={isAdmin}
+                  onEditProduct={handleEditProduct}
+                />
+              </motion.div>
+            )}
 
-          {view === 'dashboard' && isAdmin && (
-            <div className="animate-fadeIn">
-              <AdminDashboard
-                products={products}
-                orders={orders}
-                events={events}
-                galleryImages={galleryImages}
-                profiles={profiles}
-                onEditProduct={handleEditProduct}
-                onOpenCreateProductModal={handleOpenCreateProductModal}
-                onEditHero={() => setIsEditHeroModalOpen(true)}
-                onUpdateOrderStatus={handleUpdateOrderStatus}
-                whatsAppNumber={whatsAppNumber}
-                onUpdateWhatsAppNumber={handleUpdateWhatsAppNumber}
-                onSaveEvent={handleSaveEvent}
-                onDeleteEvent={handleDeleteEvent}
-                onOpenEventModal={handleOpenEventModal}
-                onOpenUserModal={handleOpenUserModal}
-                onDeleteProfile={handleDeleteProfile}
-                displayByCategory={displayByCategory}
-                onSetDisplayByCategory={handleSetDisplayByCategory}
-                bankAccounts={bankAccounts}
-                onAddBankAccount={handleAddBankAccount}
-                onDeleteBankAccount={handleDeleteBankAccount}
-                sealUrl={sealUrl}
-                onUpdateSeal={handleUpdateSeal}
-                onUploadSeal={handleUploadSeal}
-                onUpdateItemStatus={handleUpdateItemStatus}
-                onAssignTransporter={handleAssignTransporter}
-                onDeleteProduct={handleDeleteProduct}
-              />
-            </div>
-          )}
+            {view === 'dashboard' && isAdmin && (
+              <motion.div
+                key="admin"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <AdminDashboard
+                  products={products}
+                  orders={orders}
+                  events={events}
+                  galleryImages={galleryImages}
+                  profiles={profiles}
+                  onEditProduct={handleEditProduct}
+                  onOpenCreateProductModal={handleOpenCreateProductModal}
+                  onEditHero={() => setIsEditHeroModalOpen(true)}
+                  onUpdateOrderStatus={handleUpdateOrderStatus}
+                  whatsAppNumber={whatsAppNumber}
+                  onUpdateWhatsAppNumber={handleUpdateWhatsAppNumber}
+                  onSaveEvent={handleSaveEvent}
+                  onDeleteEvent={handleDeleteEvent}
+                  onOpenEventModal={handleOpenEventModal}
+                  onOpenUserModal={handleOpenUserModal}
+                  onDeleteProfile={handleDeleteProfile}
+                  displayByCategory={displayByCategory}
+                  onSetDisplayByCategory={handleSetDisplayByCategory}
+                  bankAccounts={bankAccounts}
+                  onAddBankAccount={handleAddBankAccount}
+                  onDeleteBankAccount={handleDeleteBankAccount}
+                  sealUrl={sealUrl}
+                  onUpdateSeal={handleUpdateSeal}
+                  onUploadSeal={handleUploadSeal}
+                  onUpdateItemStatus={handleUpdateItemStatus}
+                  onAssignTransporter={handleAssignTransporter}
+                  onDeleteProduct={handleDeleteProduct}
+                />
+              </motion.div>
+            )}
 
-          {view === 'transporter_dashboard' && isTransporter && (
-            <div className="animate-fadeIn">
-              <TransporterDashboard
-                orders={orders}
-                onUpdateOrderStatus={handleUpdateOrderStatus}
-                onUpdateItemStatus={handleUpdateItemStatus}
-                currentUserId={user?.id}
-              />
-            </div>
-          )}
+            {view === 'transporter_dashboard' && isTransporter && (
+              <motion.div
+                key="transporter"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <TransporterDashboard
+                  orders={orders}
+                  onUpdateOrderStatus={handleUpdateOrderStatus}
+                  onUpdateItemStatus={handleUpdateItemStatus}
+                  currentUserId={user?.id}
+                />
+              </motion.div>
+            )}
 
-          {view === 'orders' && user && (
-            <div className="animate-fadeIn">
-              <MyOrders orders={userOrders} onBackToCatalog={() => navigateToView('catalog')} />
-            </div>
-          )}
+            {view === 'orders' && user && (
+              <motion.div
+                key="orders"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+              >
+                <MyOrders orders={userOrders} onBackToCatalog={() => navigateToView('catalog')} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </main>
         <Footer sealUrl={sealUrl} />
         <ThemeSwitcher theme={theme} setTheme={setTheme} />

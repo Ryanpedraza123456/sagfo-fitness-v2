@@ -21,10 +21,11 @@
     --shadow-premium: 0 50px 100px -20px rgba(0, 0, 0, 0.25);
 
     --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
-    --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    --gradient-dark: linear-gradient(135deg, #18181b 0%, #09090b 100%);
-    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    --gradient-luxury: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%);
+    --gradient-dark: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8));
+    --premium-blur: blur(24px);
+    --gold: #D4AF37;
+    --gold-bright: #FFD700;
 
     --color-primary: #0ea5e9;
     --color-primary-dark: #0284c7;
@@ -231,17 +232,55 @@ body {
     }
 }
 
-/* Glow */
-@keyframes glow {
+/* === PREMIUM EFFECTS === */
+.premium-glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
 
-    0%,
-    100% {
-        box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
-    }
+.text-reveal {
+    mask-image: linear-gradient(to right, white, white);
+    mask-size: 0% 100%;
+    mask-repeat: no-repeat;
+    transition: mask-size 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
 
-    50% {
-        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
-    }
+.text-reveal-active {
+    mask-size: 100% 100%;
+}
+
+.premium-button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.premium-button:hover::before {
+    width: 300%;
+    height: 300%;
+}
+
+.glow-on-hover:hover {
+    box-shadow: 0 0 30px rgba(14, 165, 233, 0.3);
+}
+
+.hero-gradient {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4), transparent);
 }
 
 /* === UTILITY CLASSES === */
@@ -512,6 +551,21 @@ select:focus {
 /* Badge Pulse */
 .badge-pulse {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* === NOISE TEXTURE === */
+.noise-overlay::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+    filter: contrast(150%) brightness(100%);
 }
 
 /* === RESPONSIVE UTILITIES === */
