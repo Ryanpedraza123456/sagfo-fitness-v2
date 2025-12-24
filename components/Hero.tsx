@@ -58,7 +58,7 @@ const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPro
 
             {/* Text Overlay */}
             <div className="absolute inset-0 flex items-center pt-20 md:pt-0">
-              <div className="container mx-auto px-6 md:px-12">
+              <div className="w-full px-6 md:px-8 lg:px-12 xl:px-16">
                 <div className="max-w-4xl text-white">
                   <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-6">
                     <div className="w-8 md:w-10 h-[2px] bg-primary-500" />

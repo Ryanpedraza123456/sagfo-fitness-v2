@@ -1187,39 +1187,39 @@ const App: React.FC = () => {
                   isLoggedIn={!!user}
                 />
 
-                {/* Purchase Models Info Window - CLARITY & LUXURY */}
+                {/* Purchase Models Info Window - CLEAN & MINIMAL */}
                 <div className="w-full px-4 md:px-12 mt-20 mb-20 max-w-[1440px] mx-auto">
-                  <div className="relative overflow-hidden rounded-[3rem] premium-glass p-10 md:p-16 border border-white/5 shadow-3xl">
-                    <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-24">
-                      <div className="text-center lg:text-left space-y-4 max-w-xl">
-                        <span className="text-primary-500 font-bold uppercase tracking-[0.4em] text-[10px] mb-2 inline-block">Flexibilidad Corporativa</span>
-                        <h3 className="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter leading-none italic">
-                          Modelos de <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-white">Inversión</span>
+                  <div className="relative overflow-hidden rounded-[2.5rem] bg-neutral-100 dark:bg-neutral-900 p-10 md:p-14 border border-neutral-200 dark:border-neutral-800">
+                    <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-20">
+                      <div className="text-center lg:text-left space-y-3 max-w-md">
+                        <span className="text-primary-600 dark:text-primary-400 font-bold uppercase tracking-[0.3em] text-[10px]">Flexibilidad Corporativa</span>
+                        <h3 className="text-3xl md:text-4xl font-black text-neutral-900 dark:text-white uppercase tracking-tight leading-none">
+                          Modelos de <span className="text-primary-600 dark:text-primary-400">Inversión</span>
                         </h3>
-                        <p className="text-neutral-500 font-medium leading-relaxed opacity-70">
-                          En SAGFO te ofrecemos flexibilidad para adquirir tu equipamiento. Elige la modalidad que se adapte a tu flujo de caja.
+                        <p className="text-neutral-600 dark:text-neutral-400 text-sm font-medium leading-relaxed">
+                          Elige la modalidad que se adapte a tu flujo de caja.
                         </p>
                       </div>
 
-                      <div className="flex flex-col sm:flex-row gap-6 w-full lg:w-auto">
+                      <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
                         {/* Option 1: Entrega Inmediata */}
-                        <div className="flex-1 min-w-[300px] bg-white dark:bg-white/[0.02] rounded-[2rem] p-8 border border-neutral-100 dark:border-white/5 transition-all duration-500 hover:scale-[1.02] group">
-                          <div className="flex items-center gap-4 mb-6">
-                            <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Disponible</span>
+                        <div className="flex-1 min-w-[260px] bg-white dark:bg-black rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800 hover:border-emerald-500/50 transition-all duration-300">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Disponible</span>
                           </div>
-                          <p className="text-neutral-900 dark:text-white text-2xl font-black italic uppercase tracking-tighter mb-2">Entrega Inmediata</p>
-                          <p className="text-neutral-500 dark:text-neutral-400 text-[10px] font-bold uppercase tracking-[0.15em]">Pago 100% Contra Entrega / Envío</p>
+                          <p className="text-neutral-900 dark:text-white text-xl font-black uppercase tracking-tight mb-1">Entrega Inmediata</p>
+                          <p className="text-neutral-500 text-[10px] font-medium uppercase tracking-wider">Pago 100% Contra Entrega</p>
                         </div>
 
                         {/* Option 2: Sobre Pedido */}
-                        <div className="flex-1 min-w-[300px] bg-white dark:bg-white/[0.02] rounded-[2rem] p-8 border border-neutral-100 dark:border-white/5 transition-all duration-500 hover:scale-[1.02] group">
-                          <div className="flex items-center gap-4 mb-6">
-                            <div className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">Sobre Pedido</span>
+                        <div className="flex-1 min-w-[260px] bg-white dark:bg-black rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800 hover:border-amber-500/50 transition-all duration-300">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">Sobre Pedido</span>
                           </div>
-                          <p className="text-neutral-900 dark:text-white text-2xl font-black italic uppercase tracking-tighter mb-2">Reserva con 50%</p>
-                          <p className="text-neutral-500 dark:text-neutral-400 text-[10px] font-bold uppercase tracking-[0.15em]">50% Restante al Finalizar Fabricación</p>
+                          <p className="text-neutral-900 dark:text-white text-xl font-black uppercase tracking-tight mb-1">Reserva con 50%</p>
+                          <p className="text-neutral-500 text-[10px] font-medium uppercase tracking-wider">50% al Finalizar Fabricación</p>
                         </div>
                       </div>
                     </div>

@@ -81,15 +81,25 @@ const Footer: React.FC<FooterProps> = ({ sealUrl }) => {
               </div>
             </div>
           </div>
-
           {/* Legal Hub & Entities */}
           <div className="space-y-10">
             <h3 className="font-black text-neutral-900 dark:text-white tracking-[0.4em] uppercase text-[10px] italic border-l-4 border-primary-600 pl-6">Compliance</h3>
             <div className="grid grid-cols-2 gap-4">
-              {['RUES', 'MinTrabajo', 'SIC', 'DIAN'].map((label) => (
-                <div key={label} className="group bg-white dark:bg-white/5 hover:bg-neutral-900 dark:hover:bg-white p-5 rounded-2xl flex items-center justify-center transition-all duration-500 border border-neutral-200 dark:border-white/10 hover:border-transparent h-16 shadow-lg">
-                  <span className="text-[11px] font-black text-neutral-400 group-hover:text-white dark:group-hover:text-neutral-900 transition-colors tracking-widest">{label}</span>
-                </div>
+              {[
+                { label: 'RUES', url: 'https://www.rues.org.co/' },
+                { label: 'MinTrabajo', url: 'https://www.mintrabajo.gov.co/' },
+                { label: 'SIC', url: 'https://www.sic.gov.co/' },
+                { label: 'DIAN', url: 'https://www.dian.gov.co/' }
+              ].map((item) => (
+                <a
+                  key={item.label}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group bg-white dark:bg-white/5 hover:bg-neutral-900 dark:hover:bg-white p-5 rounded-2xl flex items-center justify-center transition-all duration-500 border border-neutral-200 dark:border-white/10 hover:border-transparent h-16 shadow-lg cursor-pointer"
+                >
+                  <span className="text-[11px] font-black text-neutral-400 group-hover:text-white dark:group-hover:text-neutral-900 transition-colors tracking-widest">{item.label}</span>
+                </a>
               ))}
             </div>
             <div className="pt-6 border-t border-neutral-200 dark:border-white/5 space-y-4">
@@ -117,10 +127,6 @@ const Footer: React.FC<FooterProps> = ({ sealUrl }) => {
           </div>
 
           <div className="flex flex-col items-center md:items-end space-y-3">
-            <div className="flex items-center gap-2 text-primary-600 font-black italic uppercase text-[10px] tracking-widest group cursor-pointer hover:translate-x-1 transition-transform">
-              <span>Visit Elite HQ</span>
-              <ExternalLink size={12} strokeWidth={3} />
-            </div>
             <p className="text-[10px] font-medium text-neutral-400">
               Premium Development by <span className="font-black text-neutral-900 dark:text-white italic uppercase group hover:text-primary-600 transition-all cursor-pointer">Ryan Pedraza</span>
             </p>
