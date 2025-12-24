@@ -130,6 +130,7 @@ const App: React.FC = () => {
   const [viewingEvent, setViewingEvent] = useState<Event | null>(null);
   const [pendingCartOpen, setPendingCartOpen] = useState(false);
   const [sealUrl, setSealUrl] = useState('');
+  const [loginModalInitialView, setLoginModalInitialView] = useState<'login' | 'register'>('login');
 
   const isAdmin = user?.role === 'admin';
   const isTransporter = user?.role === 'transporter';
@@ -754,10 +755,10 @@ const App: React.FC = () => {
 
   const handleSelectQuickCategory = (category: MuscleFilter) => {
     // Determine parent category based on selection
-    if (['Mancuernas', 'Discos', 'Barras', 'Agarres', 'Soportes', 'Peso Libre'].includes(category)) {
+    if (['Mancuernas', 'Discos', 'Barras', 'Agarres', 'Soportes', 'Peso Libre', 'Bancos'].includes(category)) {
       setCategoryFilter('Accesorios');
     } else {
-      setCategoryFilter('Maquinaria'); // Cardio, Bancos, etc.
+      setCategoryFilter('Maquinaria'); // Cardio, etc.
     }
     setMuscleFilter(category);
 
@@ -1077,65 +1078,78 @@ const App: React.FC = () => {
 
         <NotificationToast notification={notification} onClose={() => setNotification(null)} />
         <Header
-          cartCount={cartTotalQuantity}
           onCartClick={() => setIsCartOpen(true)}
-          onLoginClick={() => setIsLoginModalOpen(true)}
-          onGymBuilderClick={() => setIsGymBuilderOpen(true)}
+          cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
           onNavigate={navigateToView}
+          onLoginClick={() => {
+            setLoginModalInitialView('login');
+            setIsLoginModalOpen(true);
+          }}
           onAdminViewToggle={handleAdminViewToggle}
           adminView={view === 'dashboard' ? 'dashboard' : 'site'}
           searchTerm={searchTerm}
           onSearchChange={(e) => setSearchTerm(e.target.value)}
+          onGymBuilderClick={() => setIsGymBuilderOpen(true)}
         />
-        <main>
+
+        <main className="flex-grow pt-[80px] md:pt-[100px]">
           {view === 'catalog' && (
-            <>
+            <div className="animate-fadeIn">
               <Hero
-                onCartClick={() => setIsCartOpen(true)}
+                onCartClick={() => {
+                  if (!user) {
+                    setLoginModalInitialView('register');
+                    setPendingCartOpen(true);
+                    setIsLoginModalOpen(true);
+                  } else {
+                    setIsCartOpen(true);
+                  }
+                }}
                 slides={heroSlides}
                 isAdmin={isAdmin}
-                onEdit={() => { if (isAdmin) setIsEditHeroModalOpen(true); }}
-                onPromosClick={() => navigateToView('promos')}
+                onEdit={() => setIsEditHeroModalOpen(true)}
+                onPromosClick={() => setView('promos')}
+                isLoggedIn={!!user}
               />
               {/* Purchase Models Info Window */}
-              <div className="w-full px-4 mt-16 mb-16 max-w-7xl mx-auto animate-fadeIn">
-                <div className="relative overflow-hidden rounded-[2rem] bg-neutral-900 border border-white/10 p-6 md:p-10 shadow-2xl">
+              <div className="w-full px-4 mt-16 mb-16 max-w-7xl mx-auto">
+                <div className="relative overflow-hidden rounded-[2rem] bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 p-6 md:p-10 shadow-2xl">
                   {/* Background Effects */}
                   <div className="absolute top-0 right-0 w-96 h-96 bg-primary-600/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
                   <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
 
                   <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
                     <div className="text-center lg:text-left space-y-3 max-w-xl">
-                      <h3 className="text-2xl md:text-3xl font-black text-white uppercase italic tracking-tighter">
+                      <h3 className="text-2xl md:text-3xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">
                         Modelos de <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-600">Inversión</span>
                       </h3>
-                      <p className="text-neutral-400 text-sm md:text-base font-medium leading-relaxed">
+                      <p className="text-neutral-500 dark:text-neutral-400 text-sm md:text-base font-medium leading-relaxed">
                         En SAGFO te ofrecemos flexibilidad para adquirir tu equipamiento. Elige la modalidad que se adapte a tu flujo de caja.
                       </p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
                       {/* Card 1: Disponible */}
-                      <div className="flex-1 min-w-[240px] bg-white/[0.03] border border-white/5 rounded-2xl p-5 backdrop-blur-sm hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300 group cursor-default">
+                      <div className="flex-1 min-w-[240px] bg-white dark:bg-white/[0.03] border border-neutral-200 dark:border-white/5 rounded-2xl p-5 backdrop-blur-sm hover:shadow-lg dark:hover:bg-white/[0.06] hover:border-primary-500/20 dark:hover:border-white/20 transition-all duration-300 group cursor-default">
                         <div className="flex items-center gap-3 mb-3">
                           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] group-hover:scale-125 transition-transform"></div>
-                          <span className="text-xs font-black text-emerald-400 uppercase tracking-[0.2em]">Disponible</span>
+                          <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em]">Disponible</span>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-white text-lg font-bold">Entrega Inmediata</p>
-                          <p className="text-neutral-500 text-[10px] font-bold uppercase tracking-wider">Pago 100% Contra Entrega / Envío</p>
+                          <p className="text-neutral-900 dark:text-white text-lg font-bold">Entrega Inmediata</p>
+                          <p className="text-neutral-400 dark:text-neutral-500 text-[10px] font-bold uppercase tracking-wider">Pago 100% Contra Entrega / Envío</p>
                         </div>
                       </div>
 
                       {/* Card 2: Sobre Pedido */}
-                      <div className="flex-1 min-w-[240px] bg-white/[0.03] border border-white/5 rounded-2xl p-5 backdrop-blur-sm hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300 group cursor-default">
+                      <div className="flex-1 min-w-[240px] bg-white dark:bg-white/[0.03] border border-neutral-200 dark:border-white/5 rounded-2xl p-5 backdrop-blur-sm hover:shadow-lg dark:hover:bg-white/[0.06] hover:border-primary-500/20 dark:hover:border-white/20 transition-all duration-300 group cursor-default">
                         <div className="flex items-center gap-3 mb-3">
                           <div className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)] group-hover:scale-125 transition-transform"></div>
-                          <span className="text-xs font-black text-amber-400 uppercase tracking-[0.2em]">Sobre Pedido</span>
+                          <span className="text-xs font-black text-amber-600 dark:text-amber-400 uppercase tracking-[0.2em]">Sobre Pedido</span>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-white text-lg font-bold">Reserva con 50%</p>
-                          <p className="text-neutral-500 text-[10px] font-bold uppercase tracking-wider">50% Restante al Finalizar Fabricación</p>
+                          <p className="text-neutral-900 dark:text-white text-lg font-bold">Reserva con 50%</p>
+                          <p className="text-neutral-400 dark:text-neutral-500 text-[10px] font-bold uppercase tracking-wider">50% Restante al Finalizar Fabricación</p>
                         </div>
                       </div>
                     </div>
@@ -1209,89 +1223,95 @@ const App: React.FC = () => {
                 onDeleteEvent={handleDeleteEvent}
               />
               <GallerySection images={galleryImages} isAdmin={isAdmin} />
-            </>
+            </div>
           )}
 
           {view === 'promos' && (
-            <>
-              <div className="w-full px-1 md:px-4 py-8">
-                <div className="max-w-7xl mx-auto">
-                  <div className="mb-8">
-                    <button
-                      onClick={() => navigateToView('catalog')}
-                      className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-                      </svg>
-                      Volver al Catálogo
-                    </button>
-                  </div>
-                  <h1 className="text-4xl font-bold text-neutral-900 dark:text-white mb-2">Promociones Especiales</h1>
-                  <p className="text-neutral-600 dark:text-neutral-400 mb-8">Aprovecha nuestras ofertas exclusivas</p>
-
-                  {promoProducts.length > 0 ? (
-                    <ProductGrid
-                      products={promoProducts}
-                      onProductClick={handleProductClick}
-                      onToggleCompare={handleToggleCompare}
-                      comparisonList={comparisonList}
-                      isAdmin={isAdmin}
-                      onEditProduct={handleEditProduct}
-                    />
-                  ) : (
-                    <div className="text-center py-20 bg-neutral-100 dark:bg-zinc-800 rounded-3xl">
-                      <h2 className="text-2xl font-bold text-neutral-400">No hay promociones activas por el momento.</h2>
-                      <p className="mt-2 text-neutral-500">¡Vuelve pronto para ver nuestras ofertas!</p>
-                    </div>
-                  )}
+            <div className="animate-fadeIn w-full px-1 md:px-4 py-8">
+              <div className="max-w-7xl mx-auto">
+                <div className="mb-8">
+                  <button
+                    onClick={() => navigateToView('catalog')}
+                    className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                    </svg>
+                    Volver al Catálogo
+                  </button>
                 </div>
+                <h1 className="text-4xl font-bold text-neutral-900 dark:text-white mb-2">Promociones Especiales</h1>
+                <p className="text-neutral-600 dark:text-neutral-400 mb-8">Aprovecha nuestras ofertas exclusivas</p>
+
+                {promoProducts.length > 0 ? (
+                  <ProductGrid
+                    products={promoProducts}
+                    onProductClick={handleProductClick}
+                    onToggleCompare={handleToggleCompare}
+                    comparisonList={comparisonList}
+                    isAdmin={isAdmin}
+                    onEditProduct={handleEditProduct}
+                  />
+                ) : (
+                  <div className="text-center py-20 bg-neutral-100 dark:bg-zinc-800 rounded-3xl">
+                    <h2 className="text-2xl font-bold text-neutral-400">No hay promociones activas por el momento.</h2>
+                    <p className="mt-2 text-neutral-500">¡Vuelve pronto para ver nuestras ofertas!</p>
+                  </div>
+                )}
               </div>
-            </>
+            </div>
           )}
 
           {view === 'dashboard' && isAdmin && (
-            <AdminDashboard
-              products={products}
-              orders={orders}
-              events={events}
-              galleryImages={galleryImages}
-              profiles={profiles}
-              onEditProduct={handleEditProduct}
-              onOpenCreateProductModal={handleOpenCreateProductModal}
-              onEditHero={() => setIsEditHeroModalOpen(true)}
-              onUpdateOrderStatus={handleUpdateOrderStatus}
-              whatsAppNumber={whatsAppNumber}
-              onUpdateWhatsAppNumber={handleUpdateWhatsAppNumber}
-              onSaveEvent={handleSaveEvent}
-              onDeleteEvent={handleDeleteEvent}
-              onOpenEventModal={handleOpenEventModal}
-              onOpenUserModal={handleOpenUserModal}
-              onDeleteProfile={handleDeleteProfile}
-              displayByCategory={displayByCategory}
-              onSetDisplayByCategory={handleSetDisplayByCategory}
-              bankAccounts={bankAccounts}
-              onAddBankAccount={handleAddBankAccount}
-              onDeleteBankAccount={handleDeleteBankAccount}
-              sealUrl={sealUrl}
-              onUpdateSeal={handleUpdateSeal}
-              onUploadSeal={handleUploadSeal}
-              onUpdateItemStatus={handleUpdateItemStatus}
-              onAssignTransporter={handleAssignTransporter}
-              onDeleteProduct={handleDeleteProduct}
-            />
+            <div className="animate-fadeIn">
+              <AdminDashboard
+                products={products}
+                orders={orders}
+                events={events}
+                galleryImages={galleryImages}
+                profiles={profiles}
+                onEditProduct={handleEditProduct}
+                onOpenCreateProductModal={handleOpenCreateProductModal}
+                onEditHero={() => setIsEditHeroModalOpen(true)}
+                onUpdateOrderStatus={handleUpdateOrderStatus}
+                whatsAppNumber={whatsAppNumber}
+                onUpdateWhatsAppNumber={handleUpdateWhatsAppNumber}
+                onSaveEvent={handleSaveEvent}
+                onDeleteEvent={handleDeleteEvent}
+                onOpenEventModal={handleOpenEventModal}
+                onOpenUserModal={handleOpenUserModal}
+                onDeleteProfile={handleDeleteProfile}
+                displayByCategory={displayByCategory}
+                onSetDisplayByCategory={handleSetDisplayByCategory}
+                bankAccounts={bankAccounts}
+                onAddBankAccount={handleAddBankAccount}
+                onDeleteBankAccount={handleDeleteBankAccount}
+                sealUrl={sealUrl}
+                onUpdateSeal={handleUpdateSeal}
+                onUploadSeal={handleUploadSeal}
+                onUpdateItemStatus={handleUpdateItemStatus}
+                onAssignTransporter={handleAssignTransporter}
+                onDeleteProduct={handleDeleteProduct}
+              />
+            </div>
           )}
 
           {view === 'transporter_dashboard' && isTransporter && (
-            <TransporterDashboard
-              orders={orders}
-              onUpdateOrderStatus={handleUpdateOrderStatus}
-              onUpdateItemStatus={handleUpdateItemStatus}
-              currentUserId={user?.id}
-            />
+            <div className="animate-fadeIn">
+              <TransporterDashboard
+                orders={orders}
+                onUpdateOrderStatus={handleUpdateOrderStatus}
+                onUpdateItemStatus={handleUpdateItemStatus}
+                currentUserId={user?.id}
+              />
+            </div>
           )}
 
-          {view === 'orders' && user && <MyOrders orders={userOrders} onBackToCatalog={() => navigateToView('catalog')} />}
+          {view === 'orders' && user && (
+            <div className="animate-fadeIn">
+              <MyOrders orders={userOrders} onBackToCatalog={() => navigateToView('catalog')} />
+            </div>
+          )}
         </main>
         <Footer sealUrl={sealUrl} />
         <ThemeSwitcher theme={theme} setTheme={setTheme} />
@@ -1329,7 +1349,11 @@ const App: React.FC = () => {
           isOpen={isComparisonModalOpen}
           onClose={() => setIsComparisonModalOpen(false)}
         />
-        <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          initialView={loginModalInitialView}
+        />
         <EditHeroModal
           isOpen={isEditHeroModalOpen}
           onClose={() => setIsEditHeroModalOpen(false)}

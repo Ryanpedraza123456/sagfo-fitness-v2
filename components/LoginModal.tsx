@@ -10,11 +10,18 @@ import { useMemo } from 'react';
 interface LoginModalProps {
     isOpen: boolean;
     onClose: () => void;
+    initialView?: 'login' | 'register';
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, initialView = 'login' }) => {
     const { login, register } = useAuth();
-    const [view, setView] = useState<'login' | 'register'>('login');
+    const [view, setView] = useState<'login' | 'register'>(initialView);
+
+    useEffect(() => {
+        if (isOpen) {
+            setView(initialView);
+        }
+    }, [isOpen, initialView]);
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -39,7 +46,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 setDepartment('');
                 setCountry('Colombia');
                 setError('');
-                setView('login');
+                setView(initialView);
             }, 300); // Wait for closing animation
         }
     }, [isOpen]);

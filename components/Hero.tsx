@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HeroSlide } from '../types';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Edit3, ArrowUpRight } from 'lucide-react';
 
 interface HeroProps {
   onCartClick: () => void;
@@ -8,17 +8,18 @@ interface HeroProps {
   isAdmin: boolean;
   onEdit: () => void;
   onPromosClick: () => void;
+  isLoggedIn: boolean;
 }
 
-const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPromosClick }) => {
+const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPromosClick, isLoggedIn }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Auto-rotate slides every 6 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
+    if (slides.length <= 1) return;
+    const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(interval);
+    }, 8000);
+    return () => clearInterval(timer);
   }, [slides.length]);
 
   const nextSlide = () => {
@@ -32,122 +33,110 @@ const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPro
   if (slides.length === 0) return null;
 
   return (
-    <div className="relative bg-[#050505] text-white h-[600px] md:h-[750px] overflow-hidden group rounded-b-[3rem] shadow-2xl">
+    <div className="relative h-[80vh] md:h-[90vh] w-full overflow-hidden bg-black">
       {isAdmin && (
         <button
           onClick={onEdit}
-          className="absolute top-10 right-10 z-[60] bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold uppercase tracking-widest text-[10px] py-3 px-6 rounded-xl transition-all border border-white/20"
+          className="absolute top-8 right-8 z-50 bg-white/10 hover:bg-white text-white hover:text-black p-4 rounded-2xl backdrop-blur-xl transition-all duration-500 shadow-2xl group border border-white/10"
         >
-          Configurar Banners
+          <Edit3 size={20} className="group-hover:rotate-[15deg] transition-transform" />
         </button>
       )}
 
       {/* Slides Loop */}
       {slides.map((slide, index) => (
         <div
-          key={slide.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
-            }`}
+          key={index}
+          className={`absolute inset-0 transition-all duration-[1500ms] cubic-bezier(0.4, 0, 0.2, 1) ${index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-100 pointer-events-none'}`}
         >
-          {/* Background Image & Overlay */}
-          <div className="absolute inset-0 z-0">
+          {/* Background Image - Restored to Cover for full immersive experience */}
+          <div className="absolute inset-0 overflow-hidden">
             <img
               src={slide.imageUrl}
-              alt="Hero Background"
-              className={`w-full h-full object-cover transition-transform duration-[10s] ease-out ${index === currentSlide ? 'scale-105' : 'scale-100'}`}
-              loading={index === 0 ? "eager" : "lazy"}
+              alt={slide.titleLine1}
+              className={`w-full h-full object-cover object-center transition-all duration-[1000ms] ease-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
             />
-            {/* Soft Gradient for text readability only - preventing 'blackout' */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent z-[1]"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-60 z-[1]"></div>
+            {/* Multi-layered Overlays for Text Legibility */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
           </div>
 
-          {/* Content Container */}
-          {index === currentSlide && (
-            <div className="relative z-20 container mx-auto px-6 sm:px-12 lg:px-24 h-full flex flex-col justify-center items-start text-left pt-12">
-              <div className="max-w-4xl space-y-8 animate-fadeIn">
+          {/* Content Architecture - Left Aligned for "Distributed" feel */}
+          <div className="relative z-20 h-full container mx-auto px-10 md:px-16 lg:px-24 flex flex-col justify-center">
+            <div className="max-w-4xl">
+              <div className={`space-y-6 transition-all duration-1000 delay-300 ${index === currentSlide ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
 
-                {/* Brand Badge - Clean & Premium */}
-                <div className="flex items-center space-x-4 mb-2 animate-slideInRight" style={{ animationDelay: '0.1s' }}>
-                  <div className="w-12 h-[2px] bg-primary-500 shadow-[0_0_15px_rgba(14,165,233,0.6)]"></div>
-                  <span className="text-xs font-bold tracking-[0.3em] text-white/90 uppercase">Elite Series</span>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-[2px] bg-primary-600 rounded-full" />
+                  <span className="text-primary-500 font-black uppercase tracking-[0.5em] text-[10px] italic">Elite Fitness Experience</span>
                 </div>
 
-                {/* Main Title - Bold & Professional */}
-                <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-[1.1] tracking-tight animate-slideInUp" style={{ animationDelay: '0.2s' }}>
-                  {slide.titleLine1}
-                  <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-600">{slide.titleLine2}</span>
+                <h1 className="text-5xl md:text-8xl lg:text-9xl font-black text-white uppercase italic tracking-tighter leading-[0.85] flex flex-col">
+                  {slide.titleLine1 && <span className="block drop-shadow-2xl">{slide.titleLine1}</span>}
+                  {slide.titleLine2 && (
+                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-600 drop-shadow-2xl">
+                      {slide.titleLine2}
+                    </span>
+                  )}
                 </h1>
 
-                {/* Subtitle */}
-                <p className="max-w-xl text-lg md:text-2xl text-white font-medium leading-relaxed drop-shadow-md animate-slideInUp" style={{ animationDelay: '0.3s' }}>
-                  {slide.subtitle}
-                </p>
+                {slide.subtitle && (
+                  <p className="text-neutral-300 text-lg md:text-xl font-medium max-w-xl leading-relaxed italic opacity-90 border-l-4 border-primary-600 pl-6 drop-shadow-md">
+                    {slide.subtitle}
+                  </p>
+                )}
 
-                {/* Action Buttons - Elegant Pills */}
-                <div className="pt-8 flex flex-col sm:flex-row gap-5 animate-slideInUp" style={{ animationDelay: '0.4s' }}>
+                <div className="flex flex-wrap gap-5 pt-12 md:pt-16">
                   <button
                     onClick={onCartClick}
-                    className="bg-white text-black text-sm font-bold uppercase tracking-widest py-4 px-10 rounded-full hover:bg-neutral-100 transition-all shadow-lg hover:scale-105 active:scale-95"
+                    className="group relative bg-white text-black px-12 py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-xs hover:bg-primary-600 hover:text-white transition-all duration-500 shadow-2xl active:scale-95 overflow-hidden"
                   >
-                    Comenzar Pedido
+                    <span className="relative z-10 flex items-center gap-2">
+                      {isLoggedIn ? 'Ver Catálogo' : 'Regístrate'} <ArrowUpRight size={18} strokeWidth={3} />
+                    </span>
                   </button>
-
                   <button
                     onClick={onPromosClick}
-                    className="bg-black/30 backdrop-blur-md border border-white/30 text-white text-sm font-bold uppercase tracking-widest py-4 px-10 rounded-full hover:bg-white/10 hover:border-white transition-all active:scale-95"
+                    className="group px-12 py-5 rounded-2xl border border-white/20 text-white font-black uppercase tracking-[0.3em] text-xs hover:bg-white hover:text-black transition-all duration-500 backdrop-blur-md active:scale-95"
                   >
-                    Ver Promociones
+                    Promociones
                   </button>
                 </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
       ))}
 
-      {/* Navigation Controls */}
+      {/* Modern Navigation Controls */}
       {slides.length > 1 && (
         <>
-          {/* Arrows */}
-          <div className="hidden md:flex absolute right-12 bottom-12 z-[50] space-x-4">
-            <button
-              onClick={prevSlide}
-              className="w-14 h-14 rounded-full border border-white/10 bg-white/5 text-white flex items-center justify-center hover:bg-primary-600 hover:border-primary-600 transition-all duration-300 backdrop-blur-md group"
-            >
-              <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="w-14 h-14 rounded-full border border-white/10 bg-white/5 text-white flex items-center justify-center hover:bg-primary-600 hover:border-primary-600 transition-all duration-300 backdrop-blur-md group"
-            >
-              <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-
-          {/* Indicators */}
-          <div className="absolute left-8 md:left-24 bottom-16 z-[50] flex items-center space-x-3">
-            {slides.map((_, index) => (
+          <div className="absolute bottom-12 left-12 z-30 flex items-center gap-4">
+            {slides.map((_, idx) => (
               <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`h - 1.5 rounded - full transition - all duration - 500 ${index === currentSlide ? 'bg-primary-500 w-12 shadow-[0_0_10px_rgba(14,165,233,0.5)]' : 'bg-white/20 w-8 hover:bg-white/40'} `}
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`h-1 transition-all duration-700 rounded-full ${idx === currentSlide ? 'w-16 bg-primary-600' : 'w-8 bg-white/20 hover:bg-white/40'}`}
               />
             ))}
           </div>
+
+          <div className="absolute bottom-12 right-12 z-30 flex gap-4">
+            <button
+              onClick={prevSlide}
+              className="w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all duration-500 backdrop-blur-xl group"
+            >
+              <ChevronLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all duration-500 backdrop-blur-xl group"
+            >
+              <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
         </>
       )}
-
-      {/* Smooth Animations */}
-      <style>{`
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideInRight { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-        .animate - fadeIn { animation: fadeIn 1s ease - out forwards; }
-        .animate - slideInUp { animation: slideInUp 0.8s cubic - bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        .animate - slideInRight { animation: slideInRight 0.8s cubic - bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-`}</style>
     </div>
   );
 };
