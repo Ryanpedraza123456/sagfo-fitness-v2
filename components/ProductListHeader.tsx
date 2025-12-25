@@ -1,7 +1,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { SortOrder, CategoryFilter, MuscleFilter } from '../types';
-import { Layers, Package, SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { Layers, Package, Search, ChevronDown } from 'lucide-react';
 
 interface ProductListHeaderProps {
   sortOrder: SortOrder;
@@ -73,14 +73,14 @@ const ProductListHeader: React.FC<ProductListHeaderProps> = ({ sortOrder, onSort
         <div className="flex-grow max-w-2xl w-full hidden md:block">
           <div className="relative group">
             <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none group-focus-within:text-primary-600 transition-colors">
-              <SlidersHorizontal size={18} strokeWidth={3} className="opacity-40" />
+              <Search size={18} strokeWidth={3} className="text-neutral-400 dark:text-neutral-500 opacity-60 group-focus-within:opacity-100" />
             </div>
             <input
               type="text"
               placeholder="EXPLORAR INGENIERÍA SAGFO..."
               value={searchTerm}
               onChange={onSearchChange}
-              className="w-full h-14 md:h-16 pl-14 md:pl-16 pr-8 bg-neutral-50 dark:bg-white/[0.03] border border-neutral-100 dark:border-white/5 rounded-[2rem] text-[10px] md:text-xs font-black uppercase tracking-widest placeholder:text-neutral-300 dark:placeholder:text-neutral-700 focus:outline-none focus:ring-4 focus:ring-primary-600/5 focus:bg-white dark:focus:bg-black transition-all duration-500 shadow-sm"
+              className="w-full h-14 md:h-16 pl-14 md:pl-16 pr-8 bg-neutral-50 dark:bg-zinc-900 border border-neutral-100 dark:border-white/5 rounded-[2rem] text-[10px] md:text-xs font-black uppercase tracking-widest text-neutral-900 dark:text-white placeholder:text-neutral-300 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-4 focus:ring-primary-600/5 focus:bg-white dark:focus:bg-zinc-800 transition-all duration-500 shadow-sm"
             />
           </div>
         </div>

@@ -172,8 +172,8 @@ const EditHeroModal: React.FC<EditHeroModalProps> = ({ isOpen, onClose, slides, 
                                         <div className="space-y-3">
                                             <label className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-primary-600 italic px-4"><ImageIcon className="w-4 h-4" /> Cinematografía (Imagen)</label>
                                             <div className="relative group">
-                                                <input type="file" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer z-20" />
-                                                <div className="w-full p-6 rounded-[2rem] bg-neutral-100 dark:bg-white/5 border-2 border-dashed border-neutral-200 dark:border-white/10 flex items-center justify-center gap-4 group-hover:bg-primary-600/5 group-hover:border-primary-600/30 transition-all">
+                                                <input type="file" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer z-[10]" />
+                                                <div className="w-full p-6 rounded-[2rem] bg-neutral-100 dark:bg-white/5 border-2 border-dashed border-neutral-200 dark:border-white/10 flex items-center justify-center gap-4 group-hover:bg-primary-600/5 group-hover:border-primary-600/30 transition-all pointer-events-none">
                                                     <div className="w-12 h-12 rounded-2xl bg-white dark:bg-white/10 flex items-center justify-center shadow-xl group-hover:rotate-12 transition-transform">
                                                         <Plus className="text-primary-600" />
                                                     </div>

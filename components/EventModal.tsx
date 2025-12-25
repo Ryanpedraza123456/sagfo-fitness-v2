@@ -81,8 +81,13 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSave, event 
                 <p className="text-[10px] text-primary-600 font-bold uppercase tracking-widest italic">Gestión de Narrativa y Presencia de Marca</p>
               </div>
             </div>
-            <button type="button" onClick={onClose} className="p-4 rounded-full bg-neutral-100 dark:bg-white/5 text-neutral-500 hover:text-red-500 hover:bg-red-500/10 transition-all">
-              <X className="w-6 h-6" />
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-14 h-14 flex items-center justify-center rounded-2xl bg-neutral-100 dark:bg-white/5 text-neutral-500 hover:bg-red-500 hover:text-white hover:rotate-90 transition-all duration-500 border border-neutral-200 dark:border-white/5"
+              aria-label="Cerrar"
+            >
+              <X className="w-8 h-8 stroke-[3]" />
             </button>
           </div>
 
@@ -182,7 +187,7 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, onSave, event 
                 </div>
                 <div>
                   <p className="text-[10px] font-black text-neutral-900 dark:text-white uppercase italic">Impacto Sincronizado</p>
-                  <p className="text-[9px] text-neutral-500 font-bold uppercase tracking-widest">Este evento será visible globalmente al guardar.</p>
+                  <p className="text-[9px] text-neutral-500 dark:text-neutral-400 font-bold uppercase tracking-widest">Este evento será visible globalmente al guardar.</p>
                 </div>
               </div>
               <div className="flex gap-4 w-full md:w-auto">

@@ -131,7 +131,8 @@ export interface BankAccount {
   bankName: string;
   accountNumber: string;
   accountType: string;
-  holderName?: string;
+  holderName: string;
+  holderId?: string;
 }
 
 export type Theme = 'light' | 'dark' | 'auto';

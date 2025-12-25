@@ -1,5 +1,6 @@
 import React from 'react';
 import { EquipmentItem } from '../types';
+import { X } from 'lucide-react';
 
 interface ComparisonModalProps {
   isOpen: boolean;
@@ -39,11 +40,9 @@ const ComparisonModal: React.FC<ComparisonModalProps> = ({ isOpen, onClose, item
           </div>
           <button
             onClick={onClose}
-            className="p-4 rounded-full bg-neutral-100 dark:bg-white/5 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-all hover:scale-110 active:scale-95 border border-white/20"
+            className="w-14 h-14 flex items-center justify-center rounded-2xl bg-neutral-100 dark:bg-white/5 text-neutral-500 hover:bg-white hover:text-black hover:rotate-90 transition-all duration-500 border border-neutral-200 dark:border-white/5 shadow-xl group"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+            <X size={28} className="group-hover:stroke-[3] transition-all" />
           </button>
         </div>
 

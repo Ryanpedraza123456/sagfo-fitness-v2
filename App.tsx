@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { EquipmentItem, Order, OrderStatus, Event, GalleryImage, Profile, CartItem, PaymentMethod, HeroSlide, BankAccount, OrderStatusHistory, Theme, SortOrder, CategoryFilter, MuscleFilter, DeliveryStatus } from './types';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -34,7 +34,7 @@ import CustomCursor from './components/CustomCursor';
 import { supabase } from './lib/supabase';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ShoppingBag } from 'lucide-react';
 import { uploadToBlob, deleteFromBlob } from './lib/vercel-blob';
 
 
@@ -72,13 +72,16 @@ const App: React.FC = () => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
 
   // Galería derivada de los productos para evitar duplicidad de datos
-  const galleryImages: GalleryImage[] = products.flatMap((p, pIdx) =>
-    p.imageUrls.map((url, iIdx) => ({
-      id: `gallery-${p.id}-${iIdx}`,
-      imageUrl: url,
-      caption: p.name
-    }))
-  );
+  // Galería derivada de los productos con Memoización para Estabilidad
+  const galleryImages: GalleryImage[] = useMemo(() => {
+    return products.flatMap((p) =>
+      p.imageUrls.filter(url => url && url.startsWith('http')).map((url, iIdx) => ({
+        id: `gallery-${p.id}-${iIdx}`,
+        imageUrl: url,
+        caption: p.name
+      }))
+    );
+  }, [products]);
 
   const [selectedProduct, setSelectedProduct] = useState<EquipmentItem | null>(null);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -462,6 +465,10 @@ const App: React.FC = () => {
         if (error) throw error;
 
         setProducts(products.map(p => p.id === selectedProduct.id ? cleanedProduct : p));
+
+        // Sincronización Real con DB
+        await refetchAll();
+
         setNotification({ id: Date.now(), type: 'success', message: 'Producto actualizado exitosamente.' });
       } else {
         const newId = `prod-${Date.now()}`;
@@ -488,6 +495,10 @@ const App: React.FC = () => {
 
         if (error) throw error;
         setProducts([newProduct, ...products]);
+
+        // Sincronización Real con DB
+        await refetchAll();
+
         setNotification({ id: Date.now(), type: 'success', message: 'Producto creado exitosamente.' });
       }
       setIsProductModalOpen(false);
@@ -507,6 +518,7 @@ const App: React.FC = () => {
     if (!isAdmin) return;
 
     try {
+      console.log('🗑️ Intentando eliminar producto ID:', productId);
       const { error } = await supabase
         .from('equipment')
         .update({ is_deleted: true })
@@ -514,10 +526,15 @@ const App: React.FC = () => {
 
       if (error) throw error;
 
+      // Actualización optimista
       setProducts(products.filter(p => p.id !== productId));
+
+      // Forzar Sincronización Real
+      await refetchAll();
+
       setNotification({ id: Date.now(), type: 'success', message: 'Producto eliminado correctamente.' });
     } catch (error: any) {
-      console.error('Error deleting product:', error);
+      console.error('❌ Error deleting product:', error);
       setNotification({ id: Date.now(), type: 'error', message: 'Error al eliminar el producto.' });
     }
   };
@@ -894,10 +911,7 @@ const App: React.FC = () => {
   });
 
   const promoProducts = sortedAndSearchedProducts.filter(p =>
-    p.isPromotion &&
-    p.promotionalPrice &&
-    p.promotionalPrice > 0 &&
-    p.promotionalPrice < p.price
+    p.isPromotion || (p.promotionalPrice && p.promotionalPrice > 0 && p.promotionalPrice < p.price)
   );
   const cartTotalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const userOrders = user ? orders.filter(order => order.userId === user.id) : [];
@@ -980,23 +994,26 @@ const App: React.FC = () => {
     if (!isAdmin) return;
 
     try {
-      console.log('Intentando borrar usuario:', profileId);
+      console.log('🗑️ Intentando borrar usuario:', profileId);
       const { error } = await supabase
         .from('users')
         .delete()
         .eq('id', profileId);
 
       if (error) {
-        console.error('Error Supabase borrar usuario:', error);
+        console.error('❌ Error Supabase borrar usuario:', error);
         throw error;
       }
 
       const newProfiles = profiles.filter(p => p.id !== profileId);
       setProfiles(newProfiles);
-      localStorage.setItem('sagfo_profiles', JSON.stringify(newProfiles));
+
+      // Sincronización Real con DB
+      await refetchAll();
+
       setNotification({ id: Date.now(), type: 'success', message: 'Usuario eliminado.' });
     } catch (error: any) {
-      console.error('Error deleting user:', error);
+      console.error('❌ Error deleting profile:', error);
       setNotification({ id: Date.now(), type: 'error', message: error.message || 'Error al eliminar usuario.' });
     }
   };
@@ -1035,6 +1052,10 @@ const App: React.FC = () => {
         if (error) throw error;
 
         setEvents(events.map(e => e.id === editingEvent.id ? { ...event, imageUrl: finalImageUrl, id: editingEvent.id } : e));
+
+        // Sincronización Real con DB
+        await refetchAll();
+
         setNotification({ id: Date.now(), type: 'success', message: 'Evento actualizado con éxito.' });
       } else {
         const newId = `evt-${Date.now()}`;
@@ -1054,6 +1075,10 @@ const App: React.FC = () => {
         if (error) throw error;
 
         setEvents([...events, newEvent]);
+
+        // Sincronización Real con DB
+        await refetchAll();
+
         setNotification({ id: Date.now(), type: 'success', message: 'Evento creado con éxito.' });
       }
       handleCloseEventModal();
@@ -1067,21 +1092,25 @@ const App: React.FC = () => {
     if (!isAdmin) return;
 
     try {
-      console.log('Intentando borrar evento:', eventId);
+      console.log('🗑️ Intentando borrar evento:', eventId);
       const { error } = await supabase
         .from('events')
         .delete()
         .eq('id', eventId);
 
       if (error) {
-        console.error('Error Supabase borrar evento:', error);
+        console.error('❌ Error Supabase borrar evento:', error);
         throw error;
       }
 
       setEvents(events.filter(e => e.id !== eventId));
+
+      // Sincronización Real con DB
+      await refetchAll();
+
       setNotification({ id: Date.now(), type: 'success', message: 'Evento eliminado.' });
     } catch (error: any) {
-      console.error('Error deleting event:', error);
+      console.error('❌ Error deleting event:', error);
       setNotification({ id: Date.now(), type: 'error', message: error.message || 'Error al eliminar evento.' });
     }
   };
@@ -1140,7 +1169,20 @@ const App: React.FC = () => {
     <>
       {loading && <IntroAnimation onComplete={() => setLoading(false)} onStartExit={() => setAppVisible(true)} />}
 
-      <div style={{ opacity: (appVisible || !loading) ? 1 : 0 }} className={`min-h-screen ${resolvedTheme === 'dark' ? 'dark bg-[#0a0a0a]' : 'bg-white'} transition-colors duration-500`}>
+      <div style={{ opacity: (appVisible || !loading) ? 1 : 0 }} className={`min-h-screen ${resolvedTheme === 'dark' ? 'dark bg-[#0a0a0a]' : 'bg-[#f8f9fa]'} transition-colors duration-500 relative overflow-x-hidden selection:bg-primary-500/30 selection:text-primary-600`}>
+
+        {/* Global Geometric Background - Modern & Clean */}
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+          {/* Subtle Dot Grid */}
+          <div className="absolute inset-0 opacity-[0.6] dark:opacity-[0.1]"
+            style={{ backgroundImage: `radial-gradient(${resolvedTheme === 'dark' ? '#333' : '#e5e5e5'} 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
+
+          {/* Abstract Geometric Figures */}
+          <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] rounded-full border border-neutral-100 dark:border-white/5 opacity-60" />
+          <div className="absolute top-[10%] right-[10%] w-[500px] h-[500px] rounded-full border border-primary-500/10 dark:border-primary-500/5" />
+          <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full border border-neutral-100 dark:border-white/5 opacity-60" />
+          <div className="absolute bottom-[20%] left-[10%] w-[300px] h-[300px] rounded-full border border-primary-500/10 dark:border-primary-500/5" />
+        </div>
 
         <NotificationToast notification={notification} onClose={() => setNotification(null)} />
         {(view === 'catalog' || view === 'promos' || view === 'orders') && (
@@ -1311,14 +1353,24 @@ const App: React.FC = () => {
                 <h1 className="text-6xl font-black text-white uppercase tracking-tighter mb-4">Oportunidades <span className="text-primary-500">Elite</span></h1>
                 <p className="text-neutral-500 font-medium mb-12">Adquiere excelencia con condiciones preferenciales.</p>
 
-                <ProductGrid
-                  products={promoProducts}
-                  onProductClick={handleProductClick}
-                  onToggleCompare={handleToggleCompare}
-                  comparisonList={comparisonList}
-                  isAdmin={isAdmin}
-                  onEditProduct={handleEditProduct}
-                />
+                {promoProducts.length > 0 ? (
+                  <ProductGrid
+                    products={promoProducts}
+                    onProductClick={handleProductClick}
+                    onToggleCompare={handleToggleCompare}
+                    comparisonList={comparisonList}
+                    isAdmin={isAdmin}
+                    onEditProduct={handleEditProduct}
+                  />
+                ) : (
+                  <div className="py-32 text-center bg-white/5 rounded-[4rem] border border-dashed border-white/10">
+                    <div className="w-20 h-20 bg-primary-600/10 rounded-full flex items-center justify-center mx-auto mb-6 text-primary-600">
+                      <ShoppingBag size={40} />
+                    </div>
+                    <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter mb-4">No hay promociones activas</h2>
+                    <p className="text-neutral-500 font-medium">Vuelve pronto para descubrir nuestras ofertas elite.</p>
+                  </div>
+                )}
               </motion.div>
             )}
 

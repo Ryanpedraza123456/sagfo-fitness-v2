@@ -26,112 +26,114 @@ const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPro
   if (slides.length === 0) return null;
 
   return (
-    <div className="relative h-[70vh] sm:h-[85vh] md:h-screen w-full overflow-hidden bg-black">
-      {/* Admin Edit Button */}
-      {isAdmin && (
-        <button
-          onClick={onEdit}
-          className="absolute top-20 right-4 md:top-24 md:right-8 z-50 bg-black/60 hover:bg-black p-2 md:p-3 rounded-full text-white border border-white/20 transition-all font-bold"
-        >
-          <Edit3 size={18} />
-        </button>
-      )}
-
-      {/* Main Slide Content - Simple Fade */}
-      <div className="relative h-full w-full">
-        {slides.map((slide, index) => (
-          <div
-            key={slide.id || index}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+    <div className="px-4 md:px-6 pb-6">
+      <div className="relative h-[70vh] sm:h-[85vh] md:h-[85vh] w-full overflow-hidden bg-black rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl border border-neutral-200 dark:border-white/5">
+        {/* Admin Edit Button */}
+        {isAdmin && (
+          <button
+            onClick={onEdit}
+            className="absolute top-20 right-4 md:top-24 md:right-8 z-50 bg-black/60 hover:bg-black p-2 md:p-3 rounded-full text-white border border-white/20 transition-all font-bold"
           >
-            {/* Background Image */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black">
-              <img
-                src={slide.imageUrl}
-                alt={slide.titleLine1}
-                className="w-full h-full object-cover"
-                style={{ objectPosition: 'center' }}
-              />
-            </div>
-            {/* Dark Overlay - More contrast for mobile readability */}
-            <div className="absolute inset-0 bg-black/65 md:bg-black/50" />
+            <Edit3 size={18} />
+          </button>
+        )}
 
-            {/* Text Overlay */}
-            <div className="absolute inset-0 flex items-center pt-20 md:pt-0">
-              <div className="w-full px-6 md:px-8 lg:px-12 xl:px-16">
-                <div className="max-w-4xl text-white">
-                  <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-6">
-                    <div className="w-8 md:w-10 h-[2px] bg-primary-500" />
-                    <span className="text-primary-500 font-bold uppercase tracking-widest text-[9px] md:text-sm">
-                      SAGFO Fitness Excellence
-                    </span>
-                  </div>
+        {/* Main Slide Content - Simple Fade */}
+        <div className="relative h-full w-full">
+          {slides.map((slide, index) => (
+            <div
+              key={slide.id || index}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+            >
+              {/* Background Image */}
+              <div className="absolute inset-0 flex items-center justify-center bg-black">
+                <img
+                  src={slide.imageUrl}
+                  alt={slide.titleLine1}
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: 'center' }}
+                />
+              </div>
+              {/* Dark Overlay - More contrast for mobile readability */}
+              <div className="absolute inset-0 bg-black/65 md:bg-black/50" />
 
-                  <h1 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase leading-[0.9] mb-3 md:mb-6 tracking-tighter">
-                    <span className="block">{slide.titleLine1}</span>
-                    <span className="text-primary-500 italic block mt-1">{slide.titleLine2}</span>
-                  </h1>
+              {/* Text Overlay */}
+              <div className="absolute inset-0 flex items-center pt-20 md:pt-0">
+                <div className="w-full px-6 md:px-8 lg:px-12 xl:px-16">
+                  <div className="max-w-4xl text-white">
+                    <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-6">
+                      <div className="w-8 md:w-10 h-[2px] bg-primary-500" />
+                      <span className="text-primary-500 font-bold uppercase tracking-widest text-[9px] md:text-sm">
+                        SAGFO Fitness Excellence
+                      </span>
+                    </div>
 
-                  {slide.subtitle && (
-                    <p className="text-xs md:text-xl text-zinc-300 mb-6 md:mb-10 max-w-2xl font-bold leading-relaxed">
-                      {slide.subtitle}
-                    </p>
-                  )}
+                    <h1 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase leading-[0.9] mb-3 md:mb-6 tracking-tighter">
+                      <span className="block">{slide.titleLine1}</span>
+                      <span className="text-primary-500 italic block mt-1">{slide.titleLine2}</span>
+                    </h1>
 
-                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-                    <button
-                      onClick={onCartClick}
-                      className="bg-primary-600 hover:bg-primary-700 text-white px-8 md:px-10 py-3.5 md:py-4 rounded-xl font-black uppercase tracking-widest text-[10px] md:text-sm transition-all shadow-lg shadow-primary-600/20 active:scale-95"
-                    >
-                      {isLoggedIn ? 'Ver Catálogo' : 'Regístrate'}
-                    </button>
-                    <button
-                      onClick={onPromosClick}
-                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-8 md:px-10 py-3.5 md:py-4 rounded-xl font-black uppercase tracking-widest text-[10px] md:text-sm transition-all backdrop-blur-sm"
-                    >
-                      Ofertas Especiales
-                    </button>
+                    {slide.subtitle && (
+                      <p className="text-xs md:text-xl text-zinc-300 mb-6 md:mb-10 max-w-2xl font-bold leading-relaxed">
+                        {slide.subtitle}
+                      </p>
+                    )}
+
+                    <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+                      <button
+                        onClick={onCartClick}
+                        className="bg-primary-600 hover:bg-primary-700 text-white px-8 md:px-10 py-3.5 md:py-4 rounded-xl font-black uppercase tracking-widest text-[10px] md:text-sm transition-all shadow-lg shadow-primary-600/20 active:scale-95"
+                      >
+                        {isLoggedIn ? 'Ver Catálogo' : 'Regístrate'}
+                      </button>
+                      <button
+                        onClick={onPromosClick}
+                        className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-8 md:px-10 py-3.5 md:py-4 rounded-xl font-black uppercase tracking-widest text-[10px] md:text-sm transition-all backdrop-blur-sm"
+                      >
+                        Ofertas Especiales
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Manual Navigation Arrows - Repositioned for Mobile */}
-      {slides.length > 1 && (
-        <div className="absolute bottom-6 right-6 md:bottom-12 md:right-12 z-20 flex gap-2 md:gap-4">
-          <button
-            onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
-            className="bg-black/40 hover:bg-primary-600 p-3 md:p-4 rounded-xl text-white transition-all border border-white/10 backdrop-blur-md"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
-            className="bg-black/40 hover:bg-primary-600 p-3 md:p-4 rounded-xl text-white transition-all border border-white/10 backdrop-blur-md"
-          >
-            <ChevronRight size={20} />
-          </button>
-        </div>
-      )}
-
-      {/* Pagination Indicators */}
-      {slides.length > 1 && (
-        <div className="absolute bottom-6 left-6 md:bottom-12 md:left-12 z-20 flex gap-1.5 md:gap-2">
-          {slides.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              className={`h-1 rounded-full transition-all duration-300 ${idx === currentSlide ? 'w-8 md:w-12 bg-primary-500' : 'w-3 md:w-4 bg-white/20'}`}
-            />
           ))}
         </div>
-      )}
 
-      {/* Subtle Grid Overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03] z-10 bg-[radial-gradient(circle,white_1px,transparent_1px)] bg-[size:32px_32px]" />
+        {/* Manual Navigation Arrows - Repositioned for Mobile */}
+        {slides.length > 1 && (
+          <div className="absolute bottom-6 right-6 md:bottom-12 md:right-12 z-20 flex gap-2 md:gap-4">
+            <button
+              onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
+              className="bg-black/40 hover:bg-primary-600 p-3 md:p-4 rounded-xl text-white transition-all border border-white/10 backdrop-blur-md"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
+              className="bg-black/40 hover:bg-primary-600 p-3 md:p-4 rounded-xl text-white transition-all border border-white/10 backdrop-blur-md"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        )}
+
+        {/* Pagination Indicators */}
+        {slides.length > 1 && (
+          <div className="absolute bottom-6 left-6 md:bottom-12 md:left-12 z-20 flex gap-1.5 md:gap-2">
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`h-1 rounded-full transition-all duration-300 ${idx === currentSlide ? 'w-8 md:w-12 bg-primary-500' : 'w-3 md:w-4 bg-white/20'}`}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Subtle Grid Overlay */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03] z-10 bg-[radial-gradient(circle,white_1px,transparent_1px)] bg-[size:32px_32px]" />
+      </div>
     </div>
   );
 };

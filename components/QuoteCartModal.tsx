@@ -317,16 +317,16 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
         >
             <div className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-500" onClick={onClose} />
             <div
-                className={`relative bg-neutral-50/95 dark:bg-zinc-900/95 backdrop-blur-md w-full max-w-md h-full flex flex-col transform transition-all duration-700 cubic-bezier(0.32, 0.72, 0, 1) shadow-[-20px_0_60px_rgba(0,0,0,0.3)] border-l border-white/20 dark:border-white/5 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                className={`relative bg-neutral-50/95 dark:bg-zinc-900/95 backdrop-blur-md w-full sm:max-w-xl md:max-w-2xl h-full flex flex-col transform transition-all duration-700 cubic-bezier(0.32, 0.72, 0, 1) shadow-[-20px_0_60px_rgba(0,0,0,0.3)] border-l border-white/20 dark:border-white/5 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header - Compact */}
                 <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-white/5 bg-white/50 dark:bg-zinc-900/50">
                     <div className="flex flex-col">
-                        <h2 className="text-xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">
+                        <h2 className="text-3xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">
                             TU<span className="text-primary-600">CARRITO</span>
                         </h2>
-                        <p className="text-[8px] font-black text-neutral-400 uppercase tracking-[0.3em] opacity-60">SAGFOFITNESS ELITE</p>
+                        <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.4em] opacity-60">SAGFOFITNESS ELITE</p>
                     </div>
                     <button
                         onClick={onClose}
@@ -348,92 +348,110 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
                     ) : (
                         <div className="space-y-6">
                             {/* Product List */}
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 {cartItems.map(item => (
-                                    <div key={item.equipment.id + (item.selectedColor || '') + (item.selectedWeight || '')} className="bg-white dark:bg-zinc-800/50 p-4 rounded-2xl border border-neutral-100 dark:border-white/5 shadow-sm group">
-                                        <div className="flex gap-4">
-                                            <div className="w-16 h-16 bg-neutral-100 dark:bg-black/20 rounded-xl overflow-hidden p-2 flex-shrink-0">
+                                    <div key={item.equipment.id + (item.selectedColor || '') + (item.selectedWeight || '')} className="bg-white dark:bg-zinc-800/50 p-4 sm:p-6 rounded-[2rem] border border-neutral-100 dark:border-white/5 shadow-lg group hover:shadow-2xl transition-all duration-300">
+                                        <div className="flex gap-6 sm:gap-8 items-center">
+                                            {/* Big Image */}
+                                            <div className="w-24 h-24 sm:w-32 sm:h-32 bg-neutral-100 dark:bg-black/20 rounded-2xl overflow-hidden p-4 flex-shrink-0 border border-neutral-200 dark:border-white/5">
                                                 <img
                                                     src={(item.equipment.imageUrls && item.equipment.imageUrls.length > 0) ? item.equipment.imageUrls[0] : 'https://placehold.co/100x100?text=SAGFO'}
                                                     alt={item.equipment.name}
-                                                    className="w-full h-full object-contain"
+                                                    className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal transform group-hover:scale-110 transition-transform duration-700"
                                                 />
                                             </div>
-                                            <div className="flex-grow min-w-0">
+
+                                            {/* Content */}
+                                            <div className="flex-grow min-w-0 flex flex-col gap-3">
                                                 <div className="flex justify-between items-start">
-                                                    <div className="flex flex-col items-start gap-1">
-                                                        <h4 className="text-[11px] font-black text-neutral-900 dark:text-white uppercase italic truncate pr-4">{item.equipment.name}</h4>
-                                                        <span className={`text-[7px] font-black uppercase tracking-widest px-2 py-0.5 rounded ${item.equipment.availabilityStatus === 'made-to-order' ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'}`}>
-                                                            {item.equipment.availabilityStatus === 'made-to-order' ? 'Producción Elite' : 'Disponible Ya'}
-                                                        </span>
+                                                    <div className="space-y-1">
+                                                        <h4 className="text-lg sm:text-xl font-black text-neutral-900 dark:text-white uppercase italic leading-none">{item.equipment.name}</h4>
+
+                                                        {/* Variants Tags */}
+                                                        {(item.selectedColor || item.selectedWeight) && (
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {item.selectedColor && (
+                                                                    <div className="flex items-center gap-1.5 border border-neutral-200 dark:border-white/10 px-2 py-0.5 rounded-lg bg-neutral-50 dark:bg-white/5">
+                                                                        <div className="w-2 h-2 rounded-full border border-neutral-300" style={{ backgroundColor: item.selectedColor.toLowerCase().includes('rojo') ? '#ef4444' : item.selectedColor.toLowerCase().includes('azul') ? '#3b82f6' : item.selectedColor.toLowerCase().includes('negro') ? '#171717' : item.selectedColor.toLowerCase().includes('blanco') ? '#ffffff' : '#9ca3af' }} />
+                                                                        <span className="text-[9px] font-bold text-neutral-500 dark:text-neutral-400 uppercase">{item.selectedColor}</span>
+                                                                    </div>
+                                                                )}
+                                                                {item.selectedWeight && (
+                                                                    <div className="flex items-center gap-1.5 border border-neutral-200 dark:border-white/10 px-2 py-0.5 rounded-lg bg-neutral-50 dark:bg-white/5">
+                                                                        <span className="text-[9px] font-bold text-neutral-500 dark:text-neutral-400 uppercase">{item.selectedWeight}</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                    <button onClick={() => onRemoveItem(item.equipment.id)} className="text-neutral-300 hover:text-red-500 transition-colors">
-                                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" /></svg>
-                                                    </button>
+
+                                                    {/* Price (Top Right) */}
+                                                    <span className="text-lg sm:text-xl font-black text-neutral-900 dark:text-white italic tracking-tighter">{formatCurrency(item.equipment.price * item.quantity)}</span>
                                                 </div>
-                                                <div className="flex items-center justify-between mt-3">
-                                                    <div className="flex items-center bg-neutral-100 dark:bg-black/30 rounded-xl p-1 border border-neutral-200 dark:border-white/5 shadow-inner">
+
+                                                <div className="flex items-end justify-between mt-2">
+                                                    {/* Quantity Control */}
+                                                    <div className="flex items-center bg-neutral-100 dark:bg-black/30 rounded-2xl p-1.5 border border-neutral-200 dark:border-white/5 shadow-inner gap-1">
                                                         <button
                                                             onClick={() => onUpdateQuantity(item.equipment.id, item.quantity - 1)}
-                                                            className="w-8 h-8 flex items-center justify-center text-sm font-black text-neutral-900 dark:text-white hover:bg-white dark:hover:bg-white/10 rounded-lg transition-all active:scale-90"
+                                                            className="w-10 h-10 flex items-center justify-center text-lg font-black text-neutral-900 dark:text-white bg-white dark:bg-white/5 hover:bg-white/80 rounded-xl transition-all active:scale-95 shadow-sm"
                                                         >
                                                             -
                                                         </button>
-                                                        <span className="w-8 text-center text-[10px] font-black text-neutral-900 dark:text-white">{item.quantity}</span>
+                                                        <span className="w-10 text-center text-sm font-black text-neutral-900 dark:text-white">{item.quantity}</span>
                                                         <button
                                                             onClick={() => onUpdateQuantity(item.equipment.id, item.quantity + 1)}
-                                                            className="w-8 h-8 flex items-center justify-center text-sm font-black text-neutral-900 dark:text-white hover:bg-white dark:hover:bg-white/10 rounded-lg transition-all active:scale-90"
+                                                            className="w-10 h-10 flex items-center justify-center text-lg font-black text-neutral-900 dark:text-white bg-white dark:bg-white/5 hover:bg-white/80 rounded-xl transition-all active:scale-95 shadow-sm"
                                                         >
                                                             +
                                                         </button>
                                                     </div>
-                                                    <span className="text-[11px] font-black text-primary-600 italic">{formatCurrency(item.equipment.price * item.quantity)}</span>
+
+                                                    {/* Remove Button */}
+                                                    <button
+                                                        onClick={() => onRemoveItem(item.equipment.id)}
+                                                        className="group/trash flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 text-neutral-300 hover:text-red-500 transition-all"
+                                                    >
+                                                        <span className="text-[10px] font-black uppercase hidden sm:block opacity-0 group-hover/trash:opacity-100 transition-all">Eliminar</span>
+                                                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
-                                        {item.equipment.availabilityStatus === 'made-to-order' && (
-                                            <div className="mt-3 pt-3 border-t border-neutral-100 dark:border-white/5 grid grid-cols-2 gap-3">
-                                                <input
-                                                    type="text"
-                                                    value={item.structureColor || ''}
-                                                    onChange={(e) => onUpdateItemCustomization(item.equipment.id, 'structureColor', e.target.value, item.selectedColor, item.selectedWeight)}
-                                                    placeholder="Estructura"
-                                                    className="bg-neutral-50 dark:bg-black/20 p-2 rounded-lg text-[9px] font-bold outline-none border border-transparent focus:border-primary-500/30 text-neutral-900 dark:text-white"
-                                                />
-                                                <input
-                                                    type="text"
-                                                    value={item.upholsteryColor || ''}
-                                                    onChange={(e) => onUpdateItemCustomization(item.equipment.id, 'upholsteryColor', e.target.value, item.selectedColor, item.selectedWeight)}
-                                                    placeholder="Tapicería"
-                                                    className="bg-neutral-50 dark:bg-black/20 p-2 rounded-lg text-[9px] font-bold outline-none border border-transparent focus:border-primary-500/30 text-neutral-900 dark:text-white"
-                                                />
-                                            </div>
-                                        )}
                                     </div>
                                 ))}
                             </div>
 
                             {/* Financial Summary */}
-                            <div className="p-6 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 rounded-[2rem] shadow-xl space-y-4">
-                                <div className="space-y-2 opacity-80">
-                                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider">
-                                        <span>Subtotal</span>
-                                        <span>{formatCurrency(calculation.totalOrderValue)}</span>
+                            <div className="p-8 bg-neutral-900 dark:bg-zinc-800 text-white rounded-[2.5rem] shadow-2xl space-y-6 relative overflow-hidden group border border-white/5">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                                <div className="space-y-3 relative z-10">
+                                    <div className="flex justify-between items-center text-xs font-bold uppercase tracking-wider opacity-60">
+                                        <span>Subtotal de Pedido</span>
+                                        <span className="font-black">{formatCurrency(calculation.totalOrderValue)}</span>
                                     </div>
-                                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-primary-500">
-                                        <span>Pendiente contra entrega</span>
-                                        <span>{formatCurrency(calculation.amountPending)}</span>
+                                    <div className="flex justify-between items-center text-xs font-bold uppercase tracking-wider text-primary-400">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse" />
+                                            <span>Pendiente contra entrega</span>
+                                        </div>
+                                        <span className="font-black">{formatCurrency(calculation.amountPending)}</span>
+                                    </div>
+
+                                    <div className="pt-4 mt-4 border-t border-white/10">
+                                        <div className="flex justify-between items-baseline">
+                                            <div className="space-y-1">
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-500">Monto del Anticipo</p>
+                                                <p className="text-3xl font-black italic tracking-tighter">{formatCurrency(calculation.amountPaid)}</p>
+                                            </div>
+                                            <span className="text-[9px] font-black px-2 py-1 bg-white/10 rounded-lg uppercase italic border border-white/10">50% Inicial</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="pt-4 border-t border-neutral-200 dark:border-white/10 flex justify-between items-end">
-                                <div>
-                                    <p className="text-[9px] font-black uppercase tracking-widest text-neutral-500 dark:text-white/60 mb-1">Pago Requerido</p>
-                                    <p className="text-3xl font-black italic tracking-tighter leading-none text-neutral-900 dark:text-white">{formatCurrency(calculation.amountPaid)}</p>
-                                </div>
-                                <span className="text-[9px] font-black px-3 py-1 bg-primary-600 text-white rounded-full uppercase italic">Pago Seguro</span>
-                            </div>
+
 
 
                             {/* Authentication Guard */}
@@ -551,8 +569,24 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
                                             onClick={() => fileInputRef.current?.click()}
                                             className={`w-full py-6 rounded-2xl border-2 border-dashed transition-all flex flex-col items-center justify-center gap-2 ${paymentProof ? 'border-primary-500 bg-primary-500/5' : 'border-neutral-200 dark:border-white/10 hover:bg-neutral-50 dark:hover:bg-white/5'}`}
                                         >
-                                            <p className="text-[10px] font-black uppercase italic text-neutral-900 dark:text-white">{paymentProof ? '✓ Comprobante Cargado' : 'Subir Comprobante'}</p>
-                                            {paymentProof && <p className="text-[8px] font-medium opacity-50 uppercase text-neutral-900 dark:text-white">{paymentProof.name}</p>}
+                                            {paymentProof && paymentProof.type.startsWith('image/') ? (
+                                                <div className="w-full px-4 flex flex-col items-center">
+                                                    <div className="relative w-full h-48 rounded-xl overflow-hidden bg-white dark:bg-black/20 mb-2 border border-neutral-200 dark:border-white/10">
+                                                        <img
+                                                            src={URL.createObjectURL(paymentProof)}
+                                                            alt="Comprobante Preview"
+                                                            className="w-full h-full object-contain"
+                                                        />
+                                                    </div>
+                                                    <p className="text-[9px] font-black uppercase text-primary-600">Clic para cambiar imagen</p>
+                                                    <p className="text-[8px] font-medium opacity-50 uppercase text-neutral-900 dark:text-white mt-1">{paymentProof.name}</p>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <p className="text-[10px] font-black uppercase italic text-neutral-900 dark:text-white">{paymentProof ? '✓ Comprobante Cargado' : 'Subir Comprobante'}</p>
+                                                    {paymentProof && <p className="text-[8px] font-medium opacity-50 uppercase text-neutral-900 dark:text-white">{paymentProof.name}</p>}
+                                                </>
+                                            )}
                                         </button>
                                         <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf" className="hidden" />
                                     </div>
@@ -560,9 +594,10 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
                                     {/* Action */}
                                     <button
                                         type="submit"
-                                        className="w-full py-5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-black rounded-2xl shadow-2xl hover:scale-[1.03] active:scale-[0.97] transition-all uppercase tracking-[0.2em] text-[11px] italic"
+                                        className="w-full py-5 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-black rounded-2xl shadow-2xl shadow-primary-500/30 hover:shadow-primary-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 uppercase tracking-[0.2em] text-xs italic group relative overflow-hidden"
                                     >
-                                        Confirmar Pedido Élite
+                                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 text-white transition-transform duration-500 skew-y-12" />
+                                        <span className="relative z-10">Confirmar Pedido Élite</span>
                                     </button>
                                 </form>
                             )}

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { EquipmentItem, CartItem, CategoryFilter, MuscleFilter } from '../types';
-import { Plus, Trash2, X, Camera, Save, ArrowLeft, Maximize2, ZoomIn, Check } from 'lucide-react';
+import { Plus, Trash2, X, Camera, Save, ArrowLeft, Maximize2, ZoomIn, Check, Palette, Dumbbell } from 'lucide-react';
 
 
 interface ProductModalProps {
@@ -31,11 +31,15 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
   const [selectedWeight, setSelectedWeight] = useState<string | undefined>(undefined);
+  const [isSaving, setIsSaving] = useState(false);
 
   // High-End Zoom Logic
   const [zoomStyle, setZoomStyle] = useState<React.CSSProperties>({ display: 'none' });
   const [isZooming, setIsZooming] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
+
+  // Prevent multiple clicks on add to cart
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   // State for editing
   const [formData, setFormData] = useState<EquipmentItem | null>(null);
@@ -43,6 +47,23 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const [newFeature, setNewFeature] = useState('');
   const [newSpecKey, setNewSpecKey] = useState('');
   const [newSpecValue, setNewSpecValue] = useState('');
+  const [newWeight, setNewWeight] = useState('');
+  const [weightUnit, setWeightUnit] = useState<'LB' | 'KG'>('LB');
+  const [newColor, setNewColor] = useState('');
+
+  const getColorStyle = (c: string) => {
+    const lower = c.toLowerCase();
+    if (lower.includes('rojo')) return { bg: '#ef4444', text: '#ffffff' };
+    if (lower.includes('azul')) return { bg: '#3b82f6', text: '#ffffff' };
+    if (lower.includes('negro')) return { bg: '#171717', text: '#ffffff' };
+    if (lower.includes('blanco')) return { bg: '#ffffff', text: '#171717' };
+    if (lower.includes('amarillo')) return { bg: '#eab308', text: '#171717' };
+    if (lower.includes('verde')) return { bg: '#22c55e', text: '#ffffff' };
+    if (lower.includes('naranja')) return { bg: '#f97316', text: '#ffffff' };
+    if (lower.includes('gris') || lower.includes('plata')) return { bg: '#9ca3af', text: '#ffffff' };
+    if (lower.includes('cromado')) return { bg: '#e5e7eb', text: '#171717' };
+    return { bg: '#2563eb', text: '#ffffff' }; // Default
+  };
 
   // Bloquear scroll de fondo
   useEffect(() => {
@@ -155,7 +176,19 @@ const ProductModal: React.FC<ProductModalProps> = ({
   };
   const removeSpec = (key: string) => { if (formData) { const newSpecs = { ...formData.specifications }; delete newSpecs[key]; setFormData({ ...formData, specifications: newSpecs }); } };
 
-  const handleSave = () => { if (formData) onSave(formData, newImagesMap); };
+  const addWeight = () => { if (newWeight.trim() && formData) { setFormData({ ...formData, availableWeights: [...(formData.availableWeights || []), `${newWeight.trim()}${weightUnit}`] }); setNewWeight(''); } };
+  const removeWeight = (index: number) => { if (formData && formData.availableWeights) setFormData({ ...formData, availableWeights: formData.availableWeights.filter((_, i) => i !== index) }); };
+
+  const addColor = () => { if (newColor.trim() && formData) { setFormData({ ...formData, availableColors: [...(formData.availableColors || []), newColor.trim()] }); setNewColor(''); } };
+  const removeColor = (index: number) => { if (formData && formData.availableColors) setFormData({ ...formData, availableColors: formData.availableColors.filter((_, i) => i !== index) }); };
+
+  const handleSave = () => {
+    if (formData && !isSaving) {
+      setIsSaving(true);
+      onSave(formData, newImagesMap);
+      setTimeout(() => setIsSaving(false), 2000);
+    }
+  };
 
   return (
     <div
@@ -176,16 +209,16 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
         <div className="flex items-center gap-4">
           {isEditing && (
-            <button onClick={handleSave} className="relative group px-10 py-4 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 rounded-[1.5rem] font-black uppercase italic tracking-[0.2em] text-[10px] overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 shadow-3xl">
-              <span className="relative z-10">Sincronizar Producto</span>
-              <div className="absolute inset-0 bg-primary-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+            <button onClick={handleSave} disabled={isSaving} className={`relative group px-10 py-4 ${isSaving ? 'bg-neutral-500 cursor-not-allowed' : 'bg-neutral-900 dark:bg-white'} text-white dark:text-neutral-900 rounded-[1.5rem] font-black uppercase italic tracking-[0.2em] text-[10px] overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 shadow-3xl`}>
+              <span className="relative z-10">{isSaving ? 'Guardando...' : 'Sincronizar Producto'}</span>
+              {!isSaving && <div className="absolute inset-0 bg-primary-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />}
             </button>
           )}
           <button
             onClick={onClose}
-            className="w-14 h-14 flex items-center justify-center rounded-[1.5rem] bg-neutral-100 dark:bg-white/5 text-neutral-500 hover:bg-red-500 hover:text-white hover:rotate-90 transition-all duration-500 border border-neutral-200 dark:border-white/5"
+            className="w-14 h-14 flex items-center justify-center rounded-[1.5rem] bg-neutral-100 dark:bg-white/5 text-neutral-500 hover:bg-white hover:text-black hover:rotate-90 transition-all duration-500 border border-neutral-200 dark:border-white/5 shadow-xl group"
           >
-            <X size={28} strokeWidth={3} />
+            <X size={28} className="group-hover:stroke-[3] transition-all" />
           </button>
         </div>
 
@@ -240,9 +273,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   {formData?.imageUrls.map((url, index) => (
                     <div key={index} className="relative aspect-square rounded-[3rem] bg-neutral-50 dark:bg-white/5 p-6 border-2 border-dashed border-neutral-200 dark:border-white/10 flex items-center justify-center group overflow-hidden">
                       {url ? (
-                        <img src={url} className="w-full h-full object-contain" alt="" />
+                        <img src={url} className="w-full h-full object-contain pointer-events-none" alt="" />
                       ) : (
-                        <div className="flex flex-col items-center gap-2 text-neutral-400 font-black uppercase text-[10px] tracking-widest"><Camera className="w-10 h-10 mb-2" /> Subir Imagen</div>
+                        <div className="flex flex-col items-center gap-2 text-neutral-400 font-black uppercase text-[10px] tracking-widest pointer-events-none"><Camera className="w-10 h-10 mb-2" /> Subir Imagen</div>
                       )}
 
                       <button
@@ -250,12 +283,12 @@ const ProductModal: React.FC<ProductModalProps> = ({
                           e.stopPropagation();
                           removeImageField(index);
                         }}
-                        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-all z-10"
+                        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-all z-[30]"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
 
-                      <input type="file" onChange={(e) => handleImageUpload(e, index)} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
+                      <input type="file" onChange={(e) => handleImageUpload(e, index)} className="absolute inset-0 opacity-0 cursor-pointer z-[20]" accept="image/*" />
                     </div>
                   ))}
                   <button onClick={addImageField} className="aspect-square rounded-[3rem] border-2 border-dashed border-primary-600/30 flex items-center justify-center text-primary-600 hover:bg-primary-600/5 transition-all"><Plus className="w-12 h-12" /></button>
@@ -309,24 +342,65 @@ const ProductModal: React.FC<ProductModalProps> = ({
                     <div className="space-y-6">
                       <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic flex items-center gap-3"><div className="w-8 h-[1px] bg-neutral-300" /> Personalizar Estructura</label>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        {product.availableColors.map(c => (
-                          <button key={c} onClick={() => setSelectedColor(c)} className={`py-5 rounded-3xl text-[10px] font-black uppercase transition-all border-2 ${selectedColor === c ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 border-neutral-900 dark:border-white scale-105 shadow-2xl italic skew-x-[-12deg]' : 'bg-white dark:bg-zinc-900 text-neutral-500 border-neutral-100 dark:border-white/5 hover:border-primary-500/30'}`}>{c}</button>
-                        ))}
+                        {product.availableColors.map(c => {
+                          const isSelected = selectedColor === c;
+                          const style = getColorStyle(c);
+                          return (
+                            <button
+                              key={c}
+                              onClick={() => setSelectedColor(c)}
+                              style={isSelected ? { backgroundColor: style.bg, color: style.text, borderColor: style.bg } : {}}
+                              className={`py-5 rounded-3xl text-[10px] font-black uppercase transition-all border-2 ${isSelected ? 'scale-105 shadow-2xl italic skew-x-[-12deg]' : 'bg-white dark:bg-zinc-900 text-neutral-500 border-neutral-100 dark:border-white/5 hover:border-primary-500/30'}`}
+                            >
+                              {c}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
 
-                  <div className="pt-6">
+                  {product.availableWeights && product.availableWeights.length > 0 && (
+                    <div className="space-y-6 mt-6">
+                      <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic flex items-center gap-3"><div className="w-8 h-[1px] bg-neutral-300" /> Seleccionar Peso</label>
+                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                        {product.availableWeights.map(w => {
+                          const isSelected = selectedWeight === w;
+                          // Use the selected color for the weight button if available, otherwise default
+                          const activeStyle = selectedColor ? getColorStyle(selectedColor) : { bg: '#2563eb', text: '#ffffff' };
+
+                          return (
+                            <button
+                              key={w}
+                              onClick={() => setSelectedWeight(w)}
+                              style={isSelected ? { backgroundColor: activeStyle.bg, color: activeStyle.text, borderColor: activeStyle.bg } : {}}
+                              className={`py-3 rounded-2xl text-[10px] font-black uppercase transition-all border ${isSelected ? 'shadow-xl scale-105 border-transparent' : 'bg-white dark:bg-zinc-900 text-neutral-500 dark:text-neutral-400 border-neutral-100 dark:border-white/5 hover:border-primary-500/30'}`}
+                            >
+                              {w}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="pt-8 block">
                     <button
-                      onClick={() => onAddToCart(product, selectedColor, selectedWeight)}
-                      className={`w-full py-6 rounded-[2rem] font-black text-xl uppercase italic tracking-[0.4em] transition-all duration-700 shadow-4xl active:scale-95 group/btn overflow-hidden relative border border-transparent ${isProductInCart ? 'bg-emerald-500 text-white border-emerald-400' : 'bg-neutral-950 dark:bg-white text-white dark:text-neutral-900'}`}
+                      onClick={() => {
+                        if (isAddingToCart || isProductInCart) return;
+                        setIsAddingToCart(true);
+                        onAddToCart(product, selectedColor, selectedWeight);
+                        setTimeout(() => setIsAddingToCart(false), 1000);
+                      }}
+                      disabled={isAddingToCart}
+                      className={`w-full py-6 rounded-[2rem] font-black text-xl uppercase italic tracking-[0.4em] transition-all duration-700 shadow-4xl active:scale-95 group/btn overflow-hidden relative border border-transparent ${isProductInCart ? 'bg-emerald-500 text-white border-emerald-400' : isAddingToCart ? 'bg-neutral-600 text-white cursor-not-allowed opacity-70' : 'bg-neutral-950 dark:bg-white text-white dark:text-neutral-900'}`}
                     >
                       <div className="relative z-10 flex items-center justify-center gap-4">
                         {isProductInCart ? <Check size={28} strokeWidth={4} /> : null}
-                        <span>{isProductInCart ? 'EN EL CARRITO' : 'AÑADIR AL CARRITO'}</span>
+                        <span>{isProductInCart ? 'EN EL CARRITO' : isAddingToCart ? 'AÑADIENDO...' : 'AÑADIR AL CARRITO'}</span>
                       </div>
 
-                      {!isProductInCart && (
+                      {!isProductInCart && !isAddingToCart && (
                         <>
                           {/* Shine Effect */}
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
@@ -435,6 +509,153 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <div className="space-y-3">
                     <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic px-4">Promo COP (Opcional)</label>
                     <input type="number" name="promotionalPrice" value={formData?.promotionalPrice === 0 ? '' : formData?.promotionalPrice} onChange={handleInputChange} className="w-full bg-white dark:bg-zinc-900 p-5 rounded-2xl font-black border border-neutral-100 dark:border-white/10 text-neutral-900 dark:text-white focus:ring-primary-500/20 outline-none" />
+                  </div>
+
+                  {/* VARIANTES PROFESIONALES - REDISEÑADO */}
+                  <div className="bg-neutral-50 dark:bg-white/5 rounded-[2.5rem] p-8 space-y-8 border border-neutral-100 dark:border-white/10 relative">
+                    {/* Fondo decorativo eliminado para evitar problemas de clic */}
+
+                    <div className="flex items-center gap-4 mb-2 relative z-10">
+                      <div className="w-10 h-10 rounded-2xl bg-white dark:bg-white/10 flex items-center justify-center text-primary-600 shadow-sm">
+                        <Palette size={20} />
+                      </div>
+                      <h3 className="text-sm font-black uppercase italic tracking-widest text-neutral-900 dark:text-white">Configuración de Variantes</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 relative z-10">
+                      {/* COLORES */}
+                      <div className="space-y-4">
+                        <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic px-2 flex justify-between items-center">
+                          Colores Disponibles
+                          <span className="text-[9px] opacity-40 font-normal normal-case hidden sm:block">Click para activar</span>
+                        </label>
+
+                        {/* Predefined Colors Grid */}
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {["Negro Mate", "Negro Brillante", "Rojo", "Azul", "Blanco", "Gris", "Plata", "Amarillo", "Verde", "Naranja", "Cromado"].map(color => {
+                            const isActive = formData?.availableColors?.includes(color);
+                            return (
+                              <button
+                                key={color}
+                                onClick={() => {
+                                  if (isActive) {
+                                    setFormData({ ...formData, availableColors: formData.availableColors.filter(c => c !== color) });
+                                  } else {
+                                    setFormData({ ...formData, availableColors: [...(formData.availableColors || []), color] });
+                                  }
+                                }}
+                                className={`px-3 py-2 rounded-xl text-[10px] font-bold uppercase transition-all flex items-center gap-2 border ${isActive ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 border-neutral-900 dark:border-white shadow-lg scale-105' : 'bg-white dark:bg-zinc-800 text-neutral-500 border-neutral-200 dark:border-white/5 invsible-border hover:border-neutral-300'}`}
+                              >
+                                <div className={`w-2 h-2 rounded-full border ${isActive ? 'border-white/20' : 'border-neutral-300'}`} style={{ backgroundColor: color.toLowerCase().includes('rojo') ? '#ef4444' : color.toLowerCase().includes('azul') ? '#3b82f6' : color.toLowerCase().includes('negro') ? '#171717' : color.toLowerCase().includes('blanco') ? '#ffffff' : color.toLowerCase().includes('amarillo') ? '#eab308' : color.toLowerCase().includes('verde') ? '#22c55e' : color.toLowerCase().includes('naranja') ? '#f97316' : '#9ca3af' }} />
+                                {color}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Custom Color Input */}
+                        <div className="flex gap-2">
+                          <div className="relative flex-grow min-w-0 group">
+                            <input
+                              placeholder="Otro color personalizado..."
+                              value={newColor}
+                              onChange={(e) => setNewColor(e.target.value)}
+                              className="w-full bg-white dark:bg-zinc-900 p-3 pl-4 rounded-xl font-bold border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500/20 text-xs transition-all shadow-sm"
+                              onKeyDown={(e) => e.key === 'Enter' && addColor()}
+                            />
+                          </div>
+                          <button
+                            onClick={addColor}
+                            className="px-4 bg-neutral-100 dark:bg-zinc-800 text-neutral-600 dark:text-neutral-300 rounded-xl font-black shadow-sm hover:bg-neutral-200 dark:hover:bg-zinc-700 transition-all text-xs uppercase"
+                          >
+                            Agregar
+                          </button>
+                        </div>
+
+                        {/* Active List (for custom ones mostly) */}
+                        {formData?.availableColors?.filter(c => !["Negro Mate", "Negro Brillante", "Rojo", "Azul", "Blanco", "Gris", "Plata", "Amarillo", "Verde", "Naranja", "Cromado"].includes(c)).length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2 border-t border-dashed border-neutral-200 dark:border-white/10">
+                            <span className="text-[9px] text-neutral-400 w-full">Personalizados:</span>
+                            {formData.availableColors.filter(c => !["Negro Mate", "Negro Brillante", "Rojo", "Azul", "Blanco", "Gris", "Plata", "Amarillo", "Verde", "Naranja", "Cromado"].includes(c)).map((c, idx) => (
+                              <div key={idx} className="flex items-center gap-2 px-3 py-1 bg-white dark:bg-zinc-800 rounded-lg border border-neutral-200 dark:border-white/5 shadow-sm">
+                                <span className="text-[10px] font-bold text-neutral-700 dark:text-neutral-300 uppercase">{c}</span>
+                                <button onClick={() => setFormData({ ...formData, availableColors: formData.availableColors.filter(col => col !== c) })} className="hover:text-red-500 transition-colors">
+                                  <X size={12} strokeWidth={3} />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* PESOS - Condicional & Simplificado */}
+                      {['Discos', 'Mancuernas'].includes(formData?.muscleGroup || '') ? (
+                        <div className="space-y-4 animate-in fade-in slide-in-from-right-8 duration-500 border-l border-dashed border-neutral-200 dark:border-white/10 pl-0 md:pl-8">
+                          <label className="text-[11px] font-black uppercase text-primary-600 tracking-widest italic px-2">
+                            Pesos / Carga
+                          </label>
+
+                          <div className="space-y-3">
+                            {/* Fila 1: Input */}
+                            <input
+                              placeholder="Ingrese valor (ej: 45)"
+                              value={newWeight}
+                              onChange={(e) => setNewWeight(e.target.value)}
+                              className="w-full bg-white dark:bg-zinc-900 border border-neutral-200 dark:border-white/10 p-4 rounded-xl font-black text-2xl text-center text-neutral-900 dark:text-white outline-none focus:border-primary-500 transition-colors placeholder:text-neutral-300/50"
+                              type="text"
+                              inputMode="decimal"
+                              onKeyDown={(e) => e.key === 'Enter' && addWeight()}
+                            />
+
+                            {/* Fila 2: Selección de Unidad */}
+                            <div className="grid grid-cols-2 gap-3">
+                              <button
+                                onClick={() => setWeightUnit('LB')}
+                                className={`p-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all border ${weightUnit === 'LB' ? 'bg-neutral-900 text-white border-neutral-900 dark:bg-white dark:text-black shadow-md' : 'bg-white dark:bg-zinc-800 text-neutral-400 border-neutral-200 dark:border-white/5 hover:border-neutral-300'}`}
+                              >
+                                Libras (LB)
+                              </button>
+                              <button
+                                onClick={() => setWeightUnit('KG')}
+                                className={`p-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all border ${weightUnit === 'KG' ? 'bg-neutral-900 text-white border-neutral-900 dark:bg-white dark:text-black shadow-md' : 'bg-white dark:bg-zinc-800 text-neutral-400 border-neutral-200 dark:border-white/5 hover:border-neutral-300'}`}
+                              >
+                                Kilos (KG)
+                              </button>
+                            </div>
+
+                            {/* Fila 3: Botón Agregar */}
+                            <button
+                              onClick={addWeight}
+                              className="w-full py-4 bg-primary-600 text-white rounded-xl font-black shadow-lg hover:bg-primary-700 active:scale-95 transition-all flex items-center justify-center gap-2 uppercase text-xs tracking-widest"
+                            >
+                              <Plus size={18} />
+                              Agregar Peso
+                            </button>
+                          </div>
+
+                          <div className="flex flex-wrap gap-2 min-h-[40px] content-start bg-primary-600/5 p-2 rounded-xl border border-dashed border-primary-500/10">
+                            {formData?.availableWeights?.length ? formData.availableWeights.map((w, idx) => (
+                              <div key={idx} className="flex items-center gap-2 pl-3 pr-2 py-1.5 bg-white dark:bg-zinc-800 rounded-lg border border-primary-500/10 shadow-sm group hover:border-primary-500/30 transition-all animate-in zoom-in duration-300">
+                                <span className="text-[10px] font-black text-primary-700 dark:text-primary-400 uppercase leading-none">{w}</span>
+                                <button onClick={() => removeWeight(idx)} className="w-5 h-5 flex items-center justify-center rounded-md hover:bg-red-50 text-neutral-400 hover:text-red-500 transition-colors ml-1">
+                                  <X size={12} strokeWidth={3} />
+                                </button>
+                              </div>
+                            )) : (
+                              <div className="w-full py-2 text-center text-[10px] text-primary-600/40 font-medium italic">
+                                Sin pesos
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        /* Placeholder si no hay pesos */
+                        <div className="hidden md:flex flex-col items-center justify-center border-l border-dashed border-neutral-200 dark:border-white/10 pl-8 opacity-30 select-none">
+                          <Dumbbell className="w-12 h-12 mb-4 text-neutral-400" />
+                          <span className="text-[10px] font-bold text-neutral-400 uppercase italic text-center max-w-[150px]">Configuración de peso no requerida</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="space-y-3">

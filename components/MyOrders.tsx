@@ -48,7 +48,7 @@ const StatusTracker: React.FC<{ status: OrderStatus }> = ({ status }) => {
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                                     ) : step}
                                 </div>
-                                <p className={`mt-2 text-xs font-semibold text-center w-20 ${isActive ? 'text-neutral-800 dark:text-white' : 'text-neutral-500'}`}>{s}</p>
+                                <p className={`mt-2 text-xs font-semibold text-center w-20 ${isActive ? 'text-neutral-800 dark:text-white' : 'text-neutral-500 dark:text-neutral-500'}`}>{s}</p>
                             </div>
                         );
                     })}
@@ -207,6 +207,20 @@ const MyOrders: React.FC<MyOrdersProps> = ({ orders, onBackToCatalog }) => {
                                                         <span className="font-bold text-red-500 dark:text-red-400">{formatCurrency(pending)}</span>
                                                     </div>
                                                 </>
+                                            )}
+
+                                            {order.paymentProofUrl && (
+                                                <div className="flex justify-end mt-4">
+                                                    <a
+                                                        href={order.paymentProofUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-2 px-4 py-2 border border-neutral-200 dark:border-white/10 rounded-xl text-xs font-black uppercase tracking-wider text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-white/5 transition-all"
+                                                    >
+                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                                        Ver Comprobante
+                                                    </a>
+                                                </div>
                                             )}
                                         </div>
                                     </div>

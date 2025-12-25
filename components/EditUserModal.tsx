@@ -126,7 +126,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ isOpen, onClose, onSave, 
                   placeholder={user ? "********" : "Asignar contraseña"}
                   className="mt-1 w-full p-3 rounded-md bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-white"
                 />
-                <p className="text-[10px] text-neutral-400 mt-1">Visible para facilitar la gestión por parte del administrador.</p>
+                <p className="text-[10px] text-neutral-400 dark:text-neutral-500 mt-1">Visible para facilitar la gestión por parte del administrador.</p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
