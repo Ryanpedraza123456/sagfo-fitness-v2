@@ -71,7 +71,7 @@ const CustomCursor: React.FC = () => {
 
     return (
         <div
-            className={`fixed inset-0 pointer-events-none z-[99999] hidden md:block transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+            className={`fixed inset-0 pointer-events-none z-[999999] hidden md:block transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
         >
             <div
                 ref={cursorRef}
