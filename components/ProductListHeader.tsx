@@ -40,9 +40,9 @@ const ProductListHeader: React.FC<ProductListHeaderProps> = ({ sortOrder, onSort
   }, [activeIndex]);
 
   return (
-    <div className="mb-12 md:mb-24 space-y-10 md:space-y-16 animate-fadeIn">
+    <div className="mb-12 md:mb-20 space-y-12 md:space-y-20 animate-fadeIn">
       {/* Search & Tool Hub */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-10">
+      <div className="flex flex-col xl:flex-row justify-between items-center gap-8 md:gap-12">
 
         {/* Elite Category Switcher */}
         <div className="w-full md:w-auto overflow-x-auto no-scrollbar py-2">
@@ -70,7 +70,7 @@ const ProductListHeader: React.FC<ProductListHeaderProps> = ({ sortOrder, onSort
         </div>
 
         {/* Dynamic Catalog Search (Boutique Style) */}
-        <div className="flex-grow max-w-2xl w-full hidden md:block">
+        <div className="flex-grow max-w-2xl w-full block">
           <div className="relative group">
             <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none group-focus-within:text-primary-600 transition-colors">
               <Search size={18} strokeWidth={3} className="text-neutral-400 dark:text-neutral-500 opacity-60 group-focus-within:opacity-100" />

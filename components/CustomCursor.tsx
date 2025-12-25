@@ -33,17 +33,11 @@ const CustomCursor: React.FC = () => {
         const handleMouseDown = () => setIsActive(true);
         const handleMouseUp = () => setIsActive(false);
 
-        const handleHoverStart = (e: MouseEvent) => {
+        const handleHover = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
-            if (target && target.closest('button, a, input, select, textarea, [role="button"], .group, [onclick]')) {
-                setIsHovering(true);
-            }
-        };
-
-        const handleHoverEnd = (e: MouseEvent) => {
-            const target = e.target as HTMLElement;
-            if (target && target.closest('button, a, input, select, textarea, [role="button"], .group, [onclick]')) {
-                setIsHovering(false);
+            const isSelectable = !!target.closest('button, a, input, select, textarea, [role="button"], .group, [onclick]');
+            if (isSelectable !== isHovering) {
+                setIsHovering(isSelectable);
             }
         };
 
@@ -52,8 +46,7 @@ const CustomCursor: React.FC = () => {
         document.addEventListener('mouseleave', handleMouseLeave);
         document.addEventListener('mousedown', handleMouseDown);
         document.addEventListener('mouseup', handleMouseUp);
-        document.addEventListener('mouseover', handleHoverStart);
-        document.addEventListener('mouseout', handleHoverEnd);
+        document.addEventListener('mouseover', handleHover);
 
         frameId = requestAnimationFrame(updateCursor);
 
@@ -63,11 +56,10 @@ const CustomCursor: React.FC = () => {
             document.removeEventListener('mouseleave', handleMouseLeave);
             document.removeEventListener('mousedown', handleMouseDown);
             document.removeEventListener('mouseup', handleMouseUp);
-            document.removeEventListener('mouseover', handleHoverStart);
-            document.removeEventListener('mouseout', handleHoverEnd);
+            document.removeEventListener('mouseover', handleHover);
             cancelAnimationFrame(frameId);
         };
-    }, [isVisible]);
+    }, []); // Empty dependency array for stability
 
     return (
         <div
@@ -114,6 +106,9 @@ const CustomCursor: React.FC = () => {
                 @media (min-width: 768px) {
                     html, body, *, button, a {
                         cursor: none !important;
+                    }
+                    select, option {
+                        cursor: auto !important;
                     }
                 }
             `}</style>

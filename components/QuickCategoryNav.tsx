@@ -19,7 +19,7 @@ const quickCats: { label: string; value: MuscleFilter; image: string; desc: stri
 
 const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory }) => {
     return (
-        <section className="relative py-16 md:py-24 bg-[#fcfcfc] dark:bg-[#050505] overflow-hidden">
+        <section className="relative py-24 md:py-32 bg-[#fcfcfc] dark:bg-[#050505] overflow-hidden">
             {/* Engineering Grid Overlay */}
             <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none"
                 style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
@@ -30,25 +30,24 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory })
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="flex items-center gap-4 bg-primary-500/5 px-6 py-2 rounded-full border border-primary-500/10"
+                        className="flex items-center gap-4"
                     >
-                        <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
-                        <span className="text-[10px] font-black text-primary-600 dark:text-primary-400 uppercase tracking-[0.4em] italic">Catálogo de Especialistas</span>
+                        <div className="w-12 h-[2px] bg-primary-600 rounded-full" />
+                        <span className="text-[10px] font-black text-primary-600 uppercase tracking-[0.5em] italic">Ingenería Muscular</span>
+                        <div className="w-12 h-[2px] bg-primary-600 rounded-full" />
                     </motion.div>
-
                     <motion.h2
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-6xl md:text-8xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter leading-[0.85]"
+                        transition={{ delay: 0.1 }}
+                        className="text-5xl md:text-7xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-none"
                     >
-                        EL PODER DEL <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-neutral-400 to-neutral-200 dark:from-neutral-600 dark:to-neutral-400">DISEÑO ÉLITE</span>
+                        Diseño <span className="text-primary-600">Élite</span>
                     </motion.h2>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-16">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-20">
                     {quickCats.map((cat, index) => (
                         <motion.button
                             key={cat.label}
@@ -61,7 +60,7 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory })
                         >
                             {/* Circular Image Container */}
                             <div className="relative z-10">
-                                <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 rounded-full overflow-hidden border-[6px] border-white dark:border-neutral-800 transition-all duration-700 group-hover:scale-105">
+                                <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 rounded-full overflow-hidden border-[6px] border-white dark:border-neutral-800 transition-transform duration-700 group-hover:scale-105">
                                     <img
                                         src={cat.image}
                                         alt={cat.label}

@@ -1229,48 +1229,54 @@ const App: React.FC = () => {
                   isLoggedIn={!!user}
                 />
 
-                {/* Purchase Models Info Window - CLEAN & MINIMAL & CENTERED */}
-                <div className="w-full px-4 md:px-12 my-24 max-w-[1440px] mx-auto">
-                  <div className="relative overflow-hidden rounded-[2.5rem] bg-neutral-100 dark:bg-neutral-900 p-10 md:p-14 border border-neutral-200 dark:border-neutral-800">
-                    <div className="flex flex-col xl:flex-row items-center justify-center gap-12 lg:gap-24">
-                      <div className="text-center xl:text-left space-y-3 max-w-md">
-                        <span className="text-primary-600 dark:text-primary-400 font-bold uppercase tracking-[0.3em] text-[10px]">Flexibilidad Corporativa</span>
-                        <h3 className="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white uppercase tracking-tight leading-none">
-                          Modelos de <span className="text-primary-600 dark:text-primary-400">Inversión</span>
+                {/* Purchase Models Info Window - REFINED BANNER STYLE */}
+                <div className="w-full px-4 md:px-6 my-32 max-w-[1400px] mx-auto">
+                  <div className="relative overflow-hidden rounded-[3rem] bg-white dark:bg-neutral-900 p-8 md:p-16 border border-neutral-200 dark:border-white/5 shadow-2xl">
+                    <div className="flex flex-col xl:flex-row items-center justify-between gap-16 md:gap-24 relative z-10">
+                      <div className="text-center xl:text-left space-y-4 max-w-xl">
+                        <div className="flex items-center justify-center xl:justify-start gap-4 mb-2">
+                          <div className="w-12 h-[1px] bg-primary-500" />
+                          <span className="text-primary-600 dark:text-primary-400 font-black uppercase tracking-[0.4em] text-[10px]">Flexibilidad de Pago</span>
+                        </div>
+                        <h3 className="text-4xl md:text-6xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter leading-none italic">
+                          Modelos de <span className="text-primary-600">Inversión</span>
                         </h3>
-                        <p className="text-neutral-600 dark:text-neutral-400 text-base font-medium leading-relaxed">
-                          Elige la modalidad que se adapte a tu flujo de caja.
+                        <p className="text-neutral-500 dark:text-neutral-400 text-lg font-medium leading-relaxed italic">
+                          Soluciones financieras diseñadas para el crecimiento de tu centro deportivo.
                         </p>
                       </div>
 
-                      <div className="flex flex-col sm:flex-row gap-6 w-full xl:w-auto">
+                      <div className="flex flex-col sm:flex-row gap-8 w-full xl:w-auto">
                         {/* Option 1: Entrega Inmediata */}
-                        <div className="flex-1 min-w-[280px] bg-white dark:bg-black rounded-[2rem] p-8 border border-neutral-200 dark:border-neutral-800 hover:border-emerald-500/50 transition-all duration-300 shadow-sm hover:shadow-xl">
-                          <div className="flex items-center gap-3 mb-6">
-                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Disponible</span>
+                        <div className="flex-1 min-w-[300px] bg-neutral-50 dark:bg-black/40 rounded-[2.5rem] p-10 border border-neutral-100 dark:border-white/5 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl">
+                          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500 text-white mb-6 shadow-lg">
+                            <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Disponible</span>
                           </div>
-                          <p className="text-neutral-900 dark:text-white text-2xl font-black uppercase tracking-tight mb-2">Entrega Inmediata</p>
-                          <p className="text-neutral-500 text-[10px] font-medium uppercase tracking-widest">Pago 100% Contra Entrega</p>
+                          <p className="text-neutral-900 dark:text-white text-3xl font-black uppercase tracking-tight mb-2">Entrega Inmediata</p>
+                          <p className="text-neutral-500 text-[10px] font-black uppercase tracking-[0.2em] italic">Pago 100% Contra Entrega</p>
                         </div>
 
                         {/* Option 2: Sobre Pedido */}
-                        <div className="flex-1 min-w-[280px] bg-white dark:bg-black rounded-[2rem] p-8 border border-neutral-200 dark:border-neutral-800 hover:border-amber-500/50 transition-all duration-300 shadow-sm hover:shadow-xl">
-                          <div className="flex items-center gap-3 mb-6">
-                            <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">Sobre Pedido</span>
+                        <div className="flex-1 min-w-[300px] bg-neutral-50 dark:bg-black/40 rounded-[2.5rem] p-10 border border-neutral-100 dark:border-white/5 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl">
+                          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-600 text-white mb-6 shadow-lg">
+                            <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Bajo Pedido</span>
                           </div>
-                          <p className="text-neutral-900 dark:text-white text-2xl font-black uppercase tracking-tight mb-2">Reserva con 50%</p>
-                          <p className="text-neutral-500 text-[10px] font-medium uppercase tracking-widest">50% al Finalizar Fabricación</p>
+                          <p className="text-neutral-900 dark:text-white text-3xl font-black uppercase tracking-tight mb-2">Reserva con 50%</p>
+                          <p className="text-neutral-500 text-[10px] font-black uppercase tracking-[0.2em] italic">Saldo al Finalizar Fabricación</p>
                         </div>
                       </div>
                     </div>
+
+                    {/* Background Decoration */}
+                    <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-primary-600/5 blur-[100px] rounded-full pointer-events-none" />
                   </div>
                 </div>
 
                 <QuickCategoryNav onSelectCategory={handleSelectQuickCategory} />
 
-                <div id="catalog" className="w-full px-1 md:px-4 py-8">
+                <div id="catalog" className="w-full px-1 md:px-4 py-20 md:py-32">
                   <div className="w-full bg-white dark:bg-[#111] rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl overflow-hidden p-4 sm:p-8 md:p-12 border border-neutral-200 dark:border-white/5">
                     <ProductListHeader
                       sortOrder={sortOrder}

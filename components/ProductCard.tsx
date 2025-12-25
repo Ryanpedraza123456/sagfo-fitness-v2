@@ -37,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, onToggleCom
         <img
           src={(product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : 'https://placehold.co/400x300?text=SAGFO'}
           alt={product.name}
-          className={`w-full h-full object-contain transition-all duration-[1500ms] cubic-bezier(0.4, 0, 0.2, 1) group-hover:scale-110 group-hover:rotate-2 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`w-full h-full object-contain transition-[transform,opacity] duration-[1000ms] ease-out group-hover:scale-110 group-hover:rotate-2 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setImageLoaded(true)}
         />
 
@@ -52,12 +52,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, onToggleCom
           )}
 
           {product.availabilityStatus === 'in-stock' ? (
-            <div className="px-5 py-2.5 rounded-full bg-emerald-500 text-white text-[9px] font-black uppercase tracking-[0.3em] shadow-2xl border border-emerald-400 flex items-center gap-2">
+            <div className="px-5 py-2.5 rounded-full bg-emerald-500 text-white text-[9px] font-black uppercase tracking-[0.3em] border border-emerald-400 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               Disponible
             </div>
           ) : (
-            <div className="px-5 py-2.5 rounded-full bg-amber-600 text-white text-[9px] font-black uppercase tracking-[0.3em] border border-amber-500 shadow-xl">
+            <div className="px-5 py-2.5 rounded-full bg-amber-600 text-white text-[9px] font-black uppercase tracking-[0.3em] border border-amber-500">
               Sobre Pedido
             </div>
           )}

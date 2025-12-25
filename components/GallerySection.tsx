@@ -33,27 +33,41 @@ const GallerySection: React.FC<GallerySectionProps> = ({ images, isAdmin }) => {
 
     let lastTime = performance.now();
     let animationId: number;
+    let isVisible = true;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(scrollContainer);
 
     const animate = (time: number) => {
-      const deltaTime = time - lastTime;
-      lastTime = time;
+      if (isVisible) {
+        const deltaTime = time - lastTime;
+        lastTime = time;
 
-      const speed = 0.6;
-      scrollPosRef.current += speed;
+        const speed = 0.6;
+        scrollPosRef.current += speed;
 
-      // Si llegamos a la mitad del scroll (donde empiezan las duplicadas), reseteamos al inicio discretamente
-      const halfWidth = scrollContainer.scrollWidth / 2;
-      if (scrollPosRef.current >= halfWidth) {
-        scrollPosRef.current = 0;
+        const halfWidth = scrollContainer.scrollWidth / 2;
+        if (scrollPosRef.current >= halfWidth) {
+          scrollPosRef.current = 0;
+        }
+
+        scrollContainer.scrollLeft = scrollPosRef.current;
       }
-
-      scrollContainer.scrollLeft = scrollPosRef.current;
       animationId = requestAnimationFrame(animate);
     };
 
     animationId = requestAnimationFrame(animate);
 
-    return () => cancelAnimationFrame(animationId);
+    return () => {
+      cancelAnimationFrame(animationId);
+      observer.disconnect();
+    };
   }, [images.length]);
 
   return (
