@@ -1229,39 +1229,39 @@ const App: React.FC = () => {
                   isLoggedIn={!!user}
                 />
 
-                {/* Purchase Models Info Window - CLEAN & MINIMAL */}
-                <div className="w-full px-4 md:px-12 mt-20 mb-20 max-w-[1440px] mx-auto">
+                {/* Purchase Models Info Window - CLEAN & MINIMAL & CENTERED */}
+                <div className="w-full px-4 md:px-12 my-24 max-w-[1440px] mx-auto">
                   <div className="relative overflow-hidden rounded-[2.5rem] bg-neutral-100 dark:bg-neutral-900 p-10 md:p-14 border border-neutral-200 dark:border-neutral-800">
-                    <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-20">
-                      <div className="text-center lg:text-left space-y-3 max-w-md">
+                    <div className="flex flex-col xl:flex-row items-center justify-center gap-12 lg:gap-24">
+                      <div className="text-center xl:text-left space-y-3 max-w-md">
                         <span className="text-primary-600 dark:text-primary-400 font-bold uppercase tracking-[0.3em] text-[10px]">Flexibilidad Corporativa</span>
-                        <h3 className="text-3xl md:text-4xl font-black text-neutral-900 dark:text-white uppercase tracking-tight leading-none">
+                        <h3 className="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white uppercase tracking-tight leading-none">
                           Modelos de <span className="text-primary-600 dark:text-primary-400">Inversión</span>
                         </h3>
-                        <p className="text-neutral-600 dark:text-neutral-400 text-sm font-medium leading-relaxed">
+                        <p className="text-neutral-600 dark:text-neutral-400 text-base font-medium leading-relaxed">
                           Elige la modalidad que se adapte a tu flujo de caja.
                         </p>
                       </div>
 
-                      <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                      <div className="flex flex-col sm:flex-row gap-6 w-full xl:w-auto">
                         {/* Option 1: Entrega Inmediata */}
-                        <div className="flex-1 min-w-[260px] bg-white dark:bg-black rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800 hover:border-emerald-500/50 transition-all duration-300">
-                          <div className="flex items-center gap-3 mb-4">
+                        <div className="flex-1 min-w-[280px] bg-white dark:bg-black rounded-[2rem] p-8 border border-neutral-200 dark:border-neutral-800 hover:border-emerald-500/50 transition-all duration-300 shadow-sm hover:shadow-xl">
+                          <div className="flex items-center gap-3 mb-6">
                             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                             <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Disponible</span>
                           </div>
-                          <p className="text-neutral-900 dark:text-white text-xl font-black uppercase tracking-tight mb-1">Entrega Inmediata</p>
-                          <p className="text-neutral-500 text-[10px] font-medium uppercase tracking-wider">Pago 100% Contra Entrega</p>
+                          <p className="text-neutral-900 dark:text-white text-2xl font-black uppercase tracking-tight mb-2">Entrega Inmediata</p>
+                          <p className="text-neutral-500 text-[10px] font-medium uppercase tracking-widest">Pago 100% Contra Entrega</p>
                         </div>
 
                         {/* Option 2: Sobre Pedido */}
-                        <div className="flex-1 min-w-[260px] bg-white dark:bg-black rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800 hover:border-amber-500/50 transition-all duration-300">
-                          <div className="flex items-center gap-3 mb-4">
+                        <div className="flex-1 min-w-[280px] bg-white dark:bg-black rounded-[2rem] p-8 border border-neutral-200 dark:border-neutral-800 hover:border-amber-500/50 transition-all duration-300 shadow-sm hover:shadow-xl">
+                          <div className="flex items-center gap-3 mb-6">
                             <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
                             <span className="text-[10px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">Sobre Pedido</span>
                           </div>
-                          <p className="text-neutral-900 dark:text-white text-xl font-black uppercase tracking-tight mb-1">Reserva con 50%</p>
-                          <p className="text-neutral-500 text-[10px] font-medium uppercase tracking-wider">50% al Finalizar Fabricación</p>
+                          <p className="text-neutral-900 dark:text-white text-2xl font-black uppercase tracking-tight mb-2">Reserva con 50%</p>
+                          <p className="text-neutral-500 text-[10px] font-medium uppercase tracking-widest">50% al Finalizar Fabricación</p>
                         </div>
                       </div>
                     </div>

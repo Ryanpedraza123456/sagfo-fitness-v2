@@ -19,7 +19,7 @@ const quickCats: { label: string; value: MuscleFilter; image: string; desc: stri
 
 const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory }) => {
     return (
-        <section className="relative py-40 md:py-60 bg-[#fcfcfc] dark:bg-[#050505] overflow-hidden">
+        <section className="relative py-16 md:py-24 bg-[#fcfcfc] dark:bg-[#050505] overflow-hidden">
             {/* Engineering Grid Overlay */}
             <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none"
                 style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
