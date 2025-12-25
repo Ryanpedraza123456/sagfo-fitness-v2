@@ -100,34 +100,36 @@ const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPro
           ))}
         </div>
 
-        {/* Manual Navigation Arrows - Repositioned for Mobile */}
+        {/* Control Group: Arrows & Pagination Indicators */}
         {slides.length > 1 && (
-          <div className="absolute bottom-6 right-6 md:bottom-12 md:right-12 z-20 flex gap-2 md:gap-4">
-            <button
-              onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
-              className="bg-black/40 hover:bg-primary-600 p-3 md:p-4 rounded-xl text-white transition-all border border-white/10 backdrop-blur-md"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
-              className="bg-black/40 hover:bg-primary-600 p-3 md:p-4 rounded-xl text-white transition-all border border-white/10 backdrop-blur-md"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        )}
+          <div className="absolute bottom-6 right-6 md:bottom-12 md:right-12 z-20 flex flex-col items-end gap-6 md:gap-10">
+            {/* Pagination Indicators - Now more visible and elegant */}
+            <div className="flex gap-2 md:gap-3 px-4 py-2 bg-black/20 backdrop-blur-md rounded-full border border-white/5">
+              {slides.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`h-1.5 md:h-2 rounded-full transition-all duration-700 ${idx === currentSlide ? 'w-10 md:w-16 bg-primary-500 shadow-[0_0_15px_rgba(14,165,233,0.6)]' : 'w-4 md:w-6 bg-white/20 hover:bg-white/40'}`}
+                  aria-label={`Ir al slide ${idx + 1}`}
+                />
+              ))}
+            </div>
 
-        {/* Pagination Indicators */}
-        {slides.length > 1 && (
-          <div className="absolute bottom-6 left-6 md:bottom-12 md:left-12 z-20 flex gap-1.5 md:gap-2">
-            {slides.map((_, idx) => (
+            {/* Manual Navigation Arrows */}
+            <div className="flex gap-2 md:gap-4">
               <button
-                key={idx}
-                onClick={() => setCurrentSlide(idx)}
-                className={`h-1 rounded-full transition-all duration-300 ${idx === currentSlide ? 'w-8 md:w-12 bg-primary-500' : 'w-3 md:w-4 bg-white/20'}`}
-              />
-            ))}
+                onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
+                className="bg-black/40 hover:bg-primary-600 p-4 md:p-5 rounded-2xl text-white transition-all border border-white/10 backdrop-blur-md hover:scale-110 active:scale-90 group"
+              >
+                <ChevronLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
+              </button>
+              <button
+                onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
+                className="bg-black/40 hover:bg-primary-600 p-4 md:p-5 rounded-2xl text-white transition-all border border-white/10 backdrop-blur-md hover:scale-110 active:scale-90 group"
+              >
+                <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
           </div>
         )}
 
