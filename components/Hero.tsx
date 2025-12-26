@@ -27,7 +27,7 @@ const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPro
 
   return (
     <div className="px-4 md:px-6 pb-6">
-      <div className="relative h-[70vh] sm:h-[85vh] md:h-[85vh] w-full overflow-hidden bg-black rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl border border-neutral-200 dark:border-white/5">
+      <div className="relative h-[80vh] sm:h-[85vh] md:h-[85vh] w-full overflow-hidden bg-black rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl border border-neutral-200 dark:border-white/5">
         {/* Admin Edit Button */}
         {isAdmin && (
           <button
@@ -58,7 +58,7 @@ const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPro
               <div className="absolute inset-0 bg-black/65 md:bg-black/50" />
 
               {/* Text Overlay */}
-              <div className="absolute inset-0 flex items-center pt-20 md:pt-0">
+              <div className="absolute inset-0 flex items-center pt-8 md:pt-0 pb-12">
                 <div className="w-full px-6 md:px-8 lg:px-12 xl:px-16">
                   <div className="max-w-4xl text-white">
                     <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-6">
@@ -74,7 +74,7 @@ const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPro
                     </h1>
 
                     {slide.subtitle && (
-                      <p className="text-xs md:text-xl text-zinc-300 mb-6 md:mb-10 max-w-2xl font-bold leading-relaxed">
+                      <p className="text-[10px] md:text-xl text-zinc-300 mb-6 md:mb-10 max-w-2xl font-bold leading-relaxed">
                         {slide.subtitle}
                       </p>
                     )}
