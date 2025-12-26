@@ -88,7 +88,7 @@ const Hero: React.FC<HeroProps> = ({ onCartClick, slides, isAdmin, onEdit, onPro
                       </button>
                       <button
                         onClick={onPromosClick}
-                        className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-8 md:px-10 py-3.5 md:py-4 rounded-xl font-black uppercase tracking-widest text-[10px] md:text-sm transition-all backdrop-blur-sm"
+                        className="bg-white/20 hover:bg-white/30 text-white border-2 border-white/50 hover:border-white px-8 md:px-10 py-3.5 md:py-4 rounded-xl font-black uppercase tracking-widest text-[10px] md:text-sm transition-all backdrop-blur-sm shadow-lg"
                       >
                         Ofertas Especiales
                       </button>
