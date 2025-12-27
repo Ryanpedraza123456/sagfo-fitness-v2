@@ -432,8 +432,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
               <div className="bg-neutral-50 dark:bg-white/5 p-12 rounded-[4rem] border border-neutral-100 dark:border-white/5 shadow-inner">
                 <div className="space-y-8">
                   <div className="space-y-3">
-                    <label className="text-[11px] font-black uppercase text-primary-600 tracking-widest italic px-4">Referencia / Título</label>
-                    <input name="name" value={formData?.name} onChange={handleInputChange} className="w-full bg-white dark:bg-zinc-900 p-6 rounded-[2rem] font-black uppercase italic tracking-tighter text-3xl border border-neutral-100 dark:border-white/10 text-neutral-950 dark:text-white focus:ring-4 focus:ring-primary-500/20 transition-all outline-none" />
+                    <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic px-4">Referencia / Título</label>
+                    <input name="name" value={formData?.name || ''} onChange={handleInputChange} className="w-full bg-white dark:bg-zinc-900 p-6 rounded-[2rem] font-black uppercase italic tracking-tighter text-3xl border border-neutral-100 dark:border-white/10 text-neutral-950 dark:text-white focus:ring-4 focus:ring-primary-500/20 transition-all outline-none" />
                   </div>
 
                   <div className="grid grid-cols-2 gap-6">
@@ -441,7 +441,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                       <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic px-4">Segmento</label>
                       <select
                         name="category"
-                        value={formData?.category}
+                        value={formData?.category || 'Maquinaria'}
                         onChange={(e) => {
                           const val = e.target.value as 'Maquinaria' | 'Accesorios';
                           setFormData(prev => prev ? { ...prev, category: val, muscleGroup: 'General' } : null);
@@ -490,13 +490,13 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-3">
                       <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic px-4">Inversión COP</label>
-                      <input type="number" name="price" value={formData?.price === 0 ? '' : formData?.price} onChange={handleInputChange} className="w-full bg-white dark:bg-zinc-900 p-5 rounded-2xl font-black border border-neutral-100 dark:border-white/10 text-neutral-900 dark:text-white focus:ring-primary-500/20 outline-none" />
+                      <input type="number" name="price" value={formData?.price === 0 ? '' : (formData?.price || '')} onChange={handleInputChange} className="w-full bg-white dark:bg-zinc-900 p-5 rounded-2xl font-black border border-neutral-100 dark:border-white/10 text-neutral-900 dark:text-white focus:ring-primary-500/20 outline-none" />
                     </div>
                     <div className="space-y-3">
                       <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic px-4">Disponibilidad</label>
                       <select
                         name="availabilityStatus"
-                        value={formData?.availabilityStatus}
+                        value={formData?.availabilityStatus || 'in-stock'}
                         onChange={handleInputChange}
                         className="w-full bg-white dark:bg-zinc-900 p-5 rounded-2xl font-bold border border-neutral-100 dark:border-white/10 text-neutral-900 dark:text-white outline-none"
                       >
@@ -508,7 +508,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
                   <div className="space-y-3">
                     <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic px-4">Promo COP (Opcional)</label>
-                    <input type="number" name="promotionalPrice" value={formData?.promotionalPrice === 0 ? '' : formData?.promotionalPrice} onChange={handleInputChange} className="w-full bg-white dark:bg-zinc-900 p-5 rounded-2xl font-black border border-neutral-100 dark:border-white/10 text-neutral-900 dark:text-white focus:ring-primary-500/20 outline-none" />
+                    <input type="number" name="promotionalPrice" value={formData?.promotionalPrice === 0 ? '' : (formData?.promotionalPrice || '')} onChange={handleInputChange} className="w-full bg-white dark:bg-zinc-900 p-5 rounded-2xl font-black border border-neutral-100 dark:border-white/10 text-neutral-900 dark:text-white focus:ring-primary-500/20 outline-none" />
                   </div>
 
                   {/* VARIANTES PROFESIONALES - REDISEÑADO */}
@@ -658,9 +658,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
                     </div>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-3 relative z-10">
                     <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic px-4">Descripción Elite</label>
-                    <textarea name="description" value={formData?.description} onChange={handleInputChange} rows={5} className="w-full bg-white dark:bg-zinc-900 p-6 rounded-[2rem] font-medium text-neutral-600 dark:text-neutral-300 border border-neutral-100 dark:border-white/10 focus:ring-primary-500/20 outline-none" />
+                    <textarea name="description" value={formData?.description || ''} onChange={handleInputChange} rows={5} className="w-full bg-white dark:bg-zinc-900 p-6 rounded-[2rem] font-medium text-neutral-600 dark:text-neutral-300 border border-neutral-100 dark:border-white/10 focus:ring-primary-500/20 outline-none" />
                   </div>
 
                   <div className="flex items-center gap-6 bg-primary-600/5 p-6 rounded-[2rem] border border-primary-600/10">

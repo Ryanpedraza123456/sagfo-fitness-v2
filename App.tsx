@@ -29,7 +29,7 @@ import EditUserModal from './components/EditUserModal';
 import EventDetailModal from './components/EventDetailModal';
 import TransporterDashboard from './components/TransporterDashboard';
 import AdminDashboard from './components/AdminDashboard';
-import CustomCursor from './components/CustomCursor';
+
 
 import { supabase } from './lib/supabase';
 
@@ -435,34 +435,50 @@ const App: React.FC = () => {
         finalImageUrls = await Promise.all(uploadPromises);
       }
 
+      // 2. Sanitize and Prepare Payload
+      const price = Number(product.price);
+      const isPromotion = Boolean(product.isPromotion);
+      // If promotion is active, ensure we have a price. If not active, or price is missing/0, set to null.
+      const promotionalPrice = (isPromotion && product.promotionalPrice)
+        ? Number(product.promotionalPrice)
+        : null;
+
       const cleanedProduct = {
         ...product,
-        imageUrls: finalImageUrls,
-        price: Number(product.price),
-        promotionalPrice: product.promotionalPrice ? Number(product.promotionalPrice) : undefined
+        imageUrls: finalImageUrls.filter(url => url && url.trim() !== ''), // Filter empty URLs
+        price: price,
+        promotionalPrice: promotionalPrice
       };
+
+      // Payload object for Supabase (explicit mapping)
+      const payload = {
+        name: cleanedProduct.name,
+        category: cleanedProduct.category,
+        muscle_group: cleanedProduct.muscleGroup,
+        availability_status: cleanedProduct.availabilityStatus,
+        description: cleanedProduct.description,
+        price: cleanedProduct.price,
+        image_urls: cleanedProduct.imageUrls,
+        features: (cleanedProduct.features || []).filter(f => f && f.trim() !== ''), // Filter empty features
+        specifications: cleanedProduct.specifications || {},
+        available_colors: cleanedProduct.availableColors || [],
+        available_weights: cleanedProduct.availableWeights || [],
+        is_promotion: cleanedProduct.isPromotion,
+        promotional_price: cleanedProduct.promotionalPrice
+      };
+
+      console.log('📦 Payload enviado a Supabase:', payload);
 
       if (isEditingProduct && selectedProduct?.id) {
         const { error } = await supabase
           .from('equipment')
-          .update({
-            name: cleanedProduct.name,
-            category: cleanedProduct.category,
-            muscle_group: cleanedProduct.muscleGroup,
-            availability_status: cleanedProduct.availabilityStatus,
-            description: cleanedProduct.description,
-            price: cleanedProduct.price,
-            image_urls: cleanedProduct.imageUrls,
-            features: cleanedProduct.features,
-            specifications: cleanedProduct.specifications,
-            available_colors: cleanedProduct.availableColors,
-            available_weights: cleanedProduct.availableWeights,
-            is_promotion: cleanedProduct.isPromotion,
-            promotional_price: cleanedProduct.promotionalPrice
-          })
+          .update(payload)
           .eq('id', selectedProduct.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Supabase Update Error Details:', error);
+          throw error;
+        }
 
         setProducts(products.map(p => p.id === selectedProduct.id ? cleanedProduct : p));
 
@@ -478,22 +494,13 @@ const App: React.FC = () => {
           .from('equipment')
           .insert({
             id: newId,
-            name: cleanedProduct.name,
-            category: cleanedProduct.category,
-            muscle_group: cleanedProduct.muscleGroup,
-            availability_status: cleanedProduct.availabilityStatus,
-            description: cleanedProduct.description,
-            price: cleanedProduct.price,
-            image_urls: cleanedProduct.imageUrls,
-            features: cleanedProduct.features,
-            specifications: cleanedProduct.specifications,
-            available_colors: cleanedProduct.availableColors,
-            available_weights: cleanedProduct.availableWeights,
-            is_promotion: cleanedProduct.isPromotion,
-            promotional_price: cleanedProduct.promotionalPrice
+            ...payload
           });
 
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Supabase Insert Error Details:', error);
+          throw error;
+        }
         setProducts([newProduct, ...products]);
 
         // Sincronización Real con DB
@@ -504,8 +511,8 @@ const App: React.FC = () => {
       setIsProductModalOpen(false);
       setIsEditingProduct(false);
     } catch (error: any) {
-      console.error('Error saving product:', error);
-      setNotification({ id: Date.now(), type: 'error', message: 'Error al guardar el producto.' });
+      console.error('🔥 Error saving product (FULL):', error, error.message, error.details, error.hint);
+      setNotification({ id: Date.now(), type: 'error', message: `Error al guardar: ${error.message || 'Error desconocido'}` });
     }
   };
 
@@ -1522,7 +1529,7 @@ const App: React.FC = () => {
           onClose={() => setViewingEvent(null)}
           event={viewingEvent}
         />
-        <CustomCursor />
+
       </div>
     </>
   );
