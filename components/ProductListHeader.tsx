@@ -45,8 +45,8 @@ const ProductListHeader: React.FC<ProductListHeaderProps> = ({ sortOrder, onSort
       <div className="flex flex-col xl:flex-row justify-between items-center gap-8 md:gap-12">
 
         {/* Elite Category Switcher */}
-        <div className="w-full md:w-auto overflow-x-auto no-scrollbar py-2">
-          <div className="relative inline-flex items-center p-1.5 md:p-2 bg-neutral-100 dark:bg-white/[0.03] backdrop-blur-2xl rounded-full border border-neutral-200 dark:border-white/5 shadow-inner min-w-max">
+        <div className="w-full md:w-auto overflow-x-auto no-scrollbar py-2 flex justify-center md:justify-start">
+          <div className="relative inline-flex items-center p-1.5 md:p-2 bg-neutral-100 dark:bg-zinc-900/50 backdrop-blur-2xl rounded-full border border-neutral-200 dark:border-white/10 shadow-inner min-w-max">
             <span
               className="absolute top-1.5 md:top-2 h-[calc(100%-12px)] md:h-[calc(100%-16px)] bg-neutral-900 dark:bg-white rounded-full shadow-2xl transition-all duration-700 cubic-bezier(0.23, 1, 0.32, 1)"
               style={sliderStyle}
@@ -57,9 +57,9 @@ const ProductListHeader: React.FC<ProductListHeaderProps> = ({ sortOrder, onSort
                 key={category}
                 ref={el => { tabsRef.current[index] = el; }}
                 onClick={() => onCategoryFilterChange(category)}
-                className={`relative z-10 px-6 md:px-12 py-3 md:py-4 text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-full transition-all duration-700 flex items-center gap-2 md:gap-3 italic ${categoryFilter === category
+                className={`relative z-10 px-6 md:px-12 py-3 md:py-4 text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-full transition-all duration-700 flex items-center gap-2 md:gap-3 italic whitespace-nowrap ${categoryFilter === category
                   ? 'text-white dark:text-neutral-900'
-                  : 'text-neutral-400 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
+                  : 'text-neutral-400 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white'
                   }`}
               >
                 {category === 'Maquinaria' ? <Layers size={14} className="md:w-4 md:h-4" strokeWidth={3} /> : <Package size={14} className="md:w-4 md:h-4" strokeWidth={3} />}
