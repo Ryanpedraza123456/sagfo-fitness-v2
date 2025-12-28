@@ -365,7 +365,14 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
                                             <div className="flex-grow min-w-0 flex flex-col gap-3">
                                                 <div className="flex justify-between items-start">
                                                     <div className="space-y-1">
-                                                        <h4 className="text-lg sm:text-xl font-black text-neutral-900 dark:text-white uppercase italic leading-none">{item.equipment.name}</h4>
+                                                        <div className="flex items-center gap-2">
+                                                            <h4 className="text-lg sm:text-xl font-black text-neutral-900 dark:text-white uppercase italic leading-none">{item.equipment.name}</h4>
+                                                            {item.equipment.availabilityStatus === 'in-stock' ? (
+                                                                <span className="px-1.5 py-0.5 rounded-md bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[8px] font-black uppercase tracking-wider whitespace-nowrap">Entrega Inmediata</span>
+                                                            ) : (
+                                                                <span className="px-1.5 py-0.5 rounded-md bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-[8px] font-black uppercase tracking-wider whitespace-nowrap">Sobre Pedido</span>
+                                                            )}
+                                                        </div>
 
                                                         {/* Variants Tags */}
                                                         {(item.selectedColor || item.selectedWeight) && (
@@ -445,7 +452,9 @@ const QuoteCartModal: React.FC<QuoteCartModalProps> = ({ isOpen, onClose, cartIt
                                                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-500">Monto del Anticipo</p>
                                                 <p className="text-3xl font-black italic tracking-tighter">{formatCurrency(calculation.amountPaid)}</p>
                                             </div>
-                                            <span className="text-[9px] font-black px-2 py-1 bg-white/10 rounded-lg uppercase italic border border-white/10">50% Inicial</span>
+                                            <span className="text-[9px] font-black px-2 py-1 bg-white/10 rounded-lg uppercase italic border border-white/10">
+                                                {calculation.amountPending > 0 ? '50% Inicial' : 'Pago Total'}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
