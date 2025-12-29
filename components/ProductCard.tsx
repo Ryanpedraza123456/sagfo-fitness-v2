@@ -115,7 +115,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, onToggleCom
             )}
           </div>
 
-          <h3 className="text-3xl md:text-4xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-[0.85] line-clamp-2 pr-1">
+          <h3 className="text-xl md:text-2xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-[0.85] line-clamp-2 pr-1">
             {product.name}
           </h3>
         </div>

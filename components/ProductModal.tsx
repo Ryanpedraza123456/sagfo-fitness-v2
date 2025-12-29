@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { EquipmentItem, CartItem, CategoryFilter, MuscleFilter } from '../types';
-import { Plus, Trash2, X, Camera, Save, ArrowLeft, Maximize2, ZoomIn, Check, Palette, Dumbbell } from 'lucide-react';
+import { Plus, Trash2, X, Camera, Save, ArrowLeft, Maximize2, ZoomIn, Check, Palette, Dumbbell, List, Star, CheckCircle2, ArrowRight, Type, Eraser } from 'lucide-react';
 
 
 interface ProductModalProps {
@@ -50,6 +50,166 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const [newWeight, setNewWeight] = useState('');
   const [weightUnit, setWeightUnit] = useState<'LB' | 'KG'>('LB');
   const [newColor, setNewColor] = useState('');
+
+  // Text Editor Helpers
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+
+  const insertAtCursor = (text: string) => {
+    if (descriptionRef.current && formData) {
+      const textarea = descriptionRef.current;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const previousValue = textarea.value;
+      const newValue = previousValue.substring(0, start) + text + previousValue.substring(end);
+
+      setFormData({ ...formData, description: newValue });
+
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + text.length, start + text.length);
+      }, 0);
+    }
+  };
+
+  const toUpperCaseSelection = () => {
+    if (descriptionRef.current && formData) {
+      const textarea = descriptionRef.current;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+
+      if (start === end) return; // No selection
+
+      const previousValue = textarea.value;
+      const selection = previousValue.substring(start, end);
+      const newValue = previousValue.substring(0, start) + selection.toUpperCase() + previousValue.substring(end);
+
+      setFormData({ ...formData, description: newValue });
+
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start, end);
+      }, 0);
+    }
+  };
+
+  const cleanText = () => {
+    if (descriptionRef.current && formData) {
+      let text = descriptionRef.current.value;
+
+      // PASO 1: Arreglar palabras rotas con espacios
+      const brokenWords: Record<string, string> = {
+        "mu scul": "múscul", "cua dri": "cuádri", "glu te": "glúte",
+        "electr óesta": "electrost", "Tapicer í a": "Tapicería",
+        "pe lvic": "pélvic", "ra pid": "rápid", "Pósa pie": "Posapie",
+        "el óngaci": "elongaci", "isqui ótibi": "isquiotibi",
+        "ejercici ós": "ejercicios", "anches": "anchos",
+      };
+
+      Object.entries(brokenWords).forEach(([broken, fixed]) => {
+        text = text.replace(new RegExp(broken, 'gi'), fixed);
+      });
+
+      // PASO 2: Diccionario exhaustivo de correcciones (palabras completas)
+      const corrections: Record<string, string> = {
+        // Palabras fitness con acentos incorrectos
+        "bancó": "banco", "fórtalecer": "fortalecer", "tónificar": "tonificar",
+        "zóna": "zona", "lós": "los", "isquiótibiales": "isquiotibiales",
+        "ejerciciós": "ejercicios", "elóngación": "elongación",
+        "póst": "post", "póstura": "postura", "córpóral": "corporal",
+        "Apóyó": "Apoyo", "pélvica": "pélvica", "rápidó": "rápido",
+        "inóxidable": "inoxidable", "antideslizante": "antideslizante",
+
+        // Términos generales sobre-acentuados
+        "equipó": "equipo", "largó": "largo", "anchó": "ancho", "altó": "alto",
+        "pesó": "peso", "sóló": "solo", "mómentó": "momento",
+        "pósiciónar": "posicionar", "quedandó": "quedando", "medió": "medio",
+        "almóhadillas": "almohadillas", "sópórtadó": "soportado",
+        "Aceró": "Acero", "Tub ós": "Tubos", "Tubós": "Tubos",
+        "Accesóriós": "Accesorios", "Tapicer ía": "Tapicería",
+
+        // Palabras mal escritas
+        "necseio": "necesito", "nsoe": "no sé", "infromacion": "información",
+        "corroieja": "corrija", "eosse": "eso se", "ai": "hay",
+
+        // Palabras rotas comunes
+        "mu sculós": "músculos", "músculos": "músculos",
+        "cuá driceps": "cuádriceps", "cuádriceps": "cuádriceps",
+        "glú teós": "glúteos", "glúteos": "glúteos",
+        "electrostá tica": "electrostática",
+        "má ximó": "máximo", "má xima": "máxima",
+
+        // Acentos en artículos y preposiciones
+        "cón": "con", "dónde": "donde", "dé": "de", "á": "a",
+        "pór": "por", "ál": "al", "dél": "del",
+      };
+
+      // Aplicar correcciones palabra por palabra (case insensitive pero preservando mayúsculas)
+      Object.entries(corrections).forEach(([wrong, correct]) => {
+        // Reemplazar manteniendo el case original
+        const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
+        text = text.replace(regex, (match) => {
+          if (match[0] === match[0].toUpperCase()) {
+            return correct.charAt(0).toUpperCase() + correct.slice(1);
+          }
+          return correct;
+        });
+      });
+
+      // PASO 3: Remover acentos incorrectos de palabras terminadas en vocal+consonante
+      // Patrón: palabras que terminan en ó, á, é (cuando no deberían)
+      text = text.replace(/\b(\w+[bcdfghjklmnpqrstvwxyz])ó\b/gi, (match, base) => {
+        // Excepciones: palabras que SÍ llevan acento al final
+        const exceptions = ['llevó', 'usó', 'dio', 'vio', 'ató'];
+        if (exceptions.includes(match.toLowerCase())) return match;
+        return base + 'o';
+      });
+
+      // PASO 4: Limpieza de formato
+      text = text
+        // Arreglar espacios múltiples
+        .replace(/[ \t]+/g, ' ')
+        // Palabras pegadas a puntuación
+        .replace(/([.,;:])([^\s\n0-9])/g, '$1 $2')
+        // Espacios antes de puntos
+        .replace(/\s+([.,;:])/g, '$1')
+        // Múltiples saltos de línea
+        .replace(/\n\s*\n\s*\n+/g, '\n\n')
+        // Convertir - al inicio de línea en bullets
+        .replace(/(^|\n)\s*-\s+/g, '$1• ')
+        // Asegurar salto de línea antes de secciones
+        .replace(/([^\n])(CARACTERÍSTICAS|DIMENSIONES|ESPECIFICACIONES):/gi, '$1\n\n$2:')
+        .trim();
+
+      setFormData({ ...formData, description: text });
+    }
+  };
+
+  const toggleList = () => {
+    if (descriptionRef.current && formData) {
+      const textarea = descriptionRef.current;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const val = textarea.value;
+
+      if (start === end) {
+        insertAtCursor('• ');
+        return;
+      }
+
+      const selection = val.substring(start, end);
+      const lines = selection.split('\n');
+      const newSelection = lines.map(line => line.trim().startsWith('•') ? line : `• ${line}`).join('\n');
+
+      const newValue = val.substring(0, start) + newSelection + val.substring(end);
+
+      setFormData({ ...formData, description: newValue });
+
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start, start + newSelection.length);
+      }, 0);
+    }
+  };
 
   const getColorStyle = (c: string) => {
     const lower = c.toLowerCase();
@@ -578,7 +738,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                           <div className="flex flex-wrap gap-2 pt-2 border-t border-dashed border-neutral-200 dark:border-white/10">
                             <span className="text-[9px] text-neutral-400 w-full">Personalizados:</span>
                             {formData.availableColors.filter(c => !["Negro Mate", "Negro Brillante", "Rojo", "Azul", "Blanco", "Gris", "Plata", "Amarillo", "Verde", "Naranja", "Cromado"].includes(c)).map((c, idx) => (
-                              <div key={idx} className="flex items-center gap-2 px-3 py-1 bg-white dark:bg-zinc-800 rounded-lg border border-neutral-200 dark:border-white/5 shadow-sm">
+                              <div key={idx} className="flex items-center gap-2 pl-3 pr-2 py-1.5 bg-white dark:bg-zinc-800 rounded-lg border border-neutral-200 dark:border-white/5 shadow-sm">
                                 <span className="text-[10px] font-bold text-neutral-700 dark:text-neutral-300 uppercase">{c}</span>
                                 <button onClick={() => setFormData({ ...formData, availableColors: formData.availableColors.filter(col => col !== c) })} className="hover:text-red-500 transition-colors">
                                   <X size={12} strokeWidth={3} />
@@ -660,8 +820,26 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   </div>
 
                   <div className="space-y-3 relative z-10">
-                    <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic px-4">Descripción Elite</label>
-                    <textarea name="description" value={formData?.description || ''} onChange={handleInputChange} rows={5} className="w-full bg-white dark:bg-zinc-900 p-6 rounded-[2rem] font-medium text-neutral-600 dark:text-neutral-300 border border-neutral-100 dark:border-white/10 focus:ring-primary-500/20 outline-none" />
+                    <div className="flex items-center justify-between px-4">
+                      <label className="text-[11px] font-black uppercase text-neutral-400 tracking-widest italic">Descripción Elite</label>
+                      <div className="flex items-center gap-1 bg-white dark:bg-zinc-800 rounded-lg border border-neutral-200 dark:border-white/10 p-1">
+                        <button onClick={toggleList} type="button" className="p-1.5 hover:bg-neutral-100 dark:hover:bg-white/10 rounded-md text-neutral-500 dark:text-neutral-400 transition-colors" title="Lista"><List size={14} /></button>
+                        <button onClick={() => insertAtCursor('→ ')} type="button" className="p-1.5 hover:bg-neutral-100 dark:hover:bg-white/10 rounded-md text-neutral-500 dark:text-neutral-400 transition-colors" title="Flecha"><ArrowRight size={14} /></button>
+                        <button onClick={() => insertAtCursor('★ ')} type="button" className="p-1.5 hover:bg-neutral-100 dark:hover:bg-white/10 rounded-md text-neutral-500 dark:text-neutral-400 transition-colors" title="Destacado"><Star size={14} /></button>
+                        <button onClick={() => insertAtCursor('✓ ')} type="button" className="p-1.5 hover:bg-neutral-100 dark:hover:bg-white/10 rounded-md text-neutral-500 dark:text-neutral-400 transition-colors" title="Check"><CheckCircle2 size={14} /></button>
+                        <div className="w-[1px] h-4 bg-neutral-200 dark:bg-white/10 mx-1" />
+                        <button onClick={cleanText} type="button" className="p-1.5 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10 dark:hover:text-red-400 rounded-md text-neutral-500 dark:text-neutral-400 transition-colors" title="Limpiar y Corregir Texto"><Eraser size={14} /></button>
+                        <button onClick={toUpperCaseSelection} type="button" className="p-1.5 hover:bg-neutral-100 dark:hover:bg-white/10 rounded-md text-neutral-500 dark:text-neutral-400 transition-colors" title="MAYÚSCULAS"><Type size={14} /></button>
+                      </div>
+                    </div>
+                    <textarea
+                      ref={descriptionRef}
+                      name="description"
+                      value={formData?.description || ''}
+                      onChange={handleInputChange}
+                      rows={8}
+                      className="w-full bg-white dark:bg-zinc-900 p-6 rounded-[2rem] font-medium text-neutral-600 dark:text-neutral-300 border border-neutral-100 dark:border-white/10 focus:ring-primary-500/20 outline-none whitespace-pre-line leading-relaxed"
+                    />
                   </div>
 
                   <div className="flex items-center gap-6 bg-primary-600/5 p-6 rounded-[2rem] border border-primary-600/10">
