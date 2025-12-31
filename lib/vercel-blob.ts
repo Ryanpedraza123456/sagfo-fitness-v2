@@ -46,25 +46,29 @@ async function convertToWebP(
                 height = maxHeight;
             }
 
-            // Crear canvas para la conversión
+            // Crear canvas para la conversión con ALTA CALIDAD
             const canvas = document.createElement('canvas');
             canvas.width = width;
             canvas.height = height;
 
-            const ctx = canvas.getContext('2d');
+            const ctx = canvas.getContext('2d', { alpha: true });
             if (!ctx) {
                 reject(new Error('No se pudo crear el contexto del canvas'));
                 return;
             }
 
+            // IMPORTANTE: Asegurar máxima nitidez al redimensionar
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+
             // Dibujar imagen en el canvas
             ctx.drawImage(img, 0, 0, width, height);
 
-            // Convertir a WebP
+            // Convertir a WebP con un balance perfecto: No daña la foto pero ahorra mucho peso
             canvas.toBlob(
                 (blob) => {
                     if (blob) {
-                        console.log(`🖼️ Imagen convertida: ${file.name} (${(file.size / 1024).toFixed(1)}KB → ${(blob.size / 1024).toFixed(1)}KB, ${((1 - blob.size / file.size) * 100).toFixed(1)}% reducción)`);
+                        console.log(`🖼️ Optimización Premium: ${file.name} (${(file.size / 1024).toFixed(1)}KB → ${(blob.size / 1024).toFixed(1)}KB)`);
                         resolve(blob);
                     } else {
                         reject(new Error('Error al convertir a WebP'));
@@ -101,7 +105,8 @@ export async function uploadToBlob(
     }
 
     try {
-        const { quality = 0.85, maxWidth = 1920, maxHeight = 1920 } = options;
+        // Balance perfecto: Nitidez alta y peso reducido
+        const { quality = 0.85, maxWidth = 1200, maxHeight = 1200 } = options;
         const timestamp = Date.now();
         const randomId = Math.random().toString(36).substring(7);
 
