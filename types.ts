@@ -25,7 +25,7 @@ export interface GymPackage {
   itemsCount?: number; // Helper for display
 }
 
-export type OrderStatus = 'Pendiente de Aprobación' | 'Recibido' | 'En Desarrollo' | 'Despachado' | 'En Envío' | 'Entregado';
+export type OrderStatus = 'Pendiente de Aprobación' | 'Recibido' | 'En Desarrollo' | 'Despachado' | 'En Envío' | 'Entregado' | 'Rechazado' | 'Cancelado';
 export type DeliveryStatus = 'pending' | 'shipped' | 'delivered';
 
 export interface OrderStatusHistory {

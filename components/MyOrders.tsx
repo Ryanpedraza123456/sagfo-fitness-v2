@@ -23,10 +23,24 @@ const statusMap: { [key in OrderStatus]: { step: number; color: string } } = {
     'Despachado': { step: 4, color: 'text-purple-500' },
     'En Envío': { step: 5, color: 'text-orange-500' },
     'Entregado': { step: 6, color: 'text-green-500' },
+    'Rechazado': { step: 0, color: 'text-red-500' },
+    'Cancelado': { step: 0, color: 'text-neutral-400' },
 };
 
 const StatusTracker: React.FC<{ status: OrderStatus }> = ({ status }) => {
-    const currentStep = statusMap[status].step;
+    const isFailureStatus = status === 'Rechazado' || status === 'Cancelado';
+    if (isFailureStatus) {
+        return (
+            <div className="w-full py-4 text-center">
+                <div className={`inline-flex items-center gap-2 px-6 py-3 rounded-2xl border-2 ${status === 'Rechazado' ? 'border-red-500/20 bg-red-50 dark:bg-red-900/10 text-red-600' : 'border-neutral-500/20 bg-neutral-50 dark:bg-neutral-900/10 text-neutral-500'}`}>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span className="font-black uppercase italic tracking-widest text-sm">Este pedido ha sido {status.toLowerCase()}</span>
+                </div>
+            </div>
+        );
+    }
+
+    const currentStep = statusMap[status]?.step || 1;
     const statuses: OrderStatus[] = ['Pendiente de Aprobación', 'Recibido', 'En Desarrollo', 'Despachado', 'En Envío', 'Entregado'];
 
     return (
@@ -88,7 +102,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({ orders, onBackToCatalog }) => {
                                         <h2 className="font-bold text-lg text-neutral-800 dark:text-white">Pedido #{order.id}</h2>
                                         <p className="text-sm text-neutral-500 dark:text-neutral-400">Realizado el: {new Date(order.createdAt).toLocaleDateString()}</p>
                                     </div>
-                                    <div className={`px-3 py-1.5 rounded-full text-sm font-semibold ${statusMap[order.status].color} bg-opacity-10 ${order.status === 'Recibido' ? 'bg-blue-500' : order.status === 'En Desarrollo' ? 'bg-yellow-500' : order.status === 'En Envío' ? 'bg-orange-500' : order.status === 'Entregado' ? 'bg-green-500' : order.status === 'Despachado' ? 'bg-purple-500' : 'bg-gray-500'}`}>
+                                    <div className={`px-3 py-1.5 rounded-full text-sm font-semibold ${statusMap[order.status]?.color || 'text-gray-500'} bg-opacity-10 ${order.status === 'Recibido' ? 'bg-blue-500' : order.status === 'En Desarrollo' ? 'bg-yellow-500' : order.status === 'En Envío' ? 'bg-orange-500' : order.status === 'Entregado' ? 'bg-green-500' : order.status === 'Despachado' ? 'bg-purple-500' : order.status === 'Rechazado' ? 'bg-red-500' : 'bg-gray-500'}`}>
                                         {order.status}
                                     </div>
                                 </div>

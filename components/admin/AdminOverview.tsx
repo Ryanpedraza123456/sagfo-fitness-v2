@@ -20,7 +20,8 @@ interface AdminOverviewProps {
 
 const AdminOverview: React.FC<AdminOverviewProps> = ({ orders, products, profiles, onViewOrders }) => {
     // Stats
-    const totalRevenue = orders.reduce((acc, order) => acc + (order.financials?.amountPaid || 0), 0);
+    const activeOrders = orders.filter(o => o.status !== 'Rechazado' && o.status !== 'Cancelado');
+    const totalRevenue = activeOrders.reduce((acc, order) => acc + (order.financials?.amountPaid || 0), 0);
     const pendingOrders = orders.filter(o => o.status === 'Pendiente de Aprobación').length;
     const totalProducts = products.length;
     const totalUsers = profiles.length;

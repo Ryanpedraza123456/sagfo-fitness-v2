@@ -36,132 +36,129 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
     const v = Date.now() + 4000;
 
     return (
-        <section className="relative py-28 bg-white dark:bg-[#050505] overflow-hidden">
+        <section className="relative py-20 md:py-32 bg-white dark:bg-[#050505] overflow-hidden">
             {/* Soft Engineering Grid */}
             <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none"
                 style={{
                     backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
-                    backgroundSize: '80px 80px'
+                    backgroundSize: '60px 60px'
                 }}
             />
 
-            <div className="container mx-auto px-6 relative z-10 max-w-7xl">
-                <div className="flex flex-col xl:flex-row items-center justify-between gap-16">
+            <div className="container mx-auto px-4 sm:px-6 relative z-10 max-w-7xl">
+                <div className="flex flex-col xl:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-20">
 
-                    {/* LEFT SIDE - CLEAN ASSETS */}
-                    <div className="flex flex-wrap lg:grid grid-cols-3 xl:grid-cols-1 gap-12 order-2 xl:order-1">
-                        {catData.filter(c => c.side === 'left').map((cat, idx) => (
+                    {/* CENTRAL PORTAL - APPLE CARD STYLE (Always on top for mobile) */}
+                    <div className="relative order-1 xl:order-2 w-full max-w-[650px]">
+                        <motion.button
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            whileHover={{ scale: 1.01 }}
+                            onClick={() => onSelectCategory('Todos')}
+                            className="group relative w-full aspect-square sm:aspect-video xl:aspect-square rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden bg-neutral-900 border border-neutral-200 dark:border-white/10 shadow-2xl"
+                        >
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={currentImg}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 1 }}
+                                    className="absolute inset-0"
+                                >
+                                    <img
+                                        src={machineryImages[currentImg]?.imageUrl}
+                                        alt="Equipamiento"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </motion.div>
+                            </AnimatePresence>
+
+                            {/* Apple-style Gradient Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
+
+                            <div className="absolute inset-0 z-20 flex flex-col items-center justify-end p-8 sm:p-12 md:p-16 text-center">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.3 }}
+                                >
+                                    <p className="text-[10px] sm:text-xs font-black text-primary-400 uppercase tracking-[0.4em] mb-3">
+                                        LÍNEA ÉLITE INDUSTRIAL
+                                    </p>
+                                    <h3 className="text-4xl sm:text-6xl md:text-7xl font-black text-white uppercase italic tracking-tighter leading-none mb-8">
+                                        Maquinaria
+                                    </h3>
+
+                                    <div className="inline-flex items-center gap-3 bg-white text-neutral-900 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-primary-500 hover:text-white transition-all duration-300 shadow-xl group/btn">
+                                        <span>EXPLORAR TODO</span>
+                                        <ArrowUpRight size={18} strokeWidth={3} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-all" />
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </motion.button>
+                    </div>
+
+                    {/* UNIFIED GRID FOR MOBILE / SPLIT FOR DESKTOP */}
+                    {/* LEFT SIDE (Desktop) / ALL ITEMS (Mobile) */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-1 gap-4 sm:gap-6 order-2 xl:order-1 w-full xl:w-auto">
+                        {catData.map((cat, idx) => (
                             <motion.button
                                 key={cat.label}
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: idx * 0.1 }}
-                                whileHover={{ scale: 1.1, x: 10 }}
+                                whileHover={{ scale: 1.02, y: -5 }}
                                 onClick={() => onSelectCategory(cat.value)}
-                                className="group flex items-center gap-6"
+                                className={`group relative bg-neutral-50 dark:bg-white/5 p-4 sm:p-6 rounded-[2rem] border border-neutral-100 dark:border-white/10 transition-all duration-300 hover:shadow-xl dark:hover:shadow-primary-500/10 ${cat.side === 'right' ? 'xl:hidden' : ''
+                                    }`}
                             >
-                                <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-white border border-neutral-100 flex items-center justify-center overflow-hidden transition-all duration-500 group-hover:border-primary-500">
-                                    <img
-                                        src={`${cat.image}?v=${v}`}
-                                        alt={cat.label}
-                                        className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-700"
-                                    />
-                                </div>
-                                <div className="text-left hidden xl:block">
-                                    <p className="text-[10px] font-black text-primary-500 uppercase tracking-widest leading-none mb-1.5">{cat.tag}</p>
-                                    <h4 className="text-xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-none group-hover:text-primary-600 transition-colors">
-                                        {cat.label}
-                                    </h4>
+                                <div className="flex flex-col items-center xl:items-start gap-4 w-full">
+                                    <div className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm">
+                                        <img
+                                            src={`${cat.image}?v=${v}`}
+                                            alt={cat.label}
+                                            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
+                                        />
+                                    </div>
+                                    <div className="text-center xl:text-left px-2 pb-2">
+                                        <h4 className="text-lg sm:text-2xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter leading-none group-hover:text-primary-600 transition-colors">
+                                            {cat.label}
+                                        </h4>
+                                    </div>
                                 </div>
                             </motion.button>
                         ))}
                     </div>
 
-                    {/* CENTRAL PORTAL - PERFECT FOCUS */}
-                    <div className="relative order-1 xl:order-2">
-                        {/* Thin Orbit Ring */}
-                        <div className="absolute inset-0 -m-8 border border-neutral-100 dark:border-white/5 rounded-full pointer-events-none" />
-
-                        <motion.button
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            whileHover={{ scale: 1.02 }}
-                            onClick={() => onSelectCategory('Todos')}
-                            className="group relative"
-                        >
-                            {/* PERFECT CIRCLE FRAME */}
-                            <div className="relative w-80 h-80 sm:w-[500px] sm:h-[500px] md:w-[600px] md:h-[600px] rounded-full overflow-hidden bg-neutral-900 border-[15px] border-white dark:border-neutral-800 flex items-center justify-center transition-all duration-1000">
-
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={currentImg}
-                                        initial={{ opacity: 0, scale: 1.05 }}
-                                        animate={{ opacity: 0.9, scale: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{ duration: 1.5 }}
-                                        className="absolute inset-0"
-                                    >
-                                        <img
-                                            src={machineryImages[currentImg]?.imageUrl}
-                                            alt="Equipamiento"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </motion.div>
-                                </AnimatePresence>
-
-                                {/* Stronger Contrast Overlay for Text Readability - SOLID BLACK BASE */}
-                                <div className="absolute inset-0 bg-neutral-900/40 z-10" />
-                                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 z-10" />
-
-                                <div className="relative z-20 flex flex-col items-center justify-center px-10 pt-12">
-                                    <div className="text-center w-full">
-                                        <p className="text-[11px] sm:text-[14px] font-black text-primary-400 uppercase tracking-[0.5em] mb-4">
-                                            LÍNEA ÉLITE INDUSTRIAL
-                                        </p>
-                                        {/* TEXTO MAQUINARIA - REDUCED SIZE TO PREVENT CUTTING AND STRONGER SHADOW */}
-                                        <h3 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase italic tracking-tighter leading-none [text-shadow:0_10px_30px_rgba(0,0,0,1),0_20px_60px_rgba(0,0,0,0.9)] px-4">
-                                            Maquinaria
-                                        </h3>
-
-                                        <div className="inline-flex items-center gap-4 mt-16 bg-white/10 backdrop-blur-xl border border-white/20 px-12 py-5 rounded-full shadow-2xl hover:bg-white transition-all duration-500 hover:scale-105 active:scale-95 group/btn">
-                                            <span className="text-[13px] font-black uppercase tracking-[0.3em] text-white group-hover/btn:text-neutral-900 transition-colors duration-500">
-                                                EXPLORAR TODO
-                                            </span>
-                                            <ArrowUpRight size={20} strokeWidth={3} className="text-white group-hover/btn:text-neutral-900 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-all" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.button>
-                    </div>
-
-                    {/* RIGHT SIDE - CLEAN ASSETS */}
-                    <div className="flex flex-wrap lg:grid grid-cols-3 xl:grid-cols-1 gap-12 order-3">
+                    {/* RIGHT SIDE (Desktop ONLY) */}
+                    <div className="hidden xl:grid grid-cols-1 gap-6 order-3 w-auto">
                         {catData.filter(c => c.side === 'right').map((cat, idx) => (
                             <motion.button
                                 key={cat.label}
-                                initial={{ opacity: 0, x: 20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: idx * 0.1 }}
-                                whileHover={{ scale: 1.1, x: -10 }}
+                                whileHover={{ scale: 1.02, y: -5 }}
                                 onClick={() => onSelectCategory(cat.value)}
-                                className="group flex flex-row-reverse items-center gap-6"
+                                className="group relative bg-neutral-50 dark:bg-white/5 p-4 sm:p-6 rounded-[2rem] border border-neutral-100 dark:border-white/10 transition-all duration-300 hover:shadow-xl dark:hover:shadow-primary-500/10"
                             >
-                                <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-white border border-neutral-100 flex items-center justify-center overflow-hidden transition-all duration-500 group-hover:border-primary-500">
-                                    <img
-                                        src={`${cat.image}?v=${v}`}
-                                        alt={cat.label}
-                                        className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-700"
-                                    />
-                                </div>
-                                <div className="text-right hidden xl:block">
-                                    <p className="text-[10px] font-black text-primary-500 uppercase tracking-widest leading-none mb-1.5">{cat.tag}</p>
-                                    <h4 className="text-xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-none group-hover:text-primary-600 transition-colors">
-                                        {cat.label}
-                                    </h4>
+                                <div className="flex flex-col items-center xl:items-end gap-4 w-full">
+                                    <div className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm">
+                                        <img
+                                            src={`${cat.image}?v=${v}`}
+                                            alt={cat.label}
+                                            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
+                                        />
+                                    </div>
+                                    <div className="text-right px-2 pb-2">
+                                        <h4 className="text-lg sm:text-2xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter leading-none group-hover:text-primary-600 transition-colors">
+                                            {cat.label}
+                                        </h4>
+                                    </div>
                                 </div>
                             </motion.button>
                         ))}

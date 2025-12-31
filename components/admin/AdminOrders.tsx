@@ -10,7 +10,9 @@ import {
     Camera,
     Truck,
     DollarSign,
-    Search
+    Search,
+    XCircle,
+    AlertTriangle
 } from 'lucide-react';
 
 interface AdminOrdersProps {
@@ -98,6 +100,16 @@ generado por SAGFO Elite v2
                 handleWhatsAppMessage(
                     selectedOrder.customerInfo.phone,
                     `¡Hola ${selectedOrder.customerInfo.name}! 👋 Tu pedido #${selectedOrder.id.slice(-6)} ha sido despachado y está en camino. ¡Pronto disfrutarás de tu equipo SAGFO elite!`
+                );
+            } else if (newStatus === 'Rechazado' && selectedOrder.customerInfo) {
+                handleWhatsAppMessage(
+                    selectedOrder.customerInfo.phone,
+                    `¡Hola ${selectedOrder.customerInfo.name}! 👋 Te informamos que tu pedido #${selectedOrder.id.slice(-6)} ha sido RECHAZADO debido a inconvenientes con la verificación del pago o información suministrada. Por favor contáctanos para más detalles.`
+                );
+            } else if (newStatus === 'Cancelado' && selectedOrder.customerInfo) {
+                handleWhatsAppMessage(
+                    selectedOrder.customerInfo.phone,
+                    `¡Hola ${selectedOrder.customerInfo.name}! 👋 Confirmamos que tu pedido #${selectedOrder.id.slice(-6)} ha sido CANCELADO según lo solicitado o por inactividad. Si fue un error, puedes realizar uno nuevo en nuestro catálogo.`
                 );
             }
 
@@ -222,7 +234,26 @@ generado por SAGFO Elite v2
                                                 <option value="Despachado">Despachado</option>
                                                 <option value="En Envío">En Envío</option>
                                                 <option value="Entregado">Entregado</option>
+                                                <option value="Rechazado">Rechazado</option>
+                                                <option value="Cancelado">Cancelado</option>
                                             </select>
+
+                                            <div className="grid grid-cols-2 gap-3 mt-4">
+                                                <button
+                                                    onClick={() => handleStatusChange(order, 'Rechazado')}
+                                                    className="flex items-center justify-center gap-2 py-3 px-4 bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 rounded-lg border border-red-100 dark:border-red-900/30 font-bold text-[10px] uppercase tracking-widest hover:bg-red-100 transition-all opacity-70 hover:opacity-100"
+                                                >
+                                                    <AlertTriangle className="w-4 h-4" />
+                                                    Rechazar Pago
+                                                </button>
+                                                <button
+                                                    onClick={() => handleStatusChange(order, 'Cancelado')}
+                                                    className="flex items-center justify-center gap-2 py-3 px-4 bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400 rounded-lg border border-neutral-200 dark:border-zinc-700 font-bold text-[10px] uppercase tracking-widest hover:bg-neutral-200 transition-all opacity-70 hover:opacity-100"
+                                                >
+                                                    <XCircle className="w-4 h-4" />
+                                                    Cancelar Pedido
+                                                </button>
+                                            </div>
                                         </div>
 
                                         {transporters.length > 0 && (
@@ -349,6 +380,9 @@ generado por SAGFO Elite v2
                                                 <p><span className="text-neutral-500 dark:text-neutral-400">Nombre:</span> <span className="text-neutral-900 dark:text-white font-medium">{order.customerInfo?.name || 'N/A'}</span></p>
                                                 <p><span className="text-neutral-500 dark:text-neutral-400">Tel:</span> <a href={`tel:${order.customerInfo?.phone || ''}`} className="text-blue-600 dark:text-blue-400 underline">{order.customerInfo?.phone || 'N/A'}</a></p>
                                                 <p><span className="text-neutral-500 dark:text-neutral-400">Ubicación:</span> <span className="text-neutral-900 dark:text-white">{order.customerInfo?.city || 'N/A'}, {order.customerInfo?.department || 'N/A'}</span></p>
+                                                {order.customerInfo?.address && (
+                                                    <p><span className="text-neutral-500 dark:text-neutral-400">Dirección:</span> <span className="text-neutral-900 dark:text-white">{order.customerInfo.address}</span></p>
+                                                )}
                                             </div>
                                         </div>
 
@@ -366,6 +400,7 @@ generado por SAGFO Elite v2
                                                     { label: 'Contacto General', icon: MessageSquare, msg: `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Te contacto de SAGFO sobre tu pedido #${order.id.slice(-6)}. ¿Cómo podemos ayudarte?` },
                                                     { label: 'Confirmar Pago', icon: DollarSign, msg: `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Confirmamos el recibo de tu pago para el pedido #${order.id.slice(-6)}. Tu equipo ya está en proceso de gestión.` },
                                                     { label: 'Notificar Despacho', icon: Truck, msg: `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Tu pedido #${order.id.slice(-6)} ha sido despachado y está en camino. ¡Pronto disfrutarás de tu equipo SAGFO elite!` },
+                                                    { label: 'Notificar Rechazo', icon: AlertTriangle, msg: `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Te informamos que tu pedido #${order.id.slice(-6)} ha sido RECHAZADO debido a inconvenientes con la verificación del pago. ❌` },
                                                     { label: 'Solicitar Ubicación GPS', icon: Search, msg: `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 Tu pedido #${order.id.slice(-6)} está listo para salir. Por favor envíanos tu ubicación actual por WhatsApp para que la ruta de nuestro capitán sea exacta y el equipo llegue perfecto. 📍` },
                                                     { label: 'Seguimiento Post-Venta', icon: Check, msg: `¡Hola ${order.customerInfo?.name || 'Cliente'}! 👋 ¿Cómo vas con tu nuevo equipo SAGFO? Nos encantaría saber tu opinión y si todo quedó como esperabas. ¡Tu satisfacción es nuestra prioridad elite! 🏅` }
                                                 ].map((btn, i) => (

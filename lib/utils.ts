@@ -14,6 +14,10 @@ export const getStatusColor = (status: OrderStatus) => {
             return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400';
         case 'Entregado':
             return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400';
+        case 'Rechazado':
+            return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+        case 'Cancelado':
+            return 'bg-neutral-200 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-400';
         default:
             return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
     }

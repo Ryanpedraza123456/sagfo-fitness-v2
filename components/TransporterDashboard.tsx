@@ -37,7 +37,9 @@ const ShipmentCard: React.FC<ShipmentCardProps> = ({ order, isHistory, onUpdateI
                                 order.status === 'En Envío' ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20' :
                                     order.status === 'Recibido' ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20' :
                                         order.status === 'Entregado' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' :
-                                            'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                                            order.status === 'Rechazado' ? 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20' :
+                                                order.status === 'Cancelado' ? 'bg-neutral-500/10 text-neutral-600 dark:text-neutral-400 border-neutral-500/20' :
+                                                    'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
                                 }`}>
                                 {order.status}
                             </span>
@@ -222,7 +224,7 @@ const TransporterDashboard: React.FC<TransporterDashboardProps> = ({ orders, onU
 
     // Transporter should see orders that are NOT delivered (active)
     const pendingShipments = assignedOrders.filter(order =>
-        order.status !== 'Entregado'
+        order.status !== 'Entregado' && order.status !== 'Rechazado' && order.status !== 'Cancelado'
     );
 
     const historyShipments = assignedOrders.filter(order => order.status === 'Entregado');
