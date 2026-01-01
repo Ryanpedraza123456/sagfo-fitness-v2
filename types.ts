@@ -146,3 +146,16 @@ export interface SiteConfig {
   whatsapp_number: string;
   hero_slides: HeroSlide[];
 }
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  imageUrl: string;
+  category: 'Negocios' | 'Mantenimiento' | 'Entrenamiento' | 'Casos de Éxito';
+  author: string;
+  publishedAt: string;
+  readTime: string;
+}

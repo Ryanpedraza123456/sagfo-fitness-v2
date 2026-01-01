@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { EquipmentItem, Order, OrderStatus, Event, GalleryImage, Profile, CartItem, PaymentMethod, HeroSlide, BankAccount, OrderStatusHistory, Theme, SortOrder, CategoryFilter, MuscleFilter, DeliveryStatus } from './types';
+import { EquipmentItem, Order, OrderStatus, Event, GalleryImage, Profile, CartItem, PaymentMethod, HeroSlide, BankAccount, OrderStatusHistory, Theme, SortOrder, CategoryFilter, MuscleFilter, DeliveryStatus, BlogPost } from './types';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import ProductGrid from './components/ProductGrid';
@@ -28,13 +28,15 @@ import NotificationToast, { NotificationState } from './components/NotificationT
 import EditUserModal from './components/EditUserModal';
 import EventDetailModal from './components/EventDetailModal';
 import AdminDashboard from './components/AdminDashboard';
-
+import BlogSection from './components/BlogSection';
+import BlogModal from './components/BlogModal';
 
 import { supabase } from './lib/supabase';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ShoppingBag, ChevronLeft } from 'lucide-react';
 import { uploadToBlob, deleteFromBlob } from './lib/vercel-blob';
+import { BLOG_POSTS } from './data/blog';
 
 
 const App: React.FC = () => {
@@ -142,6 +144,10 @@ const App: React.FC = () => {
   const [pendingCartOpen, setPendingCartOpen] = useState(false);
   const [sealUrl, setSealUrl] = useState('');
   const [loginModalInitialView, setLoginModalInitialView] = useState<'login' | 'register'>('login');
+
+  // Blog State
+  const [selectedBlogPost, setSelectedBlogPost] = useState<BlogPost | null>(null);
+  const [isBlogModalOpen, setIsBlogModalOpen] = useState(false);
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -539,6 +545,11 @@ const App: React.FC = () => {
   const handleCloseProductModal = () => {
     setIsProductModalOpen(false);
     setIsEditingProduct(false);
+  };
+
+  const handleReadBlogPost = (post: BlogPost) => {
+    setSelectedBlogPost(post);
+    setIsBlogModalOpen(true);
   };
 
   const handleDeleteProduct = async (productId: string) => {
@@ -1487,6 +1498,7 @@ const App: React.FC = () => {
                   onDeleteEvent={handleDeleteEvent}
                 />
                 <GallerySection images={galleryImages} isAdmin={isAdmin} />
+                <BlogSection posts={BLOG_POSTS} onReadMore={handleReadBlogPost} />
               </motion.div>
             )}
 
@@ -1658,6 +1670,11 @@ const App: React.FC = () => {
           isOpen={!!viewingEvent}
           onClose={() => setViewingEvent(null)}
           event={viewingEvent}
+        />
+        <BlogModal
+          post={selectedBlogPost}
+          isOpen={isBlogModalOpen}
+          onClose={() => setIsBlogModalOpen(false)}
         />
 
       </div>
