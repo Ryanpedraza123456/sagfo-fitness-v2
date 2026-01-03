@@ -345,6 +345,19 @@ const ProductModal: React.FC<ProductModalProps> = ({
     touchStartX.current = null;
   };
 
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isZooming || !imgRef.current || window.innerWidth >= 768) return;
+
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.touches[0].pageX - left) / width) * 100;
+    const y = ((e.touches[0].pageY - top - window.scrollY) / height) * 100;
+
+    setZoomStyle(prev => ({
+      ...prev,
+      backgroundPosition: `${Math.max(0, Math.min(100, x))}% ${Math.max(0, Math.min(100, y))}%`,
+    }));
+  };
+
   // Handlers for editing
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (!formData) return;
@@ -466,12 +479,13 @@ const ProductModal: React.FC<ProductModalProps> = ({
             <div className="flex-grow space-y-8">
               {!isEditing ? (
                 <div
-                  className="relative aspect-square lg:aspect-[6/7] flex items-center justify-center bg-[#fafafa] dark:bg-white/[0.02] rounded-[4rem] border border-neutral-100 dark:border-white/5 cursor-crosshair overflow-hidden group touch-pan-y"
+                  className={`relative aspect-square lg:aspect-[6/7] flex items-center justify-center bg-[#fafafa] dark:bg-white/[0.02] rounded-[4rem] border border-neutral-100 dark:border-white/5 cursor-crosshair overflow-hidden group ${isZooming ? 'touch-none' : 'touch-pan-y'}`}
                   onMouseMove={handleMouseMove}
                   onMouseEnter={() => { if (window.innerWidth >= 768) setIsZooming(true); }}
                   onMouseLeave={() => { if (window.innerWidth >= 768) setIsZooming(false); setZoomStyle({}); }}
                   onTouchStart={handleTouchStart}
                   onTouchEnd={handleTouchEnd}
+                  onTouchMove={handleTouchMove}
                 >
                   <img
                     ref={imgRef}
