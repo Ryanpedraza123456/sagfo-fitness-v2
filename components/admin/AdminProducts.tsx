@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { EquipmentItem } from '../../types';
 import ScrollReveal from '../ScrollReveal';
-import { Plus, Search, X, Edit, Trash2 } from 'lucide-react';
+import { Plus, Search, X, Edit, Trash2, Download } from 'lucide-react';
+import { downloadImage } from '../../lib/utils';
 
 interface AdminProductsProps {
     products: EquipmentItem[];
@@ -66,8 +67,8 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                             key={cat}
                             onClick={() => setActiveCategory(cat)}
                             className={`px-8 py-4 rounded-[2rem] text-[10px] font-black uppercase italic tracking-widest transition-all ${activeCategory === cat
-                                    ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-lg'
-                                    : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
+                                ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-lg'
+                                : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
                                 }`}
                         >
                             {cat === 'All' ? 'Todos' : cat}
@@ -108,6 +109,19 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                         />
                                         <div className="absolute top-3 right-3 flex gap-2 sm:opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                            <button
+                                                onClick={() => {
+                                                    const imageUrl = (product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : null;
+                                                    if (imageUrl) {
+                                                        const extension = imageUrl.split('.').pop()?.split('?')[0] || 'jpg';
+                                                        downloadImage(imageUrl, `${product.name.replace(/\s+/g, '_').toLowerCase()}.${extension}`);
+                                                    }
+                                                }}
+                                                className="p-3 bg-white/95 dark:bg-zinc-800/95 text-neutral-700 dark:text-white rounded-full hover:bg-emerald-500 hover:text-white transition-all shadow-lg backdrop-blur-sm active:scale-90"
+                                                title="Descargar Imagen"
+                                            >
+                                                <Download className="w-5 h-5" />
+                                            </button>
                                             <button
                                                 onClick={() => onEditProduct(product)}
                                                 className="p-3 bg-white/95 dark:bg-zinc-800/95 text-neutral-700 dark:text-white rounded-full hover:bg-primary-500 hover:text-white transition-all shadow-lg backdrop-blur-sm active:scale-90"
