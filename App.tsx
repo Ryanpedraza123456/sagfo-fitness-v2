@@ -1599,7 +1599,7 @@ const App: React.FC = () => {
             )}
           </AnimatePresence>
         </main>
-        {(view === 'catalog' || view === 'promos' || view === 'orders') && <Footer sealUrl={sealUrl} />}
+        {(view === 'catalog' || view === 'promos' || view === 'orders') && <Footer sealUrl={sealUrl} whatsAppNumber={whatsAppNumber} />}
         {(view === 'catalog' || view === 'promos' || view === 'orders') && <ThemeSwitcher theme={theme} setTheme={setTheme} />}
         {(view === 'catalog' || view === 'promos' || view === 'orders') && <WhatsAppButton phoneNumber={whatsAppNumber} />}
 

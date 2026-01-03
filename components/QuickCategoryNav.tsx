@@ -26,11 +26,8 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
         : [{ imageUrl: '/categories/cardio.png' }];
 
     useEffect(() => {
-        if (machineryImages.length <= 1) return;
-        const interval = setInterval(() => {
-            setCurrentImg((prev) => (prev + 1) % machineryImages.length);
-        }, 5000);
-        return () => clearInterval(interval);
+        // Rotation disabled per user request: "solo salgan la primera foto de cada producto"
+        return;
     }, [machineryImages]);
 
     const v = Date.now() + 4000;

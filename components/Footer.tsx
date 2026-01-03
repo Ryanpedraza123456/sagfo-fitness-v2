@@ -4,9 +4,10 @@ import { Instagram, Facebook, Twitter, Mail, Phone, MapPin, ShieldCheck, Award }
 
 interface FooterProps {
   sealUrl?: string;
+  whatsAppNumber?: string;
 }
 
-const Footer: React.FC<FooterProps> = ({ sealUrl }) => {
+const Footer: React.FC<FooterProps> = ({ sealUrl, whatsAppNumber }) => {
   return (
     <footer className="bg-neutral-100 dark:bg-neutral-950 border-t border-neutral-200 dark:border-neutral-800">
       <div className="container mx-auto px-6 lg:px-16 relative z-10">
@@ -53,7 +54,9 @@ const Footer: React.FC<FooterProps> = ({ sealUrl }) => {
               <li className="flex items-start gap-3">
                 <Phone size={18} className="text-primary-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">310 393 6762</p>
+                  <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                    {whatsAppNumber || '310 393 6762'}
+                  </p>
                   <p className="text-xs text-neutral-500 dark:text-neutral-500">Línea Directa</p>
                 </div>
               </li>

@@ -406,15 +406,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
           {/* LADO IZQUIERDO: VISUALIZADOR CON ZOOM PROFESIONAL (Col 7) */}
           <div className="lg:col-span-7 flex flex-col md:flex-row gap-10 lg:sticky lg:top-[140px]">
 
-            {!isEditing && product.imageUrls.length > 1 && (
-              <div className="hidden md:flex flex-col gap-6 w-28 flex-shrink-0">
-                {product.imageUrls.map((url, i) => (
-                  <button key={i} onClick={() => setCurrentImageIndex(i)} className={`aspect-square rounded-3xl overflow-hidden border-2 transition-all duration-700 bg-neutral-50 dark:bg-white/5 ${currentImageIndex === i ? 'border-primary-600 shadow-2xl scale-110 p-2' : 'border-transparent opacity-40 grayscale hover:grayscale-0 hover:opacity-100 grayscale hover:scale-105'}`}>
-                    <img src={url} className="w-full h-full object-contain" alt="mini" />
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* Thumbnails removed per user request: "solo salgan la primera foto de cada producto" */}
 
             <div className="flex-grow space-y-8">
               {!isEditing ? (
