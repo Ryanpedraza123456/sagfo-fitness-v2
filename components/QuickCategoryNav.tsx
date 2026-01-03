@@ -85,42 +85,7 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
                                 />
                             </motion.div>
                         </AnimatePresence>
-
-                        {/* Manual Image Navigation Arrows */}
-                        {machineryImages.length > 1 && (
-                            <div className="absolute inset-0 z-30 pointer-events-none">
-                                <div className="absolute top-1/2 -translate-y-1/2 inset-x-0 flex justify-between px-2 md:px-4">
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setCurrentImg((prev) => (prev - 1 + machineryImages.length) % machineryImages.length);
-                                        }}
-                                        className="w-8 h-8 md:w-14 md:h-14 rounded-full bg-black/20 hover:bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white pointer-events-auto transition-all hover:scale-110 active:scale-95"
-                                    >
-                                        <ChevronLeft className="w-4 h-4 md:w-8 md:h-8" />
-                                    </button>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setCurrentImg((prev) => (prev + 1) % machineryImages.length);
-                                        }}
-                                        className="w-8 h-8 md:w-14 md:h-14 rounded-full bg-black/20 hover:bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white pointer-events-auto transition-all hover:scale-110 active:scale-95"
-                                    >
-                                        <ChevronRight className="w-4 h-4 md:w-8 md:h-8" />
-                                    </button>
-                                </div>
-
-                                {/* Pagination Dots - Moved to bottom */}
-                                <div className="absolute bottom-6 md:bottom-12 right-6 md:right-12 flex gap-1.5 px-3 py-1.5 bg-black/20 backdrop-blur-md rounded-full border border-white/5">
-                                    {machineryImages.map((_, i) => (
-                                        <div
-                                            key={i}
-                                            className={`h-1 md:h-1.5 rounded-full transition-all duration-500 ${currentImg === i ? 'w-4 md:w-8 bg-primary-500' : 'w-1 md:w-1.5 bg-white/30'}`}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent z-10" />
 
                         <div className="absolute inset-x-0 bottom-0 p-6 md:p-12 z-20">
@@ -136,32 +101,31 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        className="md:col-span-2 lg:col-span-6 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[2rem] md:rounded-[4rem] p-6 md:p-16 border border-neutral-100 dark:border-white/5 flex items-center justify-between group cursor-pointer hover:bg-white dark:hover:bg-white/[0.05] transition-all overflow-hidden"
+                        className="md:col-span-2 lg:col-span-6 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[2rem] md:rounded-[4rem] p-6 md:p-12 border border-neutral-100 dark:border-white/5 flex items-center justify-between group cursor-pointer hover:bg-white dark:hover:bg-white/[0.05] transition-all overflow-hidden"
                         onClick={() => onSelectCategory('Cardio')}
                     >
-                        <div className="space-y-2 md:space-y-6 flex-shrink-0">
+                        <div className="space-y-2 md:space-y-4 flex-shrink-0">
                             <span className="text-[8px] md:text-[10px] font-black text-neutral-400 uppercase tracking-widest italic">Aeróbico Elite</span>
                             <h3 className="text-2xl md:text-5xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Cardio</h3>
                             <p className="text-[10px] md:text-sm text-neutral-500 font-medium">Resistencia sin límites.</p>
                         </div>
-                        <div className="w-24 h-24 md:w-64 md:h-64 relative bg-white dark:bg-zinc-900 rounded-2xl md:rounded-[3rem] p-3 md:p-8 shadow-sm flex-shrink-0">
-                            <img src="/categories/cardio.png" className="w-full h-full object-contain group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-700" alt="" />
+                        <div className="w-32 h-32 md:w-56 md:h-56 relative bg-white dark:bg-zinc-900 rounded-[1.5rem] md:rounded-[2.5rem] p-4 md:p-8 shadow-sm flex-shrink-0 overflow-hidden">
+                            <img src="/categories/cardio.png" className="w-full h-full object-contain group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-700 rounded-xl" alt="" />
                         </div>
                     </motion.div>
 
-                    {/* BENTO: MANCUERNAS (Square) */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[2rem] md:rounded-[4rem] p-6 md:p-10 border border-neutral-100 dark:border-white/5 group cursor-pointer relative overflow-hidden flex flex-col justify-between hover:bg-white dark:hover:bg-white/[0.05] transition-all"
+                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[2rem] md:rounded-[4rem] p-6 md:p-8 border border-neutral-100 dark:border-white/5 group cursor-pointer relative overflow-hidden flex flex-col justify-between hover:bg-white dark:hover:bg-white/[0.05] transition-all"
                         onClick={() => onSelectCategory('Mancuernas')}
                     >
                         <div className="relative z-10">
-                            <span className="text-[8px] md:text-[10px] font-black text-primary-500 uppercase tracking-widest italic mb-1 md:mb-2 block">Acero Forjado</span>
-                            <h3 className="text-2xl md:text-3xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Mancuernas</h3>
+                            <span className="text-[8px] md:text-[10px] font-black text-primary-500 uppercase tracking-widest italic mb-1 block">Acero Forjado</span>
+                            <h3 className="text-xl md:text-2xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Mancuernas</h3>
                         </div>
-                        <div className="h-28 md:h-40 w-full relative bg-white dark:bg-zinc-900/50 rounded-xl md:rounded-3xl p-6 md:p-8 mt-2 md:mt-4 overflow-hidden">
-                            <img src="/categories/mancuernas.png" className="w-full h-full object-contain group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700 filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)]" alt="" />
+                        <div className="aspect-square w-full relative bg-white dark:bg-zinc-900/50 rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 mt-4 overflow-hidden shadow-sm">
+                            <img src="/categories/mancuernas.png" className="w-full h-full object-contain group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700 filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)] rounded-lg" alt="" />
                         </div>
                     </motion.div>
 
@@ -169,16 +133,16 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-900 rounded-[2rem] md:rounded-[4rem] p-6 md:p-10 border border-neutral-100 dark:border-white/5 group cursor-pointer relative overflow-hidden flex flex-col justify-between hover:shadow-[0_0_50px_rgba(14,165,233,0.15)] transition-all"
+                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-900 rounded-[2rem] md:rounded-[4rem] p-6 md:p-8 border border-neutral-100 dark:border-white/5 group cursor-pointer relative overflow-hidden flex flex-col justify-between hover:shadow-[0_0_50px_rgba(14,165,233,0.15)] transition-all"
                         onClick={() => onSelectCategory('Discos')}
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-primary-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         <div className="relative z-10">
-                            <span className="text-[8px] md:text-[10px] font-black text-primary-400 uppercase tracking-widest italic mb-1 md:mb-2 block">Hierro Fundido</span>
-                            <h3 className="text-2xl md:text-3xl font-black text-white uppercase italic tracking-tighter">Pesos <br /> Libres</h3>
+                            <span className="text-[8px] md:text-[10px] font-black text-primary-400 uppercase tracking-widest italic mb-1 block">Hierro Fundido</span>
+                            <h3 className="text-xl md:text-2xl font-black text-white uppercase italic tracking-tighter">Pesos <br /> Libres</h3>
                         </div>
-                        <div className="h-28 md:h-40 w-full relative flex items-center justify-center p-6 md:p-8">
-                            <img src="/categories/discos.png" className="w-full h-full object-contain group-hover:rotate-45 group-hover:scale-110 transition-transform duration-[1.5s]" alt="" />
+                        <div className="aspect-square w-full relative bg-neutral-800 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center p-6 md:p-8 mt-4 overflow-hidden shadow-sm">
+                            <img src="/categories/discos.png" className="w-full h-full object-contain group-hover:rotate-45 group-hover:scale-110 transition-transform duration-[1.5s] rounded-lg" alt="" />
                         </div>
                     </motion.div>
 
@@ -186,31 +150,30 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
-                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[2rem] md:rounded-[4rem] p-6 md:p-12 border border-neutral-100 dark:border-white/5 group cursor-pointer hover:bg-white dark:hover:bg-white/[0.05] transition-all flex flex-col"
+                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[2rem] md:rounded-[4rem] p-6 md:p-8 border border-neutral-100 dark:border-white/5 group cursor-pointer hover:bg-white dark:hover:bg-white/[0.05] transition-all flex flex-col"
                         onClick={() => onSelectCategory('Funcional')}
                     >
-                        <div className="mb-3 md:mb-6">
+                        <div className="mb-4">
                             <span className="text-[8px] md:text-[10px] font-black text-neutral-400 uppercase tracking-widest italic mb-0.5 block">Cross Training</span>
-                            <h3 className="text-2xl md:text-3xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Funcional</h3>
+                            <h3 className="text-xl md:text-2xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Funcional</h3>
                         </div>
-                        <div className="flex-grow flex items-center justify-center p-8 md:p-12 bg-white dark:bg-zinc-900/50 rounded-xl md:rounded-[2rem] overflow-hidden">
-                            <img src="/categories/funcional.png" className="w-full h-full object-contain group-hover:scale-110 group-hover:-rotate-[15deg] transition-transform duration-700" alt="" />
+                        <div className="aspect-square w-full relative bg-white dark:bg-zinc-900/50 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center p-6 md:p-8 overflow-hidden shadow-sm">
+                            <img src="/categories/funcional.png" className="w-full h-full object-contain group-hover:scale-110 group-hover:-rotate-[15deg] transition-transform duration-700 rounded-lg" alt="" />
                         </div>
                     </motion.div>
 
-                    {/* BENTO: BANCOS (Square) */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[2rem] md:rounded-[4rem] p-6 md:p-12 border border-neutral-100 dark:border-white/5 group cursor-pointer hover:bg-white dark:hover:bg-white/[0.05] relative overflow-hidden flex flex-col transition-all"
+                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[2rem] md:rounded-[4rem] p-6 md:p-8 border border-neutral-100 dark:border-white/5 group cursor-pointer hover:bg-white dark:hover:bg-white/[0.05] relative overflow-hidden flex flex-col transition-all"
                         onClick={() => onSelectCategory('Bancos')}
                     >
-                        <div className="mb-3 md:mb-6">
+                        <div className="mb-4">
                             <span className="text-[8px] md:text-[10px] font-black text-primary-500 uppercase tracking-widest italic mb-0.5 block">Soporte Anatómico</span>
-                            <h3 className="text-2xl md:text-3xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Bancos</h3>
+                            <h3 className="text-xl md:text-2xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Bancos</h3>
                         </div>
-                        <div className="flex-grow flex items-center justify-center p-8 md:p-12 bg-white dark:bg-zinc-900/50 rounded-xl md:rounded-[2rem] overflow-hidden">
-                            <img src="/categories/bancos.png" className="w-full h-full object-contain group-hover:translate-x-3 group-hover:-rotate-[8deg] group-hover:scale-105 transition-transform duration-700" alt="" />
+                        <div className="aspect-square w-full relative bg-white dark:bg-zinc-900/50 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center p-6 md:p-8 overflow-hidden shadow-sm">
+                            <img src="/categories/bancos.png" className="w-full h-full object-contain group-hover:translate-x-3 group-hover:-rotate-[8deg] group-hover:scale-105 transition-transform duration-700 rounded-lg" alt="" />
                         </div>
                     </motion.div>
 
