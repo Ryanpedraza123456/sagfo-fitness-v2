@@ -44,6 +44,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const [zoomStyle, setZoomStyle] = useState<React.CSSProperties>({});
   const [isZooming, setIsZooming] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
+  const touchStartX = useRef<number | null>(null);
 
   // Prevent multiple clicks on add to cart
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -321,6 +322,29 @@ const ProductModal: React.FC<ProductModalProps> = ({
     });
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (isZooming) return;
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (isZooming || touchStartX.current === null || !product) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX;
+    const threshold = 50; // pixels to trigger swipe
+
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        // Swipe left -> Next
+        setCurrentImageIndex((prev) => (prev + 1) % product.imageUrls.length);
+      } else {
+        // Swipe right -> Prev
+        setCurrentImageIndex((prev) => (prev - 1 + product.imageUrls.length) % product.imageUrls.length);
+      }
+    }
+    touchStartX.current = null;
+  };
+
   // Handlers for editing
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (!formData) return;
@@ -442,10 +466,12 @@ const ProductModal: React.FC<ProductModalProps> = ({
             <div className="flex-grow space-y-8">
               {!isEditing ? (
                 <div
-                  className="relative aspect-square lg:aspect-[6/7] flex items-center justify-center bg-[#fafafa] dark:bg-white/[0.02] rounded-[4rem] border border-neutral-100 dark:border-white/5 cursor-crosshair overflow-hidden group"
+                  className="relative aspect-square lg:aspect-[6/7] flex items-center justify-center bg-[#fafafa] dark:bg-white/[0.02] rounded-[4rem] border border-neutral-100 dark:border-white/5 cursor-crosshair overflow-hidden group touch-pan-y"
                   onMouseMove={handleMouseMove}
                   onMouseEnter={() => { if (window.innerWidth >= 768) setIsZooming(true); }}
                   onMouseLeave={() => { if (window.innerWidth >= 768) setIsZooming(false); setZoomStyle({}); }}
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={handleTouchEnd}
                 >
                   <img
                     ref={imgRef}
