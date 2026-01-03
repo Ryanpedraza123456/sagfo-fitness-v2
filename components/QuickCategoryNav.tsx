@@ -81,7 +81,7 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
                                 <img
                                     src={machineryImages[currentImg]?.imageUrl}
                                     alt="Elite Machinery"
-                                    className="w-full h-full object-contain p-4 md:p-12 transition-all duration-[3s]"
+                                    className="w-full h-full object-cover transition-all duration-[3s]"
                                 />
                             </motion.div>
                         </AnimatePresence>
@@ -109,8 +109,8 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
                             <h3 className="text-2xl md:text-5xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Cardio</h3>
                             <p className="text-[10px] md:text-sm text-neutral-500 font-medium">Resistencia sin límites.</p>
                         </div>
-                        <div className="w-32 h-32 md:w-56 md:h-56 relative bg-white dark:bg-zinc-900 rounded-[1.5rem] md:rounded-[2.5rem] p-4 md:p-8 shadow-sm flex-shrink-0 overflow-hidden">
-                            <img src="/categories/cardio.png" className="w-full h-full object-contain group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-700 rounded-xl" alt="" />
+                        <div className="w-32 h-32 md:w-56 md:h-56 relative bg-white dark:bg-zinc-900 rounded-[1.5rem] md:rounded-[2.5rem] p-0 shadow-sm flex-shrink-0 overflow-hidden">
+                            <img src="/categories/cardio.png" className="w-full h-full object-cover scale-125 group-hover:scale-150 group-hover:-rotate-3 transition-transform duration-700 rounded-xl" alt="" />
                         </div>
                     </motion.div>
 
@@ -124,8 +124,8 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
                             <span className="text-[8px] md:text-[10px] font-black text-primary-500 uppercase tracking-widest italic mb-1 block">Acero Forjado</span>
                             <h3 className="text-xl md:text-2xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Mancuernas</h3>
                         </div>
-                        <div className="aspect-square w-full relative bg-white dark:bg-zinc-900/50 rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 mt-4 overflow-hidden shadow-sm">
-                            <img src="/categories/mancuernas.png" className="w-full h-full object-contain group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700 filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)] rounded-lg" alt="" />
+                        <div className="aspect-square w-full relative bg-white dark:bg-zinc-900/50 rounded-[1.5rem] md:rounded-[2.5rem] p-0 mt-4 overflow-hidden shadow-sm">
+                            <img src="/categories/mancuernas.png" className="w-full h-full object-cover scale-125 group-hover:scale-150 group-hover:rotate-12 transition-transform duration-700 filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)]" alt="" />
                         </div>
                     </motion.div>
 
@@ -141,8 +141,8 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
                             <span className="text-[8px] md:text-[10px] font-black text-primary-400 uppercase tracking-widest italic mb-1 block">Hierro Fundido</span>
                             <h3 className="text-xl md:text-2xl font-black text-white uppercase italic tracking-tighter">Pesos <br /> Libres</h3>
                         </div>
-                        <div className="aspect-square w-full relative bg-neutral-800 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center p-6 md:p-8 mt-4 overflow-hidden shadow-sm">
-                            <img src="/categories/discos.png" className="w-full h-full object-contain group-hover:rotate-45 group-hover:scale-110 transition-transform duration-[1.5s] rounded-lg" alt="" />
+                        <div className="aspect-square w-full relative bg-neutral-800 rounded-[1.5rem] md:rounded-[2.5rem] flex items-center justify-center p-0 mt-4 overflow-hidden shadow-sm">
+                            <img src="/categories/discos.png" className="w-full h-full object-cover scale-125 group-hover:scale-150 group-hover:rotate-45 transition-transform duration-[1.5s]" alt="" />
                         </div>
                     </motion.div>
 
@@ -157,8 +157,8 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
                             <span className="text-[8px] md:text-[10px] font-black text-neutral-400 uppercase tracking-widest italic mb-0.5 block">Cross Training</span>
                             <h3 className="text-xl md:text-2xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Funcional</h3>
                         </div>
-                        <div className="aspect-square w-full relative bg-white dark:bg-zinc-900/50 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center p-6 md:p-8 overflow-hidden shadow-sm">
-                            <img src="/categories/funcional.png" className="w-full h-full object-contain group-hover:scale-110 group-hover:-rotate-[15deg] transition-transform duration-700 rounded-lg" alt="" />
+                        <div className="aspect-square w-full relative bg-white dark:bg-zinc-900/50 rounded-[1.5rem] md:rounded-[2.5rem] flex items-center justify-center p-0 overflow-hidden shadow-sm">
+                            <img src="/categories/funcional.png" className="w-full h-full object-cover scale-125 group-hover:scale-150 group-hover:-rotate-[15deg] transition-transform duration-700" alt="" />
                         </div>
                     </motion.div>
 
@@ -172,8 +172,8 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
                             <span className="text-[8px] md:text-[10px] font-black text-primary-500 uppercase tracking-widest italic mb-0.5 block">Soporte Anatómico</span>
                             <h3 className="text-xl md:text-2xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Bancos</h3>
                         </div>
-                        <div className="aspect-square w-full relative bg-white dark:bg-zinc-900/50 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center p-6 md:p-8 overflow-hidden shadow-sm">
-                            <img src="/categories/bancos.png" className="w-full h-full object-contain group-hover:translate-x-3 group-hover:-rotate-[8deg] group-hover:scale-105 transition-transform duration-700 rounded-lg" alt="" />
+                        <div className="aspect-square w-full relative bg-white dark:bg-zinc-900/50 rounded-[1.5rem] md:rounded-[2.5rem] flex items-center justify-center p-0 overflow-hidden shadow-sm">
+                            <img src="/categories/bancos.png" className="w-full h-full object-cover scale-125 group-hover:scale-150 group-hover:translate-x-3 group-hover:-rotate-[8deg] transition-transform duration-700" alt="" />
                         </div>
                     </motion.div>
 
