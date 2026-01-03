@@ -874,7 +874,7 @@ const App: React.FC = () => {
 
   const handleSelectQuickCategory = (category: MuscleFilter) => {
     // Determine parent category based on selection
-    if (['Mancuernas', 'Discos', 'Barras', 'Agarres', 'Soportes', 'Peso Libre', 'Bancos'].includes(category)) {
+    if (['Mancuernas', 'Discos', 'Barras', 'Agarres', 'Soportes', 'Peso Libre', 'Bancos', 'Funcional'].includes(category)) {
       setCategoryFilter('Accesorios');
     } else {
       setCategoryFilter('Maquinaria'); // Cardio, etc.
@@ -1242,7 +1242,10 @@ const App: React.FC = () => {
     <>
       {loading && <IntroAnimation onComplete={() => setLoading(false)} onStartExit={() => setAppVisible(true)} />}
 
-      <div style={{ opacity: (appVisible || !loading) ? 1 : 0 }} className={`min-h-screen ${resolvedTheme === 'dark' ? 'dark bg-[#0a0a0a]' : 'bg-[#f8f9fa]'} transition-colors duration-500 relative overflow-x-hidden selection:bg-primary-500/30 selection:text-primary-600`}>
+      <div className="mesh-container">
+        <div className="mesh-gradient" />
+      </div>
+      <div style={{ opacity: (appVisible || !loading) ? 1 : 0 }} className={`min-h-screen ${resolvedTheme === 'dark' ? 'dark' : ''} bg-transparent selection:bg-primary-500 selection:text-white transition-colors duration-500 relative overflow-x-hidden`}>
 
         {/* Global Geometric Background - Modern & Clean */}
         <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">

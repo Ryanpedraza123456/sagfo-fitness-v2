@@ -54,9 +54,9 @@ const Header: React.FC<HeaderProps> = ({ cartCount, onCartClick, onLoginClick, o
 
   return (
     <header
-      className={`sticky top-0 z-[100] transition-all duration-700 ${isScrolled
-        ? 'py-3 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-white/10 shadow-2xl'
-        : 'py-6 bg-transparent'
+      className={`sticky top-0 z-[100] transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled
+        ? 'py-4 bg-white/70 dark:bg-black/40 backdrop-blur-[40px] border-b border-neutral-200 dark:border-white/5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.3)]'
+        : 'py-8 bg-transparent'
         }`}
     >
       <div className="container mx-auto px-6 lg:px-12">

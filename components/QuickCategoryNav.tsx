@@ -36,133 +36,162 @@ const QuickCategoryNav: React.FC<QuickCategoryNavProps> = ({ onSelectCategory, g
     const v = Date.now() + 4000;
 
     return (
-        <section className="relative py-20 md:py-32 bg-white dark:bg-[#050505] overflow-hidden">
-            {/* Soft Engineering Grid */}
-            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none"
+        <section className="relative py-24 md:py-40 overflow-hidden">
+            {/* Soft Engineering Grid Overlay */}
+            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] pointer-events-none"
                 style={{
-                    backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
-                    backgroundSize: '60px 60px'
+                    backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
+                    backgroundSize: '80px 80px'
                 }}
             />
 
-            <div className="container mx-auto px-4 sm:px-6 relative z-10 max-w-7xl">
-                <div className="flex flex-col xl:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-20">
-
-                    {/* CENTRAL PORTAL - APPLE CARD STYLE (Always on top for mobile) */}
-                    <div className="relative order-1 xl:order-2 w-full max-w-[650px]">
-                        <motion.button
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            whileHover={{ scale: 1.01 }}
-                            onClick={() => onSelectCategory('Todos')}
-                            className="group relative w-full aspect-square sm:aspect-video xl:aspect-square rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden bg-neutral-900 border border-neutral-200 dark:border-white/10 shadow-2xl"
+            <div className="container mx-auto px-6 relative z-10 max-w-[1600px]">
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 md:mb-24">
+                    <div className="space-y-6">
+                        <motion.span
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            className="text-[10px] font-black text-primary-500 uppercase tracking-[0.6em] italic block"
                         >
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={currentImg}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 1 }}
-                                    className="absolute inset-0"
-                                >
-                                    <img
-                                        src={machineryImages[currentImg]?.imageUrl}
-                                        alt="Equipamiento"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </motion.div>
-                            </AnimatePresence>
+                            Ingeniería Deportiva de Grado Superior
+                        </motion.span>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            className="text-5xl md:text-8xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-[0.85]"
+                        >
+                            Selección <br /> <span className="text-primary-600">Premium</span>
+                        </motion.h2>
+                    </div>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        className="max-w-md text-neutral-500 dark:text-neutral-400 font-medium text-lg italic leading-relaxed text-right"
+                    >
+                        Configuramos ecosistemas de alto rendimiento con los más altos estándares de precisión biomecánica.
+                    </motion.p>
+                </div>
 
-                            {/* Apple-style Gradient Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
+                {/* BENTO GRID ARCHITECTURE */}
+                <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-8 auto-rows-[320px] md:auto-rows-[400px]">
 
-                            <div className="absolute inset-0 z-20 flex flex-col items-center justify-end p-8 sm:p-12 md:p-16 text-center">
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.3 }}
-                                >
-                                    <p className="text-[10px] sm:text-xs font-black text-primary-400 uppercase tracking-[0.4em] mb-3">
-                                        LÍNEA ÉLITE INDUSTRIAL
-                                    </p>
-                                    <h3 className="text-4xl sm:text-6xl md:text-7xl font-black text-white uppercase italic tracking-tighter leading-none mb-8">
-                                        Maquinaria
-                                    </h3>
+                    {/* PRIMARY BENTO: MAQUINARIA (Large Feature) */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        className="md:col-span-4 lg:col-span-6 lg:row-span-2 relative group cursor-pointer rounded-[4rem] overflow-hidden bg-neutral-900 border border-neutral-200 dark:border-white/10 shadow-2xl"
+                        onClick={() => onSelectCategory('Todos')}
+                    >
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentImg}
+                                initial={{ opacity: 0, scale: 1.1 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ duration: 1.5, ease: "circOut" }}
+                                className="absolute inset-0"
+                            >
+                                <img
+                                    src={machineryImages[currentImg]?.imageUrl}
+                                    alt="Elite Machinery"
+                                    className="w-full h-full object-contain p-12 bg-neutral-100 group-hover:scale-105 transition-transform duration-[3s]"
+                                />
+                            </motion.div>
+                        </AnimatePresence>
+                        {/* More subtle bottom gradient to avoid covering the machine */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
 
-                                    <div className="inline-flex items-center gap-3 bg-white text-neutral-900 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-primary-500 hover:text-white transition-all duration-300 shadow-xl group/btn">
-                                        <span>EXPLORAR TODO</span>
-                                        <ArrowUpRight size={18} strokeWidth={3} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-all" />
-                                    </div>
-                                </motion.div>
+                        <div className="absolute inset-x-0 bottom-0 p-12 z-20">
+                            <span className="text-[10px] font-black text-primary-400 uppercase tracking-[0.4em] mb-4 block">Serie Profesional S</span>
+                            <h3 className="text-4xl sm:text-6xl font-black text-white uppercase italic tracking-tighter leading-none mb-10">Maquinaria <br /> Industrial</h3>
+                            <div className="inline-flex items-center gap-4 bg-white text-black px-10 py-5 rounded-3xl font-black uppercase text-xs tracking-widest hover:bg-primary-500 hover:text-white transition-all transform group-hover:translate-x-2">
+                                Ver Catálogo Completo <ArrowUpRight size={20} strokeWidth={3} />
                             </div>
-                        </motion.button>
-                    </div>
+                        </div>
+                    </motion.div>
 
-                    {/* UNIFIED GRID FOR MOBILE / SPLIT FOR DESKTOP */}
-                    {/* LEFT SIDE (Desktop) / ALL ITEMS (Mobile) */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-1 gap-4 sm:gap-6 order-2 xl:order-1 w-full xl:w-auto">
-                        {catData.map((cat, idx) => (
-                            <motion.button
-                                key={cat.label}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
-                                whileHover={{ scale: 1.02, y: -5 }}
-                                onClick={() => onSelectCategory(cat.value)}
-                                className={`group relative bg-neutral-50 dark:bg-white/5 p-4 sm:p-6 rounded-[2rem] border border-neutral-100 dark:border-white/10 transition-all duration-300 hover:shadow-xl dark:hover:shadow-primary-500/10 ${cat.side === 'right' ? 'xl:hidden' : ''
-                                    }`}
-                            >
-                                <div className="flex flex-col items-center xl:items-start gap-4 w-full">
-                                    <div className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm">
-                                        <img
-                                            src={`${cat.image}?v=${v}`}
-                                            alt={cat.label}
-                                            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
-                                        />
-                                    </div>
-                                    <div className="text-center xl:text-left px-2 pb-2">
-                                        <h4 className="text-lg sm:text-2xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter leading-none group-hover:text-primary-600 transition-colors">
-                                            {cat.label}
-                                        </h4>
-                                    </div>
-                                </div>
-                            </motion.button>
-                        ))}
-                    </div>
+                    {/* BENTO: CARDIO (Long Rectangle) */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        className="md:col-span-2 lg:col-span-6 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[4rem] p-16 border border-neutral-100 dark:border-white/5 flex items-center justify-between group cursor-pointer hover:bg-white dark:hover:bg-white/[0.05] transition-all"
+                        onClick={() => onSelectCategory('Cardio')}
+                    >
+                        <div className="space-y-6">
+                            <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest italic">Aeróbico Elite</span>
+                            <h3 className="text-5xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Cardio</h3>
+                            <p className="text-sm text-neutral-500 font-medium">Resistencia sin límites.</p>
+                        </div>
+                        <div className="w-64 h-64 relative bg-white dark:bg-zinc-900 rounded-[3rem] p-8 shadow-sm">
+                            <img src="/categories/cardio.png" className="w-full h-full object-contain group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-700" alt="" />
+                        </div>
+                    </motion.div>
 
-                    {/* RIGHT SIDE (Desktop ONLY) */}
-                    <div className="hidden xl:grid grid-cols-1 gap-6 order-3 w-auto">
-                        {catData.filter(c => c.side === 'right').map((cat, idx) => (
-                            <motion.button
-                                key={cat.label}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
-                                whileHover={{ scale: 1.02, y: -5 }}
-                                onClick={() => onSelectCategory(cat.value)}
-                                className="group relative bg-neutral-50 dark:bg-white/5 p-4 sm:p-6 rounded-[2rem] border border-neutral-100 dark:border-white/10 transition-all duration-300 hover:shadow-xl dark:hover:shadow-primary-500/10"
-                            >
-                                <div className="flex flex-col items-center xl:items-end gap-4 w-full">
-                                    <div className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm">
-                                        <img
-                                            src={`${cat.image}?v=${v}`}
-                                            alt={cat.label}
-                                            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
-                                        />
-                                    </div>
-                                    <div className="text-right px-2 pb-2">
-                                        <h4 className="text-lg sm:text-2xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter leading-none group-hover:text-primary-600 transition-colors">
-                                            {cat.label}
-                                        </h4>
-                                    </div>
-                                </div>
-                            </motion.button>
-                        ))}
-                    </div>
+                    {/* BENTO: MANCUERNAS (Square) */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[4rem] p-10 border border-neutral-100 dark:border-white/5 group cursor-pointer relative overflow-hidden flex flex-col justify-between hover:bg-white dark:hover:bg-white/[0.05] transition-all"
+                        onClick={() => onSelectCategory('Mancuernas')}
+                    >
+                        <div className="relative z-10">
+                            <span className="text-[10px] font-black text-primary-500 uppercase tracking-widest italic mb-2 block">Acero Forjado</span>
+                            <h3 className="text-3xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Mancuernas</h3>
+                        </div>
+                        <div className="h-40 w-full relative">
+                            <img src="/categories/mancuernas.png" className="w-full h-full object-contain group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700 filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)]" alt="" />
+                        </div>
+                    </motion.div>
+
+                    {/* BENTO: DISCOS (Square) - REMOVED SOLID BLUE */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-900 rounded-[4rem] p-10 border border-neutral-100 dark:border-white/5 group cursor-pointer relative overflow-hidden flex flex-col justify-between hover:shadow-[0_0_50px_rgba(14,165,233,0.15)] transition-all"
+                        onClick={() => onSelectCategory('Discos')}
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="relative z-10">
+                            <span className="text-[10px] font-black text-primary-400 uppercase tracking-widest italic mb-2 block">Hierro Fundido</span>
+                            <h3 className="text-3xl font-black text-white uppercase italic tracking-tighter">Pesos <br /> Libres</h3>
+                        </div>
+                        <div className="h-40 w-full relative flex items-center justify-center">
+                            <img src="/categories/discos.png" className="w-full h-full object-contain group-hover:rotate-45 group-hover:scale-110 transition-transform duration-[1.5s]" alt="" />
+                        </div>
+                    </motion.div>
+
+                    {/* BENTO: FUNCIONAL (Square) */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[4rem] p-12 border border-neutral-100 dark:border-white/5 group cursor-pointer hover:bg-white dark:hover:bg-white/[0.05] transition-all flex flex-col"
+                        onClick={() => onSelectCategory('Funcional')}
+                    >
+                        <div className="mb-6">
+                            <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest italic mb-1 block">Cross Training</span>
+                            <h3 className="text-3xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Funcional</h3>
+                        </div>
+                        <div className="flex-grow flex items-center justify-center p-4">
+                            <img src="/categories/funcional.png" className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700" alt="" />
+                        </div>
+                    </motion.div>
+
+                    {/* BENTO: BANCOS (Square) */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        className="md:col-span-2 lg:col-span-3 lg:row-span-1 bg-neutral-50 dark:bg-white/[0.03] rounded-[4rem] p-12 border border-neutral-100 dark:border-white/5 group cursor-pointer hover:bg-white dark:hover:bg-white/[0.05] relative overflow-hidden flex flex-col transition-all"
+                        onClick={() => onSelectCategory('Bancos')}
+                    >
+                        <div className="mb-6">
+                            <span className="text-[10px] font-black text-primary-500 uppercase tracking-widest italic mb-1 block">Soporte Anatómico</span>
+                            <h3 className="text-3xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter">Bancos</h3>
+                        </div>
+                        <div className="flex-grow flex items-center justify-center p-4">
+                            <img src="/categories/bancos.png" className="w-full h-full object-contain group-hover:translate-y-[-10px] transition-transform duration-700" alt="" />
+                        </div>
+                    </motion.div>
 
                 </div>
             </div>
