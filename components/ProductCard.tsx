@@ -73,43 +73,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, onToggleCom
         <div className="mb-2">
           <div className="flex items-center gap-3 mb-2 flex-wrap">
             <span className="text-[10px] md:text-[11px] font-black text-primary-500 uppercase tracking-[0.3em] italic leading-none">{product.category}</span>
-            <div className="w-1 h-1 rounded-full bg-neutral-200 dark:bg-white/10" />
             <span className="text-[10px] md:text-[11px] font-bold text-neutral-500 uppercase tracking-[0.2em]">{product.muscleGroup}</span>
-
-            {/* Color Indicators ONLY for Made-to-order (Production) products */}
-            {product.availabilityStatus === 'made-to-order' && product.availableColors && product.availableColors.length > 0 && (
-              <>
-                <div className="w-1 h-1 rounded-full bg-neutral-200 dark:bg-white/10" />
-                <div className="flex items-center gap-1.5 align-middle">
-                  {product.availableColors.slice(0, 3).map((color, idx) => {
-                    const c = color.toLowerCase();
-                    const hex = (() => {
-                      if (c.includes('rojo')) return '#ef4444';
-                      if (c.includes('azul')) return '#3b82f6';
-                      if (c.includes('negro')) return '#171717';
-                      if (c.includes('blanco')) return '#ffffff';
-                      if (c.includes('amarillo')) return '#eab308';
-                      if (c.includes('verde')) return '#22c55e';
-                      if (c.includes('naranja')) return '#f97316';
-                      if (c.includes('plata') || c.includes('gris')) return '#9ca3af';
-                      return '#d4d4d4';
-                    })();
-
-                    return (
-                      <div
-                        key={idx}
-                        className={`w-2 h-2 rounded-full shadow-sm border ${c.includes('blanco') ? 'border-neutral-200' : 'border-transparent'}`}
-                        style={{ backgroundColor: hex }}
-                        title={color}
-                      />
-                    );
-                  })}
-                  {product.availableColors.length > 3 && (
-                    <span className="text-[9px] font-black text-neutral-300 pointer-events-none leading-none">+</span>
-                  )}
-                </div>
-              </>
-            )}
           </div>
 
           <h3 className="text-lg md:text-xl font-black text-neutral-900 dark:text-white uppercase italic tracking-tighter leading-[0.85] line-clamp-2 pr-1">
