@@ -327,7 +327,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
     }
   };
 
-  const addImageField = () => { if (formData) setFormData({ ...formData, imageUrls: [...formData.imageUrls, ''] }); };
+  const addImageField = () => { if (formData) setFormData({ ...formData, imageUrls: ['', ...formData.imageUrls] }); };
   const removeImageField = (index: number) => {
     if (formData && window.confirm('¿Estás seguro de eliminar esta imagen?')) {
       setFormData({
