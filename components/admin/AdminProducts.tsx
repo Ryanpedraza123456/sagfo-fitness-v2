@@ -62,18 +62,30 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
 
                 {/* Category Filter Tabs */}
                 <div className="bg-neutral-100 dark:bg-white/5 p-2 rounded-[2.5rem] flex items-center gap-2">
-                    {(['All', 'Maquinaria', 'Accesorios'] as const).map(cat => (
-                        <button
-                            key={cat}
-                            onClick={() => setActiveCategory(cat)}
-                            className={`px-8 py-4 rounded-[2rem] text-[10px] font-black uppercase italic tracking-widest transition-all ${activeCategory === cat
-                                ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-lg'
-                                : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
-                                }`}
-                        >
-                            {cat === 'All' ? 'Todos' : cat}
-                        </button>
-                    ))}
+                    {(['All', 'Maquinaria', 'Accesorios'] as const).map(cat => {
+                        const count = cat === 'All'
+                            ? products.length
+                            : products.filter(p => p.category === cat).length;
+
+                        return (
+                            <button
+                                key={cat}
+                                onClick={() => setActiveCategory(cat)}
+                                className={`px-8 py-4 rounded-[2rem] text-[10px] font-black uppercase italic tracking-widest transition-all gap-3 flex items-center ${activeCategory === cat
+                                    ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 shadow-lg'
+                                    : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
+                                    }`}
+                            >
+                                <span>{cat === 'All' ? 'Todos' : cat}</span>
+                                <span className={`flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[9px] font-black transition-colors ${activeCategory === cat
+                                    ? 'bg-white/20 dark:bg-neutral-950/10 text-white dark:text-neutral-900'
+                                    : 'bg-neutral-200 dark:bg-white/10 text-neutral-500'
+                                    }`}>
+                                    {count}
+                                </span>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 
