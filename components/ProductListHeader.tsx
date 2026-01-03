@@ -50,17 +50,16 @@ const ProductListHeader: React.FC<ProductListHeaderProps> = ({ sortOrder, onSort
           <div className="relative inline-flex items-center p-1.5 md:p-2 bg-neutral-100 dark:bg-zinc-900/80 backdrop-blur-2xl rounded-full border border-neutral-200 dark:border-white/10 shadow-inner">
             {/* Animated Background Pill */}
             <span
-              className="absolute top-1.5 md:top-2 h-[calc(100%-12px)] md:h-[calc(100%-16px)] bg-neutral-900 dark:bg-white rounded-full shadow-2xl transition-all duration-700 cubic-bezier(0.23, 1, 0.32, 1)"
+              className="absolute top-1.5 md:top-2 h-[calc(100%-12px)] md:h-[calc(100%-16px)] bg-primary-600 rounded-full shadow-lg transition-all duration-700 cubic-bezier(0.23, 1, 0.32, 1)"
               style={sliderStyle}
               aria-hidden="true"
             />
 
-            {/* Maquinaria Button */}
             <button
               ref={el => { tabsRef.current[0] = el; }}
               onClick={() => onCategoryFilterChange('Maquinaria')}
-              className={`relative z-10 px-6 md:px-12 py-3 md:py-4 text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-full transition-all duration-700 flex items-center gap-2 md:gap-3 italic whitespace-nowrap ${categoryFilter === 'Maquinaria'
-                ? 'text-white dark:text-neutral-900'
+              className={`relative z-10 px-4 md:px-12 py-2.5 md:py-4 text-[9px] md:text-[11px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-full transition-all duration-700 flex items-center gap-2 md:gap-3 italic whitespace-nowrap ${categoryFilter === 'Maquinaria'
+                ? 'text-white'
                 : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
                 }`}
             >
@@ -68,12 +67,11 @@ const ProductListHeader: React.FC<ProductListHeaderProps> = ({ sortOrder, onSort
               Maquinaria
             </button>
 
-            {/* Accesorios Button */}
             <button
               ref={el => { tabsRef.current[1] = el; }}
               onClick={() => onCategoryFilterChange('Accesorios')}
-              className={`relative z-10 px-6 md:px-12 py-3 md:py-4 text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-full transition-all duration-700 flex items-center gap-2 md:gap-3 italic whitespace-nowrap ${categoryFilter === 'Accesorios'
-                ? 'text-white dark:text-neutral-900'
+              className={`relative z-10 px-4 md:px-12 py-2.5 md:py-4 text-[9px] md:text-[11px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] rounded-full transition-all duration-700 flex items-center gap-2 md:gap-3 italic whitespace-nowrap ${categoryFilter === 'Accesorios'
+                ? 'text-white'
                 : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
                 }`}
             >

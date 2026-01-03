@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { EquipmentItem, CartItem, CategoryFilter, MuscleFilter } from '../types';
-import { Plus, Trash2, X, Camera, Save, ArrowLeft, Maximize2, ZoomIn, Check, Palette, Dumbbell, List, Star, CheckCircle2, ArrowRight, Type, Eraser } from 'lucide-react';
+import { Plus, Trash2, X, Camera, Save, ArrowLeft, Maximize2, ZoomIn, Check, Palette, Dumbbell, List, Star, CheckCircle2, ArrowRight, Type, Eraser, ChevronLeft, ChevronRight } from 'lucide-react';
 
 
 interface ProductModalProps {
@@ -431,14 +431,48 @@ const ProductModal: React.FC<ProductModalProps> = ({
                     alt={product.name}
                   />
 
+                  {/* Mobile & Desktop Image Navigation Arrows */}
+                  {product.imageUrls.length > 1 && (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCurrentImageIndex((prev) => (prev - 1 + product.imageUrls.length) % product.imageUrls.length);
+                        }}
+                        className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-neutral-200 dark:border-white/10 flex items-center justify-center text-neutral-900 dark:text-white shadow-2xl z-30 transition-all hover:scale-110 active:scale-95 group/arrow"
+                      >
+                        <ChevronLeft className="w-6 h-6 md:w-8 md:h-8 group-hover/arrow:-translate-x-1 transition-transform" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCurrentImageIndex((prev) => (prev + 1) % product.imageUrls.length);
+                        }}
+                        className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-neutral-200 dark:border-white/10 flex items-center justify-center text-neutral-900 dark:text-white shadow-2xl z-30 transition-all hover:scale-110 active:scale-95 group/arrow"
+                      >
+                        <ChevronRight className="w-6 h-6 md:w-8 md:h-8 group-hover/arrow:translate-x-1 transition-transform" />
+                      </button>
+
+                      {/* Pagination Indicator Dots */}
+                      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-1.5 md:gap-2 z-30 px-3 md:px-4 py-1.5 md:py-2 bg-black/20 backdrop-blur-md rounded-full">
+                        {product.imageUrls.map((_, i) => (
+                          <div
+                            key={i}
+                            className={`h-1 md:h-1.5 rounded-full transition-all duration-500 ${currentImageIndex === i ? 'w-6 md:w-8 bg-primary-500' : 'w-1 md:w-1.5 bg-white/40'}`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+
                   {/* Luxury Zoom Layer */}
                   <div
                     className="absolute inset-0 pointer-events-none transition-opacity duration-500 rounded-[3rem] z-20"
                     style={{ ...zoomStyle, opacity: isZooming ? 1 : 0 }}
                   />
 
-                  {/* Zoom Hint */}
-                  <div className="absolute bottom-10 right-10 w-12 h-12 rounded-full bg-white/50 backdrop-blur-xl border border-white/20 flex items-center justify-center text-neutral-900 opacity-20 group-hover:opacity-100 transition-opacity">
+                  {/* Zoom Hint (Hidden on small screens) */}
+                  <div className="absolute bottom-10 right-10 w-12 h-12 rounded-full bg-white/50 backdrop-blur-xl border border-white/20 hidden md:flex items-center justify-center text-neutral-900 opacity-20 group-hover:opacity-100 transition-opacity">
                     <ZoomIn className="w-6 h-6" />
                   </div>
                 </div>
